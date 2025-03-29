@@ -4,12 +4,10 @@ import Auth from './features/auth/auth';
 function App() {
   return (
     <Router>
-        <div>
-        <Routes>
-          <Route path="/auth" element={<Auth />} />
-          <Route path="/" element={<Auth />} />
-        </Routes>
-      </div>
+      <Routes>
+        <Route path="/auth" element={<Auth />} />
+        <Route path="/" element={<Auth />} />
+      </Routes>
     </Router>
   );
 }
