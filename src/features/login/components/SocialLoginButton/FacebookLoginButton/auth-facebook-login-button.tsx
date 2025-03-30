@@ -1,7 +1,7 @@
 import React from 'react';
 import SocialLoginButton from '../auth-social-login-button';
 import FacebookRoundedIcon from '@mui/icons-material/FacebookRounded';
-import { useTheme } from '@mui/material/styles';
+import { useTheme } from '../../../../../theme';
 const FacebookLoginButton = () => {
     const handleFacebookLogin = () => {
         console.log('Facebook login clicked');

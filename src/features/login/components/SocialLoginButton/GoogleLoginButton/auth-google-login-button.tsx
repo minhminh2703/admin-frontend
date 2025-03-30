@@ -1,7 +1,7 @@
 import React from 'react';
 import SocialLoginButton from '../auth-social-login-button';
 import GoogleIcon from '@mui/icons-material/Google';
-import { useTheme } from '@mui/material/styles';
+import { useTheme } from '../../../../../theme';
 
 const GoogleLoginButton = () => {
   const handleGoogleLogin = () => {
@@ -15,7 +15,7 @@ const GoogleLoginButton = () => {
       icon={<GoogleIcon style={{ 
         verticalAlign: 'middle',
         fontSize: '1.7rem',
-        color: theme.status.failed.fontColor,
+        color: theme.status.failed.fontColor
       }} />}
       label="Sign in with Google"
       onClick={handleGoogleLogin}
