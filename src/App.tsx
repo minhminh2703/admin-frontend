@@ -11,6 +11,7 @@ function App() {
         <Route path="/auth" element={<Auth />} />
         <Route element={<MainLayout />}>
           <Route path="/manage_accounts" element={<ManageAccounts />} />
+          <Route path="/dashboard" element={<ManageAccounts />} />
           {/* Add other routes that require Sidebar, Navbar, and Background */}
         </Route>
       </Routes>

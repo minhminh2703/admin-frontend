@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Drawer, Link as MuiLink, List, ListItem, ListItemText, ListItemIcon, Divider, IconButton, Box, Typography } from '@mui/material';
-import { Home, Dashboard, AccountCircle, Notifications, Settings, ExitToApp } from '@mui/icons-material';
+import { Drawer, Link as MuiLink, Box, Typography } from '@mui/material';
+import { Timeline, Dashboard, AccountCircle } from '@mui/icons-material';
 import MLVTLogo from '../../../assets/mlvt_logo.png';
 import { useTheme } from '../../../theme';
 import { Link as RouterLink, useLocation } from "react-router-dom";
@@ -15,7 +15,7 @@ interface NavLink {
 const navLinks: NavLink[] = [
   {
       name: "Dashboard",
-      icon: <Dashboard />,
+      icon: <Timeline />,
       link: "/dashboard",
   },
   {
