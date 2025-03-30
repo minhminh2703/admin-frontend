@@ -2,8 +2,6 @@ import React, { useEffect } from "react";
 import { Box, TextField, Button, Typography, Divider, Checkbox } from "@mui/material";
 import LoginSignup from '../../layouts/LoginSignupLayout';
 import { useTheme } from '../../theme';
-import GoogleLoginButton from './components/SocialLoginButton/GoogleLoginButton/auth-google-login-button';
-import FacebookLoginButton from './components/SocialLoginButton/FacebookLoginButton/auth-facebook-login-button';
 import axios from 'axios';
 import { useSnackbar } from "notistack";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -114,12 +112,13 @@ const Login = () => {
         }
     };
 
+    console.log(theme.typography.h1.fontFamily);
 
     return (
         <LoginSignup>
             <Typography variant="h4" gutterBottom sx={{
                 color: theme.fontColor.black,
-                fontFamily: theme.typography.h1,
+                fontFamily: theme.typography.h1.fontFamily,
                 fontWeight: theme.typography.fontWeightBold,
                 fontSize: 60,
                 marginTop: 3,
@@ -129,7 +128,7 @@ const Login = () => {
             <Typography variant="body1" sx={{
                 marginBottom: 3,
                 color: theme.fontColor.black,
-                fontFamily: theme.typography.body1,
+                fontFamily: theme.typography.body1.fontFamily,
                 fontWeight: 500,
                 fontSize: 16,
             }}>
@@ -138,7 +137,7 @@ const Login = () => {
 
             {/* Email Input */}
             <Typography sx={{
-                fontFamily: theme.typography.body1,
+                fontFamily: theme.typography.body1.fontFamily,
                 color: theme.fontColor.black,
                 fontSize: 14,
                 fontWeight: 600,
@@ -170,7 +169,7 @@ const Login = () => {
 
                 FormHelperTextProps={{
                     sx: {
-                        fontFamily: theme.typography.body1,
+                        fontFamily: theme.typography.body1.fontFamily,
                         fontColor: theme.status.failed.fontColor,
                         marginLeft: 0,
                         fontSize: 12,
@@ -181,7 +180,7 @@ const Login = () => {
 
             {/* Password Input */}
             <Typography sx={{
-                fontFamily: theme.typography.body1,
+                fontFamily: theme.typography.body1.fontFamily,
                 fontColor: theme.status.failed.fontColor,
                 color: theme.fontColor.black,
                 fontSize: 14,
@@ -214,7 +213,7 @@ const Login = () => {
 
                 FormHelperTextProps={{
                     sx: {
-                        fontFamily: theme.typography.body1,
+                        fontFamily: theme.typography.body1.fontFamily,
                         fontColor: theme.status.failed.fontColor,
                         marginLeft: 0,
                         fontSize: 12,
@@ -257,7 +256,7 @@ const Login = () => {
                 <Typography variant="body2" sx={{
                     cursor: "pointer",
                     color: theme.status.inProgress.fontColor,
-                    fontFamily: theme.typography.body1,
+                    fontFamily: theme.typography.body1.fontFamily,
                     fontSize: '0.8rem',
                     '&:hover': {
                         textDecoration: 'underline',  // Underline on hover
@@ -279,7 +278,7 @@ const Login = () => {
                     marginTop: 3.5,
                     borderRadius: 2.5,
                     backgroundColor: theme.background.main,
-                    fontFamily: theme.typography.h1,
+                    fontFamily: theme.typography.h1.fontFamily,
                     fontWeight: theme.typography.fontWeightBold,
                     fontSize: '1rem',
                     height: '2.5rem',
