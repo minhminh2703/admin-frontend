@@ -5,6 +5,7 @@ import { useTheme } from '../../theme';
 import axios from 'axios';
 import { useSnackbar } from "notistack";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from '../../context/AuthContext'
 
 const InputStyles = (theme: any) => ({
     sx: {
@@ -29,11 +30,9 @@ const Login = () => {
         }
     }, [navigate]);
 
-
-
     const theme = useTheme();
     const { enqueueSnackbar } = useSnackbar();
-
+    const { login } = useAuth();
     const [email, setEmail] = React.useState('');
     const [password, setPassword] = React.useState('');
     const [error, setError] = React.useState('');
@@ -78,21 +77,19 @@ const Login = () => {
         setLoading(true); // Set loading state to true
 
         try {
-            navigate('/manage_accounts');
-            // const response = await axios.post('http://localhost:8080/api/users/login', {
-            //     email: email,
-            //     password: password
-            // });
+            const response = await axios.post('http://localhost:8080/api/users/login', {
+                email: email,
+                password: password
+            });
 
-            // if (response.status === 200) {
-            //     console.log(response.data);
-            //     login(response.data.token, response.data.user_id);
+            if (response.status === 200) {
+                console.log(response.data);
+                login(response.data.token, response.data.user_id);
 
-            //     console.log(response.data.user_id);
+                console.log(response.data.user_id);
 
-            //     navigate('/');
-
-            // }
+                navigate('/manage_accounts');
+            }
         } catch (err) {
             if (axios.isAxiosError(err)) {
                 // Checking for specific response status
@@ -111,8 +108,6 @@ const Login = () => {
             setLoading(false); // Set loading state to false
         }
     };
-
-    console.log(theme.typography.h1.fontFamily);
 
     return (
         <LoginSignup>
