@@ -16,10 +16,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     // method to save token, and user id in local storage
     const login = (token: string, userId: string) => {
-        setAuthToken(token);
         setUserId(userId);
         localStorage.setItem("authToken", token);
-        localStorage.setItem("userId", userId);
 
     };
 
