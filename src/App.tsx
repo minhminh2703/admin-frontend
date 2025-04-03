@@ -1,7 +1,7 @@
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
-import Auth from './features/login/login';
+import Auth from './features/login';
 import { ManageAccounts } from '@mui/icons-material';
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider } from './context/auth-context';
 
 function App() {
   return (

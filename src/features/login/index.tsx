@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
 import { Box, TextField, Button, Typography, Divider, Checkbox } from "@mui/material";
-import LoginSignup from '../../layouts/LoginSignupLayout';
+import LoginSignup from '../../layouts/authen-layout';
 import { useTheme } from '../../theme';
 import axios from 'axios';
 import { useSnackbar } from "notistack";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from '../../context/AuthContext'
+import { useAuth } from '../../context/auth-context'
 
 const InputStyles = (theme: any) => ({
     sx: {
