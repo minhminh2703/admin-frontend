@@ -11,7 +11,6 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-    const [authToken, setAuthToken] = useState<string | null>(localStorage.getItem("authToken"));
     const [userId, setUserId] = useState<string | null>(localStorage.getItem("userId"));
 
     // method to save token, and user id in local storage
