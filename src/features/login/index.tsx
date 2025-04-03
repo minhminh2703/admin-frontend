@@ -77,7 +77,7 @@ const Login = () => {
         setLoading(true); // Set loading state to true
 
         try {
-            const response = await axios.post('http://localhost:8080/api/users/login', {
+            const response = await apiClient.post('api/users/login', {
                 email: email,
                 password: password
             });
