@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Box, TextField, Button, Typography, Checkbox } from "@mui/material";
-import LoginSignup from '../../layouts/authen-layout';
+import Authentication from '../../layouts/authen-layout';
 import { useTheme } from '../../theme';
 import axios from 'axios';
 import { useSnackbar } from "notistack";
@@ -104,7 +104,7 @@ const Login = () => {
     };
 
     return (
-        <LoginSignup>
+        <Authentication>
             <Typography variant="h4" gutterBottom sx={{
                 color: theme.fontColor.black,
                 fontFamily: theme.typography.h1.fontFamily,
@@ -239,7 +239,7 @@ const Login = () => {
                             color: theme.fontColor.gray,
                             display: 'flex',
                             alignItems: 'center',
-
+                            fontFamily: theme.typography.body1.fontFamily,
                         }}
                     >
                         Remember for 30 days
@@ -284,7 +284,7 @@ const Login = () => {
             >
                 {loading ? 'Logging in...' : 'LOG IN'}
             </Button>
-        </LoginSignup >
+        </Authentication>
     );
 };
 
