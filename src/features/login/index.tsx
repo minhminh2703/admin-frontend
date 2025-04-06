@@ -1,7 +1,7 @@
 import React, { useEffect, useState, ChangeEvent } from "react";
 import { Box, TextField, Button, Typography, Checkbox, InputAdornment, IconButton } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import LoginSignup from '../../layouts/authen-layout';
+import Authentication from '../../layouts/authen-layout';
 import { useTheme } from '../../theme';
 import axios from 'axios';
 import { useSnackbar } from "notistack";
@@ -194,7 +194,7 @@ const Login: React.FC = () => {
     };
 
     return (
-        <LoginSignup>
+        <Authentication>
             <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", marginBottom: 4 }}>
                 <Typography variant="h4" gutterBottom sx={{
                     color: theme.fontColor.black,
@@ -309,7 +309,7 @@ const Login: React.FC = () => {
             >
                 {loading ? 'Logging in...' : 'LOG IN'}
             </Button>
-        </LoginSignup>
+        </Authentication>
     );
 };
 
