@@ -1,12 +1,26 @@
-import React, { useEffect } from "react";
-import { Box, TextField, Button, Typography, Checkbox } from "@mui/material";
-import Authentication from '../../layouts/authen-layout';
+import React, { useEffect, useState, ChangeEvent } from "react";
+import { Box, TextField, Button, Typography, Checkbox, InputAdornment, IconButton } from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import LoginSignup from '../../layouts/authen-layout';
 import { useTheme } from '../../theme';
 import axios from 'axios';
 import { useSnackbar } from "notistack";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from '../../context/auth-context'
+import { useAuth } from '../../context/auth-context';
 import baseApi from "../../api/base.api";
+
+interface FormData {
+    email: string;
+    password: string;
+    rememberMe: boolean;
+    showPassword: boolean;
+}
+
+interface Errors {
+    emailError: boolean;
+    passwordError: boolean;
+    errorMessage: string;
+}
 
 const InputStyles = (theme: any) => ({
     sx: {
@@ -18,218 +32,233 @@ const InputStyles = (theme: any) => ({
     }
 });
 
+interface CustomTextFieldProps {
+    label: string;
+    value: string;
+    onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+    onBlur: () => void;
+    error: boolean;
+    helperText: string;
+    type?: string;
+    showPassword?: boolean;
+    togglePasswordVisibility?: () => void;
+}
 
-const Login = () => {
+const getEndAdornment = (showPassword: boolean, togglePasswordVisibility: () => void) => (
+    <InputAdornment position="end">
+        <IconButton
+            onClick={togglePasswordVisibility}
+            onMouseDown={(event) => event.preventDefault()}
+            edge="end"
+            aria-label={showPassword ? 'Hide password' : 'Show password'}
+        >
+            {showPassword ? <VisibilityOff /> : <Visibility />}
+        </IconButton>
+    </InputAdornment>
+);
 
+const CustomTextField: React.FC<CustomTextFieldProps> = ({ label, value, onChange, onBlur, error, helperText, type = "text", showPassword, togglePasswordVisibility }) => {
+    const theme = useTheme();
+    return (
+        <Box>
+            <Typography sx={{
+                fontFamily: theme.typography.body1.fontFamily,
+                color: theme.fontColor.black,
+                fontSize: 14,
+                fontWeight: 500,
+                marginTop: 0.5,
+            }}>
+                {label}
+            </Typography>
+            <TextField
+                placeholder={`Enter your ${label.toLowerCase()}`}
+                type={type === "password" && showPassword ? "text" : type}
+                fullWidth
+                margin="normal"
+                size="small"
+                required
+                slotProps={{
+                    input: {
+                        ...InputStyles(theme),
+                        endAdornment: type === "password" ? getEndAdornment(showPassword!, togglePasswordVisibility!) : undefined,
+                    },
+                    formHelperText: {
+                        sx: {
+                            fontFamily: theme.typography.body1.fontFamily,
+                            fontColor: theme.status.failed.fontColor,
+                            marginLeft: 0,
+                            fontSize: 12,
+                        },
+                    }
+                }}
+                sx={{
+                    marginTop: 0.6,
+                    '& .MuiOutlinedInput-root': {
+                        '&.Mui-focused fieldset': {
+                            borderColor: theme.background.main
+                        },
+                    },
+                    '& .MuiInputBase-input': {
+                        fontFamily: theme.typography.body1.fontFamily,
+                        fontSize: 14,
+                    }
+                }}
+                value={value}
+                onChange={onChange}
+                onBlur={onBlur}
+                error={error}
+                helperText={helperText}
+            />
+        </Box>
+    );
+};
+
+const Login: React.FC = () => {
     const navigate = useNavigate();
+    const theme = useTheme();
+    const { enqueueSnackbar } = useSnackbar();
+    const { login } = useAuth();
+    const location = useLocation();
+
+    const [formData, setFormData] = useState<FormData>({
+        email: '',
+        password: '',
+        rememberMe: false,
+        showPassword: false,
+    });
+
+    const [errors, setErrors] = useState<Errors>({
+        emailError: false,
+        passwordError: false,
+        errorMessage: '',
+    });
+
+    const [loading, setLoading] = useState<boolean>(false);
 
     useEffect(() => {
         const authToken = localStorage.getItem('authToken');
         if (authToken) {
-
             navigate('/', { replace: true });
         }
     }, [navigate]);
 
-    const theme = useTheme();
-    const { enqueueSnackbar } = useSnackbar();
-    const { login } = useAuth();
-    const [email, setEmail] = React.useState('');
-    const [password, setPassword] = React.useState('');
-    const [error, setError] = React.useState('');
-    const [emailError, setEmailError] = React.useState(false);
-    const [passwordError, setPasswordError] = React.useState(false);
-    const [loading, setLoading] = React.useState(false);
-    const [rememberMe, setRememberMe] = React.useState(false);
-    const [showPassword, setShowPassword] = React.useState(false);
-
-    const location = useLocation();
-
     useEffect(() => {
-
         if (location.state?.successMessage) {
             enqueueSnackbar(location.state.successMessage, { variant: 'success' });
         }
     }, [location.state, enqueueSnackbar]);
 
-    const validateEmail = () => setEmailError(!email);
-    const validatePassword = () => setPasswordError(!password);
+    const validateFields = (): boolean => {
+        const emailError = !formData.email;
+        const passwordError = !formData.password;
+        setErrors({ ...errors, emailError, passwordError });
+        return !emailError && !passwordError;
+    };
 
     const handleLogin = async () => {
-        setError('');
-        let valid = true;
-
-        if (!email) {
-            setEmailError(true);
-            valid = false;
-        }
-
-        if (!password) {
-            setPasswordError(true);
-            valid = false;
-        }
-
-        if (!valid) return;
+        if (!validateFields()) return;
         setLoading(true);
 
         try {
             const response = await baseApi.post('/users/login', {
-                email: email,
-                password: password
+                email: formData.email,
+                password: formData.password
             });
 
             if (response.status === 200) {
-                console.log(response.data);
                 login(response.data.token, response.data.user_id);
-
-                console.log(response.data.user_id);
-
                 navigate('/manage_accounts');
             }
         } catch (err) {
             if (axios.isAxiosError(err)) {
-                if (err.response?.status === 400) {
-                    setError("Validation error. Please check your inputs.");
-                } else if (err.response?.status === 401) {
-                    setError("Invalid credentials. Please try again.");
-                } else {
-                    setError("Failed to login. Please try again.");
-                }
+                const errorMessage = err.response?.status === 400
+                    ? "Validation error. Please check your inputs."
+                    : err.response?.status === 401
+                        ? "Invalid credentials. Please try again."
+                        : "Failed to login. Please try again.";
+                setErrors({ ...errors, errorMessage });
             } else {
-                setError("Failed to login. Please check your connection.");
+                setErrors({ ...errors, errorMessage: "Failed to login. Please check your connection." });
             }
         } finally {
             setLoading(false);
         }
     };
 
+    const handleChange = (field: keyof FormData) => (e: ChangeEvent<HTMLInputElement>) => {
+        setFormData({ ...formData, [field]: e.target.value });
+    };
+
+    const togglePasswordVisibility = () => {
+        setFormData({ ...formData, showPassword: !formData.showPassword });
+    };
+
     return (
-        <Authentication>
-            <Typography variant="h4" gutterBottom sx={{
-                color: theme.fontColor.black,
-                fontFamily: theme.typography.h1.fontFamily,
-                fontWeight: theme.typography.fontWeightBold,
-                fontSize: 60,
-                marginTop: 3,
-            }}>
-                Welcome back !
-            </Typography>
-            <Typography variant="body1" sx={{
-                marginBottom: 3,
-                color: theme.fontColor.black,
-                fontFamily: theme.typography.body1.fontFamily,
-                fontWeight: 500,
-                fontSize: 16,
-            }}>
-                Enter your Credentials to access your account
-            </Typography>
+        <LoginSignup>
+            <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", marginBottom: 4 }}>
+                <Typography variant="h4" gutterBottom sx={{
+                    color: theme.fontColor.black,
+                    fontFamily: theme.typography.h1.fontFamily,
+                    fontWeight: theme.typography.fontWeightBold,
+                    fontSize: 60,
+                    marginTop: 1,
+                }}>
+                    Welcome back!
+                </Typography>
+                <Typography variant="body1" sx={{
+                    marginBottom: 3,
+                    color: theme.fontColor.black,
+                    fontFamily: theme.typography.body1.fontFamily,
+                    fontWeight: 500,
+                    fontSize: 15,
+                }}>
+                    Enter your Credentials to access your account
+                </Typography>
+            </Box>
 
-            {/* Email Input */}
-            <Typography sx={{
-                fontFamily: theme.typography.body1.fontFamily,
-                color: theme.fontColor.black,
-                fontSize: 14,
-                fontWeight: 600,
-                marginTop: 2.5,
-            }}>
-                Email address
-            </Typography>
-            <TextField
-                placeholder="Enter your email"
-                type="email"
-                fullWidth
-                margin="normal"
-                size="small"
-                required
-                slotProps={{
-                    input: InputStyles(theme),
-                    formHelperText: {
-                        sx: {
-                            fontFamily: theme.typography.body1.fontFamily,
-                            fontColor: theme.status.failed.fontColor,
-                            marginLeft: 0,
-                            fontSize: 12,
-                        },
-                    }
-                }}
 
-                sx={{
-                    marginTop: 0.6,
-                    '& .MuiOutlinedInput-root': {
-                        '&.Mui-focused fieldset': {
-                            borderColor: theme.background.main
-                        },
-                    },
-                }}
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                onBlur={validateEmail}
-                error={emailError}
-                helperText={emailError ? 'Email is required' : ''}
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 0 }}>
+                <CustomTextField
+                    label="Email address"
+                    value={formData.email}
+                    onChange={handleChange('email')}
+                    onBlur={() => setErrors({ ...errors, emailError: !formData.email })}
+                    error={errors.emailError}
+                    helperText={errors.emailError ? 'Email is required' : ''}
+                />
+                <CustomTextField
+                    label="Password"
+                    type="password"
+                    value={formData.password}
+                    onChange={handleChange('password')}
+                    onBlur={() => setErrors({ ...errors, passwordError: !formData.password })}
+                    error={errors.passwordError}
+                    helperText={errors.passwordError ? 'Password is required' : ''}
+                    showPassword={formData.showPassword}
+                    togglePasswordVisibility={togglePasswordVisibility}
+                />
+            </Box>
 
-            />
-
-            {/* Password Input */}
-            <Typography sx={{
-                fontFamily: theme.typography.body1.fontFamily,
-                fontColor: theme.status.failed.fontColor,
-                color: theme.fontColor.black,
-                fontSize: 14,
-                marginTop: 2,
-                fontWeight: 600,
-            }}>
-                Password
-            </Typography>
-            <TextField
-                placeholder="Enter your password"
-                type={showPassword ? "text" : "password"}
-                fullWidth
-                margin="normal"
-                size="small" // Use the small size for the input field
-                required
-                slotProps={{
-                    input: InputStyles(theme),
-                    formHelperText: {
-                        sx: {
-                            fontFamily: theme.typography.body1.fontFamily,
-                            fontColor: theme.status.failed.fontColor,
-                            marginLeft: 0,
-                            fontSize: 12,
-                        },
-                    }
-                }}
-                sx={{
-                    marginTop: 0.6,
-                    '& .MuiOutlinedInput-root': {
-                        '&.Mui-focused fieldset': {
-                            borderColor: theme.background.main
-                        },
-                    },
-                }}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                onBlur={validatePassword}
-                error={passwordError}
-                helperText={passwordError ? 'Password is required' : ''}
-
-            />
-
-            {/* Error Message */}
-            {error && (
+            {errors.errorMessage && (
                 <Typography color="error" sx={{ marginTop: 2 }}>
-                    {error}
+                    {errors.errorMessage}
                 </Typography>
             )}
 
-            {/* Remember Me and Forgot Password */}
             <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 2, marginTop: 2 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <Checkbox id="rememberMe" size="small" sx={{
-                        padding: 0,
-                        '&.Mui-checked': {
-                            color: theme.background.main,
-                        }
-                    }} checked={rememberMe} onChange={() => setRememberMe(!rememberMe)} />
+                    <Checkbox
+                        id="rememberMe"
+                        size="small"
+                        sx={{
+                            padding: 0,
+                            '&.Mui-checked': {
+                                color: theme.background.main,
+                            }
+                        }}
+                        checked={formData.rememberMe}
+                        onChange={() => setFormData({ ...formData, rememberMe: !formData.rememberMe })}
+                    />
                     <Typography
                         htmlFor="rememberMe"
                         component="label"
@@ -244,7 +273,6 @@ const Login = () => {
                     >
                         Remember for 30 days
                     </Typography>
-
                 </Box>
                 <Typography variant="body2" sx={{
                     cursor: "pointer",
@@ -252,20 +280,18 @@ const Login = () => {
                     fontFamily: theme.typography.body1.fontFamily,
                     fontSize: '0.8rem',
                     '&:hover': {
-                        textDecoration: 'underline',  // Underline on hover
+                        textDecoration: 'underline',
                     },
                 }}>
                     Forgot password?
-
                 </Typography>
             </Box>
 
-            {/* Login Button */}
             <Button
                 variant="contained"
                 color="primary"
                 fullWidth
-                onClick={handleLogin} // Add onClick event
+                onClick={handleLogin}
                 sx={{
                     marginBottom: 2,
                     marginTop: 3.5,
@@ -278,18 +304,13 @@ const Login = () => {
                     '&:hover': {
                         backgroundColor: theme.background.main,
                     },
-
                 }}
-                disabled={loading} // Disable button while loading
+                disabled={loading}
             >
                 {loading ? 'Logging in...' : 'LOG IN'}
             </Button>
-        </Authentication>
+        </LoginSignup>
     );
 };
 
 export default Login;
-function isTokenExpired(authToken: string) {
-    throw new Error("Function not implemented.");
-}
-
