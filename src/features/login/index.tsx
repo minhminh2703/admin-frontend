@@ -1,11 +1,12 @@
 import React, { useEffect } from "react";
-import { Box, TextField, Button, Typography, Divider, Checkbox } from "@mui/material";
+import { Box, TextField, Button, Typography, Checkbox } from "@mui/material";
 import LoginSignup from '../../layouts/authen-layout';
 import { useTheme } from '../../theme';
 import axios from 'axios';
 import { useSnackbar } from "notistack";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from '../../context/auth-context'
+import baseApi from "../../api/base.api";
 
 const InputStyles = (theme: any) => ({
     sx: {
@@ -13,7 +14,7 @@ const InputStyles = (theme: any) => ({
             fontSize: '0.9rem',
             color: theme.fontColor.gray,
         },
-        borderRadius: 2.5,
+        borderRadius: 2,
     }
 });
 
@@ -25,7 +26,7 @@ const Login = () => {
     useEffect(() => {
         const authToken = localStorage.getItem('authToken');
         if (authToken) {
-           
+
             navigate('/', { replace: true });
         }
     }, [navigate]);
@@ -45,23 +46,19 @@ const Login = () => {
     const location = useLocation();
 
     useEffect(() => {
-        // Check if there's a success message passed through state
+
         if (location.state?.successMessage) {
             enqueueSnackbar(location.state.successMessage, { variant: 'success' });
         }
     }, [location.state, enqueueSnackbar]);
 
-    // Validate email and password
     const validateEmail = () => setEmailError(!email);
     const validatePassword = () => setPasswordError(!password);
 
-
-    // Login handler
     const handleLogin = async () => {
-        setError(''); // Clear previous errors
+        setError('');
         let valid = true;
 
-        // Validate email and password before submitting
         if (!email) {
             setEmailError(true);
             valid = false;
@@ -72,12 +69,11 @@ const Login = () => {
             valid = false;
         }
 
-        if (!valid) return; // Stop if validation fails
-
-        setLoading(true); // Set loading state to true
+        if (!valid) return;
+        setLoading(true);
 
         try {
-            const response = await apiClient.post('api/users/login', {
+            const response = await baseApi.post('/users/login', {
                 email: email,
                 password: password
             });
@@ -92,7 +88,6 @@ const Login = () => {
             }
         } catch (err) {
             if (axios.isAxiosError(err)) {
-                // Checking for specific response status
                 if (err.response?.status === 400) {
                     setError("Validation error. Please check your inputs.");
                 } else if (err.response?.status === 401) {
@@ -101,11 +96,10 @@ const Login = () => {
                     setError("Failed to login. Please try again.");
                 }
             } else {
-                // Handle network errors or other unknown errors
                 setError("Failed to login. Please check your connection.");
             }
         } finally {
-            setLoading(false); // Set loading state to false
+            setLoading(false);
         }
     };
 
@@ -145,9 +139,20 @@ const Login = () => {
                 type="email"
                 fullWidth
                 margin="normal"
-                size="small" // Use the small size for the input field
+                size="small"
                 required
-                InputProps={InputStyles(theme)}
+                slotProps={{
+                    input: InputStyles(theme),
+                    formHelperText: {
+                        sx: {
+                            fontFamily: theme.typography.body1.fontFamily,
+                            fontColor: theme.status.failed.fontColor,
+                            marginLeft: 0,
+                            fontSize: 12,
+                        },
+                    }
+                }}
+
                 sx={{
                     marginTop: 0.6,
                     '& .MuiOutlinedInput-root': {
@@ -157,19 +162,10 @@ const Login = () => {
                     },
                 }}
                 value={email}
-                onChange={(e) => setEmail(e.target.value)} // Capture email input
-                onBlur={validateEmail} // Trigger validation on blur
-                error={emailError} // Trigger error state
+                onChange={(e) => setEmail(e.target.value)}
+                onBlur={validateEmail}
+                error={emailError}
                 helperText={emailError ? 'Email is required' : ''}
-
-                FormHelperTextProps={{
-                    sx: {
-                        fontFamily: theme.typography.body1.fontFamily,
-                        fontColor: theme.status.failed.fontColor,
-                        marginLeft: 0,
-                        fontSize: 12,
-                    },
-                }}
 
             />
 
@@ -191,7 +187,17 @@ const Login = () => {
                 margin="normal"
                 size="small" // Use the small size for the input field
                 required
-                InputProps={InputStyles(theme)}
+                slotProps={{
+                    input: InputStyles(theme),
+                    formHelperText: {
+                        sx: {
+                            fontFamily: theme.typography.body1.fontFamily,
+                            fontColor: theme.status.failed.fontColor,
+                            marginLeft: 0,
+                            fontSize: 12,
+                        },
+                    }
+                }}
                 sx={{
                     marginTop: 0.6,
                     '& .MuiOutlinedInput-root': {
@@ -206,14 +212,6 @@ const Login = () => {
                 error={passwordError}
                 helperText={passwordError ? 'Password is required' : ''}
 
-                FormHelperTextProps={{
-                    sx: {
-                        fontFamily: theme.typography.body1.fontFamily,
-                        fontColor: theme.status.failed.fontColor,
-                        marginLeft: 0,
-                        fontSize: 12,
-                    },
-                }}
             />
 
             {/* Error Message */}
