@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box } from '@mui/material';
 import { useTheme } from '../../theme';  // Assuming custom theme
-import Sidebar from './SideBar/sidebar';
+import Sidebar from './side-bar';
 
 const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const theme = useTheme(); // Access the custom theme
