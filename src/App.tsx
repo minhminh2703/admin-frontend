@@ -6,8 +6,8 @@ import MainLayout from './layouts/main-layout';
 
 function App() {
   return (
-    <AuthProvider>
-      <Router>
+    <Router>
+      <AuthProvider>
         <Routes>
           <Route path="/" element={<Auth />} />
           <Route path="/auth" element={<Auth />} />
@@ -16,8 +16,8 @@ function App() {
             <Route path="/dashboard" element={<ManageAccounts />} />
           </Route>
         </Routes>
-      </Router>
-    </AuthProvider>
+      </AuthProvider>
+    </Router>
   );
 }
 
