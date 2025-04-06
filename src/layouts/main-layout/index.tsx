@@ -2,8 +2,9 @@ import React from 'react';
 import { Box } from '@mui/material';
 import { useTheme } from '../../theme';  // Assuming custom theme
 import Sidebar from './side-bar';
+import { Outlet } from 'react-router-dom';
 
-const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const MainLayout: React.FC = () => {
     const theme = useTheme(); // Access the custom theme
 
     return (
@@ -23,7 +24,7 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
                 {/* Main content (children) */}
                 <Box sx={{ padding: '20px' }}>
-                    {children}
+                    <Outlet />
                 </Box>
             </Box>
         </Box>
