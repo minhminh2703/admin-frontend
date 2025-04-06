@@ -1,11 +1,11 @@
-import React, { useEffect } from "react";
-import { Box, TextField, Button, Typography, Divider, Checkbox } from "@mui/material";
+import React, { useEffect } from 'react';
+import { Box, TextField, Button, Typography, Checkbox } from '@mui/material';
 import LoginSignup from '../../layouts/authen-layout';
 import { useTheme } from '../../theme';
-import axios from 'axios';
-import { useSnackbar } from "notistack";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from '../../context/auth-context'
+import { useSnackbar } from 'notistack';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext/use-auth';
+import { loginAPI } from '../../api/account.api';
 
 const InputStyles = (theme: any) => ({
     sx: {
@@ -14,18 +14,15 @@ const InputStyles = (theme: any) => ({
             color: theme.fontColor.gray,
         },
         borderRadius: 2.5,
-    }
+    },
 });
 
-
 const Login = () => {
-
     const navigate = useNavigate();
 
     useEffect(() => {
         const authToken = localStorage.getItem('authToken');
         if (authToken) {
-           
             navigate('/', { replace: true });
         }
     }, [navigate]);
@@ -55,7 +52,6 @@ const Login = () => {
     const validateEmail = () => setEmailError(!email);
     const validatePassword = () => setPasswordError(!password);
 
-
     // Login handler
     const handleLogin = async () => {
         setError(''); // Clear previous errors
@@ -77,32 +73,16 @@ const Login = () => {
         setLoading(true); // Set loading state to true
 
         try {
-            const response = await apiClient.post('api/users/login', {
-                email: email,
-                password: password
-            });
-
-            if (response.status === 200) {
-                console.log(response.data);
-                login(response.data.token, response.data.user_id);
-
-                console.log(response.data.user_id);
-
-                navigate('/manage_accounts');
-            }
-        } catch (err) {
-            if (axios.isAxiosError(err)) {
-                // Checking for specific response status
-                if (err.response?.status === 400) {
-                    setError("Validation error. Please check your inputs.");
-                } else if (err.response?.status === 401) {
-                    setError("Invalid credentials. Please try again.");
-                } else {
-                    setError("Failed to login. Please try again.");
-                }
+            const response = await loginAPI(email, password);
+            login(response.token, response.user_id.toString());
+            console.log(response.user_id);
+            // navigate('/manage_accounts');
+            navigate('/manage_vouchers');
+        } catch (err: unknown) {
+            if (err instanceof Error) {
+                throw new Error(err.message);
             } else {
-                // Handle network errors or other unknown errors
-                setError("Failed to login. Please check your connection.");
+                throw new Error('Error connecting with backend');
             }
         } finally {
             setLoading(false); // Set loading state to false
@@ -111,33 +91,42 @@ const Login = () => {
 
     return (
         <LoginSignup>
-            <Typography variant="h4" gutterBottom sx={{
-                color: theme.fontColor.black,
-                fontFamily: theme.typography.h1.fontFamily,
-                fontWeight: theme.typography.fontWeightBold,
-                fontSize: 60,
-                marginTop: 3,
-            }}>
+            <Typography
+                variant="h4"
+                gutterBottom
+                sx={{
+                    color: theme.fontColor.black,
+                    fontFamily: theme.typography.h1.fontFamily,
+                    fontWeight: theme.typography.fontWeightBold,
+                    fontSize: 60,
+                    marginTop: 3,
+                }}
+            >
                 Welcome back !
             </Typography>
-            <Typography variant="body1" sx={{
-                marginBottom: 3,
-                color: theme.fontColor.black,
-                fontFamily: theme.typography.body1.fontFamily,
-                fontWeight: 500,
-                fontSize: 16,
-            }}>
+            <Typography
+                variant="body1"
+                sx={{
+                    marginBottom: 3,
+                    color: theme.fontColor.black,
+                    fontFamily: theme.typography.body1.fontFamily,
+                    fontWeight: 500,
+                    fontSize: 16,
+                }}
+            >
                 Enter your Credentials to access your account
             </Typography>
 
             {/* Email Input */}
-            <Typography sx={{
-                fontFamily: theme.typography.body1.fontFamily,
-                color: theme.fontColor.black,
-                fontSize: 14,
-                fontWeight: 600,
-                marginTop: 2.5,
-            }}>
+            <Typography
+                sx={{
+                    fontFamily: theme.typography.body1.fontFamily,
+                    color: theme.fontColor.black,
+                    fontSize: 14,
+                    fontWeight: 600,
+                    marginTop: 2.5,
+                }}
+            >
                 Email address
             </Typography>
             <TextField
@@ -152,7 +141,7 @@ const Login = () => {
                     marginTop: 0.6,
                     '& .MuiOutlinedInput-root': {
                         '&.Mui-focused fieldset': {
-                            borderColor: theme.background.main
+                            borderColor: theme.background.main,
                         },
                     },
                 }}
@@ -161,7 +150,6 @@ const Login = () => {
                 onBlur={validateEmail} // Trigger validation on blur
                 error={emailError} // Trigger error state
                 helperText={emailError ? 'Email is required' : ''}
-
                 FormHelperTextProps={{
                     sx: {
                         fontFamily: theme.typography.body1.fontFamily,
@@ -170,23 +158,24 @@ const Login = () => {
                         fontSize: 12,
                     },
                 }}
-
             />
 
             {/* Password Input */}
-            <Typography sx={{
-                fontFamily: theme.typography.body1.fontFamily,
-                fontColor: theme.status.failed.fontColor,
-                color: theme.fontColor.black,
-                fontSize: 14,
-                marginTop: 2,
-                fontWeight: 600,
-            }}>
+            <Typography
+                sx={{
+                    fontFamily: theme.typography.body1.fontFamily,
+                    fontColor: theme.status.failed.fontColor,
+                    color: theme.fontColor.black,
+                    fontSize: 14,
+                    marginTop: 2,
+                    fontWeight: 600,
+                }}
+            >
                 Password
             </Typography>
             <TextField
                 placeholder="Enter your password"
-                type={showPassword ? "text" : "password"}
+                type={showPassword ? 'text' : 'password'}
                 fullWidth
                 margin="normal"
                 size="small" // Use the small size for the input field
@@ -196,7 +185,7 @@ const Login = () => {
                     marginTop: 0.6,
                     '& .MuiOutlinedInput-root': {
                         '&.Mui-focused fieldset': {
-                            borderColor: theme.background.main
+                            borderColor: theme.background.main,
                         },
                     },
                 }}
@@ -205,7 +194,6 @@ const Login = () => {
                 onBlur={validatePassword}
                 error={passwordError}
                 helperText={passwordError ? 'Password is required' : ''}
-
                 FormHelperTextProps={{
                     sx: {
                         fontFamily: theme.typography.body1.fontFamily,
@@ -224,14 +212,28 @@ const Login = () => {
             )}
 
             {/* Remember Me and Forgot Password */}
-            <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 2, marginTop: 2 }}>
+            <Box
+                sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    marginBottom: 2,
+                    marginTop: 2,
+                }}
+            >
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <Checkbox id="rememberMe" size="small" sx={{
-                        padding: 0,
-                        '&.Mui-checked': {
-                            color: theme.background.main,
-                        }
-                    }} checked={rememberMe} onChange={() => setRememberMe(!rememberMe)} />
+                    <Checkbox
+                        id="rememberMe"
+                        size="small"
+                        sx={{
+                            padding: 0,
+                            '&.Mui-checked': {
+                                color: theme.background.main,
+                            },
+                        }}
+                        checked={rememberMe}
+                        onChange={() => setRememberMe(!rememberMe)}
+                    />
                     <Typography
                         htmlFor="rememberMe"
                         component="label"
@@ -241,24 +243,24 @@ const Login = () => {
                             color: theme.fontColor.gray,
                             display: 'flex',
                             alignItems: 'center',
-
                         }}
                     >
                         Remember for 30 days
                     </Typography>
-
                 </Box>
-                <Typography variant="body2" sx={{
-                    cursor: "pointer",
-                    color: theme.status.inProgress.fontColor,
-                    fontFamily: theme.typography.body1.fontFamily,
-                    fontSize: '0.8rem',
-                    '&:hover': {
-                        textDecoration: 'underline',  // Underline on hover
-                    },
-                }}>
+                <Typography
+                    variant="body2"
+                    sx={{
+                        cursor: 'pointer',
+                        color: theme.status.inProgress.fontColor,
+                        fontFamily: theme.typography.body1.fontFamily,
+                        fontSize: '0.8rem',
+                        '&:hover': {
+                            textDecoration: 'underline', // Underline on hover
+                        },
+                    }}
+                >
                     Forgot password?
-
                 </Typography>
             </Box>
 
@@ -280,18 +282,16 @@ const Login = () => {
                     '&:hover': {
                         backgroundColor: theme.background.main,
                     },
-
                 }}
                 disabled={loading} // Disable button while loading
             >
                 {loading ? 'Logging in...' : 'LOG IN'}
             </Button>
-        </LoginSignup >
+        </LoginSignup>
     );
 };
 
 export default Login;
 function isTokenExpired(authToken: string) {
-    throw new Error("Function not implemented.");
+    throw new Error('Function not implemented.');
 }
-

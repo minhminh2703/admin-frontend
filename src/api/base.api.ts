@@ -1,9 +1,8 @@
 import axios from 'axios';
-import { apiUrl } from '../Environment';
 
 const axiosInstance = axios.create({
-  baseURL: apiUrl,
-  withCredentials: false
+    withCredentials: false,
+    timeout: 100000, // Set a timeout limit
 });
 
 export default axiosInstance;
