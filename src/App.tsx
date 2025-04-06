@@ -6,18 +6,16 @@ import MainLayout from './layouts/main_layout/MainLayout';
 
 function App() {
   return (
-    <AuthProvider>
-      <Router>
+    <Router>
+      <AuthProvider>
         <Routes>
           <Route path="/" element={<Auth />} />
           <Route path="/auth" element={<Auth />} />
-          <Route element={<MainLayout />}>
-            <Route path="/manage_accounts" element={<ManageAccounts />} />
-            <Route path="/dashboard" element={<ManageAccounts />} />
-          </Route>
+          <Route path='/manage_accounts' element={<ManageAccounts />} />
+          <Route path="/" element={<Auth />} />
         </Routes>
-      </Router>
-    </AuthProvider>
+      </AuthProvider>
+    </Router>
   );
 }
 

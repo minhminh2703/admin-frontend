@@ -1,9 +1,36 @@
-import axios from 'axios';
-import { apiUrl } from '../Environment';
+import axios, { AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 
-const axiosInstance = axios.create({
-  baseURL: apiUrl,
-  withCredentials: false
+const baseApi: AxiosInstance = axios.create({
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8080/api',
+  timeout: 50000, 
+  headers: {
+    'Content-Type': 'application/json',
+  },
 });
 
-export default axiosInstance;
+baseApi.interceptors.request.use(
+  (config: InternalAxiosRequestConfig) => {
+    const token = localStorage.getItem('authToken');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+baseApi.interceptors.response.use(
+  (response: AxiosResponse) => response,
+  (error) => {
+    if (error.response) {
+      console.error(`API error: ${error.response.status} - ${error.response.data}`);
+    } else {
+      console.error('Network error or request was not processed');
+    }
+    return Promise.reject(error);
+  }
+);
+
+export default baseApi;
