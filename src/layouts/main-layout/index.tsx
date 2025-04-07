@@ -1,11 +1,12 @@
 import React from 'react';
 import { Box } from '@mui/material';
-import { useTheme } from '../../theme';  // Assuming custom theme
+import { useTheme } from '../../theme';  
 import Sidebar from './side-bar';
 import { Outlet } from 'react-router-dom';
+import HeaderBar from './header-bar/index';
 
 const MainLayout: React.FC = () => {
-    const theme = useTheme(); // Access the custom theme
+    const theme = useTheme(); 
 
     return (
         <Box sx={{ 
@@ -18,8 +19,13 @@ const MainLayout: React.FC = () => {
             
             {/* Main content area */}
             <Box sx={{ flexGrow: 1 }}>
-                {/* Navbar */}
-                {/* <Navbar /> */}
+                {/* HeaderBar */}
+                <HeaderBar
+                    sx={{
+                        background: "none",
+                        paddingTop: "1em",
+                    }}
+                />
 
                 {/* Main content (children) */}
                 <Box sx={{ padding: '20px' }}>

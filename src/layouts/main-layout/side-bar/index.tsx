@@ -28,15 +28,15 @@ const navLinks: NavLink[] = [
         link: "/manage_accounts",
     },
     {
-        name: "Feature Configuration",
-        icon: <DashboardCustomizeOutlined sx={{ fontSize: '1.8em' }} />,
-        link: "/feature_configuration",
-    },
-    {
         name: "Billing",
         icon: <AddCardOutlined sx={{ fontSize: '1.8em' }} />,
         link: "/billing",
-    }
+    },
+    {
+        name: "Configuration",
+        icon: <DashboardCustomizeOutlined sx={{ fontSize: '1.8em' }} />,
+        link: "/feature_configuration",
+    },
 ];
 
 const Sidebar: React.FC = () => {
