@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link as RouterLink, useLocation } from 'react-router-dom';
+import React from 'react';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { Box, Typography, Link as MuiLink } from '@mui/material';
 import { Person, InsertChartOutlined, DashboardOutlined, DashboardCustomizeOutlined, AddCardOutlined } from '@mui/icons-material';
 import MLVTLogo from '../../../assets/mlvt_logo.png';
@@ -41,7 +41,7 @@ const navLinks: NavLink[] = [
 
 const Sidebar: React.FC = () => {
     const theme = useTheme();
-    const location = useLocation();
+    const navigate = useNavigate();
 
     return (
         <Box
@@ -76,7 +76,7 @@ const Sidebar: React.FC = () => {
                         borderRadius: "10%",
                         cursor: "pointer",
                     }}
-                    onClick={() => window.location.href = "/dashboard"}
+                    onClick={() =>  navigate("/dashboard")}
                     role="button"
                 />
 
