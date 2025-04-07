@@ -11,9 +11,12 @@ const Navbar: React.FC<{ sx?: any }> = ({ sx }) => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [langAnchorEl, setLangAnchorEl] = useState<null | HTMLElement>(null);
     const [language, setLanguage] = useState("EN");
-    const [avatarUrl, setAvatarUrl] = useState(null);
-    const [userData, setUserData] = useState(null);
-    const [fullName, setFullName] = useState("Nguyen Minh Minh");
+    const [avatarUrl, setAvatarUrl] = useState("avatar.png");
+    const [userData, setUserData] = useState({
+        firstName: "",
+        lastName: "",
+    });
+    const [fullName, setFullName] = useState("");
     const [isLoading, setIsLoading] = useState(true); 
     const { userId } = useAuth();
 
