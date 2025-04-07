@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
 import { Box, Typography, TextField, Button, Grid } from '@mui/material';
 import { useTheme } from '../../theme';  // Assuming custom theme is applied
+import { User } from '../../types/User';
+import { useAuth } from '../../context/auth-context';
 
 const ManageAccount = () => {
-    const theme = useTheme(); // Use custom theme to apply styles
+    const theme = useTheme(); 
+    const [user, setUser] = useState<User | null>(null);    
+    const { userId } = useAuth();
 
     // State to hold form data
     const [formData, setFormData] = useState({
