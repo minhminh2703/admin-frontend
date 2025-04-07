@@ -15,7 +15,6 @@ const MainLayout: React.FC = () => {
             background: `linear-gradient(180deg, ${theme.background.dark} 0%, ${theme.background.lightDark} 100%)`,
             backgroundBlendMode: 'multiply',
         }}>
-            {/* Sidebar */}
             <Sidebar />
             
             {/* Main content area */}
