@@ -3,11 +3,11 @@ import { Box, TextField, Button, Typography, Checkbox, InputAdornment, IconButto
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import Authentication from '../../layouts/authen-layout';
 import { useTheme } from '../../theme';
-import axios from 'axios';
 import { useSnackbar } from "notistack";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from '../../context/auth-context';
-import baseApi from "../../api/base.api";
+import { loginUser } from '../../api/account.api'; 
+import axios from "axios";
 
 interface FormData {
     email: string;
@@ -160,15 +160,13 @@ const Login: React.FC = () => {
         setLoading(true);
 
         try {
-            const response = await baseApi.post('/users/login', {
+            const response = await loginUser({
                 email: formData.email,
                 password: formData.password
             });
 
-            if (response.status === 200) {
-                login(response.data.token, response.data.user_id);
-                navigate('/manage_accounts');
-            }
+            login(response.token, response.user_id);
+            navigate('/manage_accounts');
         } catch (err) {
             if (axios.isAxiosError(err)) {
                 const errorMessage = err.response?.status === 400
@@ -215,7 +213,6 @@ const Login: React.FC = () => {
                     Enter your Credentials to access your account
                 </Typography>
             </Box>
-
 
             <Box sx={{ display: "flex", flexDirection: "column", gap: 0 }}>
                 <CustomTextField
