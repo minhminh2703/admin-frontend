@@ -120,7 +120,7 @@ const Navbar: React.FC<{ sx?: any }> = ({ sx }) => {
                             },
                             "& .MuiOutlinedInput-notchedOutline": {
                                 borderColor: "white", 
-                                addingLeft: 1.5,
+                                paddingLeft: 1.5,
                                 paddingRight: 1.5
                             },
                             width: "100%",
