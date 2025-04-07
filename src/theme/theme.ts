@@ -95,6 +95,9 @@ const theme = createTheme({
         body1: {
             fontFamily: 'Poppins, serif',
         },
+        body2: {
+            fontFamily: 'Sora, Poppins, sans-serif',
+        }
     },
     components: {
         MuiCardContent: {
