@@ -4,7 +4,7 @@ import { Search } from "@mui/icons-material";
 import { useTheme } from "../../../theme";
 import { useAuth } from "../../../context/auth-context"
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
-import { getUser } from "../../../api/user.api";
+import { getUser, getUserAvatar } from "../../../api/user.api";
 
 const Navbar: React.FC<{ sx?: any }> = ({ sx }) => {
     const theme = useTheme();
@@ -18,7 +18,7 @@ const Navbar: React.FC<{ sx?: any }> = ({ sx }) => {
     });
     const [fullName, setFullName] = useState("");
     const [isLoading, setIsLoading] = useState(true); 
-    const { userId } = useAuth();
+    const userId = localStorage.getItem("userId");
 
     // For handling dropdown menu (user profile menu)
     const handleProfileMenuClose = () => {
@@ -60,17 +60,12 @@ const Navbar: React.FC<{ sx?: any }> = ({ sx }) => {
                     throw new Error(`Failed to fetch user data: ${error}`);
                 }
 
-                const avatarResponse = await fetch(`http://localhost:8080/api/users/${userId}/avatar-download-url`, {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${token}`, // Add token to the Authorization header
-                        'Content-Type': 'application/json'
-                    }
-                });
-
-                const avatarData = await avatarResponse.json();
-                const avatarDownloadUrl = avatarData.avatar_download_url;
-                setAvatarUrl(avatarDownloadUrl.split('?X-Amz-Algorithm')[0]);
+                try {
+                    const avatarRepsonse = await getUserAvatar(userId);
+                    setAvatarUrl(avatarRepsonse);
+                } catch (error) {
+                    throw new Error(`Failed to fetch user avatar: ${error}`);
+                }
             } catch (error) {
                 console.error('Failed to fetch user data:', error);
             }
