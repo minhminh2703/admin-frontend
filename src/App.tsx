@@ -1,6 +1,7 @@
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import Auth from './features/login';
-import { ManageAccounts } from '@mui/icons-material';
+import ManageAccounts from './features/manage-accounts';
+import Dashboard from './features/dashboard';
 import { AuthProvider } from './context/auth-context';
 import MainLayout from './layouts/main-layout';
 
@@ -13,7 +14,7 @@ function App() {
           <Route path="/auth" element={<Auth />} />
           <Route element={<MainLayout />}>
             <Route path="/manage_accounts" element={<ManageAccounts />} />
-            <Route path="/dashboard" element={<ManageAccounts />} />
+            <Route path="/dashboard" element={<Dashboard />} />
           </Route>
         </Routes>
       </AuthProvider>

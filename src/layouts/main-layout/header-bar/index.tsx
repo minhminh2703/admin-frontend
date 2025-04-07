@@ -1,42 +1,23 @@
 import React, { useEffect, useState } from "react";
-import { Box, AppBar, Toolbar, Typography, TextField, IconButton, Menu, MenuItem, Avatar } from "@mui/material";
+import { Box, AppBar, Toolbar, Typography, TextField, IconButton, Avatar } from "@mui/material";
 import { Search } from "@mui/icons-material";
 import { useTheme } from "../../../theme";
 import { useAuth } from "../../../context/auth-context"
-import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
+import LogoutIcon from '@mui/icons-material/Logout';
 import { getUser } from "../../../api/user.api";
+import { useNavigate } from "react-router-dom";
 
-const Navbar: React.FC<{ sx?: any }> = ({ sx }) => {
+const HeaderBar: React.FC<{ sx?: any }> = ({ sx }) => {
     const theme = useTheme();
-    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-    const [langAnchorEl, setLangAnchorEl] = useState<null | HTMLElement>(null);
-    const [language, setLanguage] = useState("EN");
+    const navigate = useNavigate();
     const [avatarUrl, setAvatarUrl] = useState('avatar.jpg');
     const [userData, setUserData] = useState({
         firstName: 'Minh Minh',
         lastName: 'Nguyen'
     })
     const [fullName, setFullName] = useState("Nguyen Minh Minh");
-    const [isLoading, setIsLoading] = useState(true); 
+    const [isLoading, setIsLoading] = useState(true);
     const { userId } = useAuth();
-
-    // For handling dropdown menu (user profile menu)
-    const handleProfileMenuClose = () => {
-        setAnchorEl(null);
-    };
-
-    const handleLangMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-        setLangAnchorEl(event.currentTarget);
-    };
-    
-    const handleLangMenuClose = () => {
-        setLangAnchorEl(null);
-    };
-    
-    const handleLangChange = (lang: string) => {
-        setLanguage(lang);
-        setLangAnchorEl(null);
-    };
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -45,10 +26,7 @@ const Navbar: React.FC<{ sx?: any }> = ({ sx }) => {
                 return;
             }
             try {
-                // Retrieve user_id from local storage
-                // const userId = localStorage.getItem('user_id');
                 const token = localStorage.getItem('authToken');
-
                 try {
                     const userData = await getUser(userId);
                     setUserData({
@@ -63,7 +41,7 @@ const Navbar: React.FC<{ sx?: any }> = ({ sx }) => {
                 const avatarResponse = await fetch(`http://localhost:8080/api/users/${userId}/avatar-download-url`, {
                     method: 'GET',
                     headers: {
-                        'Authorization': `Bearer ${token}`, // Add token to the Authorization header
+                        'Authorization': `Bearer ${token}`, 
                         'Content-Type': 'application/json'
                     }
                 });
@@ -81,106 +59,88 @@ const Navbar: React.FC<{ sx?: any }> = ({ sx }) => {
     }, [userId]);
 
     return (
-        <AppBar 
+        <AppBar
             sx={{
-                ...sx, // Apply the passed background style (gradient)
-                boxShadow: 'none', // Remove shadow for smooth transition with layout background
+                ...sx,
+                boxShadow: 'none',
             }}
-            position="sticky" 
+            position="sticky"
+
         >
-            <Toolbar sx={{ 
-                display: "flex", 
-                justifyContent: "space-between", 
-                alignItems: "center" 
+            <Toolbar sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
             }}>
                 {/* Left (empty spacer) */}
-                <Box sx={{ flex: 1 }} />
+                <Box sx={{ flex: 1, maxWidth: '17em' }} />
 
                 {/* Search Section */}
-                <Box sx={{ 
-                    flex: 1, 
-                    display: "flex", 
-                    justifyContent: "center",
-                    alignItems: "center"
-                }}>
+                <Box
+                    sx={{
+                        flex: 1,
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                    }}
+                >
                     <TextField
                         variant="outlined"
                         placeholder="Search"
-                        sx={{ 
-                            backgroundColor: theme.background.dark, 
+                        sx={{
+                            backgroundColor: theme.background.dark,
                             borderRadius: "100%",
-                            borderColor: "white", // White border
+                            borderWidth: 1,
+                            width: "100%", // Full width of the container
                             "& .MuiOutlinedInput-root": {
-                                backgroundColor: theme.background.dark, // Matching the navbar background color
-                                borderColor: "white",  
+                                backgroundColor: theme.background.dark,
                                 borderRadius: "10px",
                                 height: "90%",
                                 paddingLeft: 1.5,
-                                paddingRight: 3.5
+                                paddingRight: 3.5,
+                                "&:hover .MuiOutlinedInput-notchedOutline": {
+                                    borderColor: "white",
+                                },
+                                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                    borderColor: "white",
+                                },
                             },
                             "& .MuiOutlinedInput-notchedOutline": {
-                                borderColor: "white", 
-                                paddingLeft: 1.5,
-                                paddingRight: 1.5
+                                borderColor: "white",
                             },
-                            width: "100%",
-                            height: "50px"
+                            height: "50px",
                         }}
-                        InputProps={{
-                            style: { color: "white" },
-                            endAdornment: (
-                                <IconButton edge="end" aria-label="search">
-                                    <Search sx={{ color: "white" }} />
-                                </IconButton>
-                            ),
+                        slotProps={{
+                            input: {
+                                style: { color: "white", fontFamily: theme.typography.body2.fontFamily, fontSize: '0.9em' },
+                                endAdornment: (
+                                    <IconButton edge="end" aria-label="search">
+                                        <Search sx={{ color: "white" }} />
+                                    </IconButton>
+                                ),
+                            },
+                            inputLabel: {
+                                style: { color: "white", fontFamily: theme.typography.body2.fontFamily, fontSize: '0.9em' },
+                            }
                         }}
                     />
                 </Box>
 
-                {/* Language and Profile Section */}
-                <Box sx={{ 
+                {/* Logout and Profile Section */}
+                <Box sx={{
                     flex: 1,
-                    display: "flex", 
-                    justifyContent: "flex-end", 
-                    alignItems: "center" 
+                    display: "flex",
+                    justifyContent: "flex-end",
+                    alignItems: "center",
+                    maxWidth: '20em',
+                    gap: 2,
                 }}>
-                    <IconButton onClick={handleLangMenuOpen} sx={{ ml: 1 }}>
-                        <img
-                            src={language === "EN" ? "https://flagcdn.com/gb.svg" : "https://flagcdn.com/vn.svg"}
-                            alt={language}
-                            style={{
-                                width: "24px",
-                                height: "24px",
-                                objectFit: "cover", // ensure the image fills the circle
-                                borderRadius: "50%", // perfect circle
-                            }}
-                        />
-                    </IconButton>
-                    <Menu
-                        anchorEl={langAnchorEl}
-                        open={Boolean(langAnchorEl)}
-                        onClose={handleLangMenuClose}
-                    >
-                        <MenuItem onClick={() => handleLangChange("EN")}>
-                            <img src="https://flagcdn.com/gb.svg" alt="EN" width={20} style={{ marginRight: 8 }} />
-                                English
-                        </MenuItem>
-                        <MenuItem onClick={() => handleLangChange("VI")}>
-                            <img src="https://flagcdn.com/vn.svg" alt="VI" width={20} style={{ marginRight: 8 }} />
-                                Vietnamese
-                        </MenuItem>
-                    </Menu>
-
-                    <IconButton sx={{ ml: 2 }}>
-                        <NotificationsNoneIcon sx={{ color: "white" }} />
-                    </IconButton>
-
                     {/* Profile Section */}
                     <Box>
                         <Box sx={{
                             display: 'flex',
                             flexDirection: 'row',
-                            gap: 3,
+                            gap: 2,
                             marginLeft: '1rem',
                             alignItems: 'center',
                             borderRadius: '0.4rem',
@@ -189,7 +149,7 @@ const Navbar: React.FC<{ sx?: any }> = ({ sx }) => {
                                 <Typography variant="body2" sx={{
                                     color: "white",
                                     fontFamily: theme.typography.body1,
-                                    fontWeight: 'bold',
+                                    fontWeight: '600',
                                     fontSize: '0.95rem'
                                 }}>
                                     {`${userData?.firstName} ${userData?.lastName}`}
@@ -198,10 +158,23 @@ const Navbar: React.FC<{ sx?: any }> = ({ sx }) => {
                             <Avatar src={avatarUrl} alt={fullName} sx={{ width: '2.8rem', height: '2.5rem' }} />
                         </Box>
                     </Box>
+                    <IconButton
+                        onClick={() => {
+                            localStorage.removeItem('authToken');
+                            navigate("/auth");
+                        }}
+                        sx={{
+                            color: "white",
+                            marginRight: "1rem",
+                            gap: 1,
+                        }}
+                    >
+                        <LogoutIcon />
+                    </IconButton>
                 </Box>
             </Toolbar>
         </AppBar>
     );
 };
 
-export default Navbar;
+export default HeaderBar;
