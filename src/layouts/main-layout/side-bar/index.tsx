@@ -42,6 +42,7 @@ const navLinks: NavLink[] = [
 const Sidebar: React.FC = () => {
     const theme = useTheme();
     const navigate = useNavigate();
+    const location = window.location;
 
     return (
         <Box
