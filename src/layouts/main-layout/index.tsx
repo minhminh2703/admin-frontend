@@ -3,6 +3,7 @@ import { Box } from '@mui/material';
 import { useTheme } from '../../theme';  // Assuming custom theme
 import Sidebar from './side-bar';
 import { Outlet } from 'react-router-dom';
+import Navbar from './navbar/index';
 
 const MainLayout: React.FC = () => {
     const theme = useTheme(); // Access the custom theme
@@ -20,7 +21,12 @@ const MainLayout: React.FC = () => {
             {/* Main content area */}
             <Box sx={{ flexGrow: 1 }}>
                 {/* Navbar */}
-                {/* <Navbar /> */}
+                <Navbar
+                    sx={{
+                        background: theme.background.dark,
+                        backgroundBlendMode: 'multiply',
+                    }}
+                />
 
                 {/* Main content (children) */}
                 <Box sx={{ padding: '20px' }}>
