@@ -13,7 +13,6 @@ const HeaderBar: React.FC<{ sx?: any }> = ({ sx }) => {
     const { userId, logout } = useAuth();
     const [avatarUrl, setAvatarUrl] = useState('');
     const [userData, setUserData] = useState({ firstName: '', lastName: '' });
-    const [isLoading, setIsLoading] = useState(true);
 
     const handleLogout = () => {
         logout();
@@ -22,10 +21,8 @@ const HeaderBar: React.FC<{ sx?: any }> = ({ sx }) => {
 
     useEffect(() => {
         const fetchUserData = async () => {
-            if (!userId) {
-                setIsLoading(false);
-                return;
-            }
+            if (!userId) return;
+
             try {
                 const userData = await getUser(userId);
                 setUserData({
@@ -37,8 +34,6 @@ const HeaderBar: React.FC<{ sx?: any }> = ({ sx }) => {
                 setAvatarUrl(avatarUrl);
             } catch (error) {
                 console.error('Failed to fetch user data:', error);
-            } finally {
-                setIsLoading(false);
             }
         };
 
