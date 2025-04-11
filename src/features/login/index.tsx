@@ -166,7 +166,7 @@ const Login: React.FC = () => {
             });
 
             login(response.token, response.user_id);
-            navigate('/manage_accounts');
+            navigate('/dashboard');
         } catch (err) {
             if (axios.isAxiosError(err)) {
                 const errorMessage = err.response?.status === 400

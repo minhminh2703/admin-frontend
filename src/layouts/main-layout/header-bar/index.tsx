@@ -85,6 +85,7 @@ const HeaderBar: React.FC<{ sx?: any }> = ({ sx }) => {
                                 style: { color: "white", fontFamily: theme.typography.body2.fontFamily, fontSize: '0.9em' },
                             }
                         }}
+
                     />
                 </Box>
 
