@@ -1,13 +1,8 @@
-import React from 'react';
-import { Box, Typography } from '@mui/material';
+import OverallStatistic from './overal-statistic';
 
 const Dashboard = () => {
     return (
-        <Box>
-            <Typography variant="h4" gutterBottom>
-                Dashboard
-            </Typography>
-        </Box>
+        <OverallStatistic />
     );
 }
 
