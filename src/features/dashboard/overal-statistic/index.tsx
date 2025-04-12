@@ -47,4 +47,4 @@ const OverallStatistic = () => {
     )
 }
 
-export default OveralStatistic;
+export default OverallStatistic;

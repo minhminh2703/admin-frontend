@@ -1,8 +1,8 @@
-import OveralStatistic from './overal-statistic';
+import OverallStatistic from './overal-statistic';
 
 const Dashboard = () => {
     return (
-        <OveralStatistic />
+        <OverallStatistic />
     );
 }
 
