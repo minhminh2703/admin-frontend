@@ -11,7 +11,7 @@ const MainLayout: React.FC = () => {
     return (
         <Box sx={{ 
             display: 'flex', 
-            height: '100%', 
+            minHeight: '100vh', 
             background: `linear-gradient(180deg, ${theme.background.dark} 0%, ${theme.background.lightDark} 100%)`,
             backgroundBlendMode: 'multiply',
         }}>
