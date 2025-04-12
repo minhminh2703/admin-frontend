@@ -109,6 +109,7 @@ const DateInput: React.FC<DateInputProps> = ({ label, value, onChange }) => {
                             '&:hover': {
                                 backgroundColor: '#2c3e50',
                             },
+                            border: 'none',
                         },
                         '& .Mui-selected': {
                             backgroundColor: '#2c3e50 !important',
@@ -190,7 +191,7 @@ const DateRangePicker = () => {
 
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <Box sx={{ display: 'flex', flexDirection: 'row', gap: 2, p: 2 }}>
+            <Box sx={{ display: 'flex', flexDirection: 'row', gap: 2}}>
                 <DateInput label="From" value={fromDate} onChange={setFromDate} />
                 <DateInput label="To" value={toDate} onChange={setToDate} />
             </Box>
