@@ -3,7 +3,7 @@ import DateRangePicker from "../../../components/date-range-picker"
 import { Box } from "@mui/material"
 import StatCard from "./stat-card"
 
-const OveralStatistic = () => {
+const OverallStatistic = () => {
     return (
         <Box gap={1}>
             <Box display="flex" gap={2} mb={2} >
