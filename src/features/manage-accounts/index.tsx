@@ -13,6 +13,7 @@ import { useTheme } from '../../theme';  // Assuming custom theme is applied
 import { User } from '../../types/User';
 import ManageAccountsTable from './components/manage-accounts-table';
 import { getAllUser } from '../../api/user.api';
+import EditAccount from './components/edit-account';
 
 function capitalizeFirstLetter(string: string) {
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
@@ -21,6 +22,7 @@ function capitalizeFirstLetter(string: string) {
 const ManageAccount = () => {
     const theme = useTheme();
     const [users, setUsers] = useState<User[]>([]);
+    const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
     const [tempFilters, setTempFilters] = useState({
         search: '',
         role: 'All',
@@ -73,6 +75,10 @@ const ManageAccount = () => {
         const statusMatch = filters.status === 'All' || user.status === filters.status.toUpperCase();
         return searchMatch && roleMatch && statusMatch;
     });
+
+    if (selectedUserId !== null) {
+        return <EditAccount userId={selectedUserId} onBack={() => setSelectedUserId(null)} />;
+    }    
 
     if (loading) return <Box>Loading...</Box>;
     if (error) return <Box>Error: {error}</Box>;
@@ -187,7 +193,7 @@ const ManageAccount = () => {
                     SEARCH
                 </Button>
             </Box>
-            <ManageAccountsTable users={filteredData} />
+            <ManageAccountsTable users={filteredData} onEdit={(id: number) => setSelectedUserId(id)} />
         </Box>
     );
 };

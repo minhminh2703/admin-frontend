@@ -15,7 +15,7 @@ import {
     TableFooter,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
-import { ListUser, User } from "../../../types/User";
+import { ListUser, User } from "../../../../types/User";
 
 // Define the valid status types
 export type AccountStatus = "ACTIVE" | "DELETED" | "SUSPENDED";
@@ -51,7 +51,11 @@ const footerStyle = {
     colSpan: 6  // Adjust this based on the number of columns in your table
 };
 
-const ManageAccountsTable: React.FC<ListUser> = ({ users }) => {
+interface ManageAccountsTableProps extends ListUser {
+    onEdit: (userId: number) => void;
+}
+
+const ManageAccountsTable: React.FC<ManageAccountsTableProps> = ({ users, onEdit }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const accountsPerPage = 8;
 
@@ -95,7 +99,7 @@ const ManageAccountsTable: React.FC<ListUser> = ({ users }) => {
                         {currentAccounts.map((user, index) => (
                             <TableRow key={index}>
                                 <TableCell sx={cellStyle}>
-                                    <IconButton sx={{ color: 'white' }}>
+                                    <IconButton sx={{ color: 'white' }} onClick={() => onEdit(user.id)}>
                                         <EditIcon />
                                     </IconButton>
                                 </TableCell>

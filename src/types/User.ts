@@ -28,6 +28,7 @@ export interface UserUpdateData {
     username: string;
     email: string;
     premium: boolean;
+    status: string;
     role: string;
 }
 
