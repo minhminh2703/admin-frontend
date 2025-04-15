@@ -194,13 +194,13 @@ export function CalendarPicker({ filter }: CalendarPickerProps) {
                                 }}
                                 slotProps={{
                                     day: (ownerState) =>
-                                      ({
-                                        selectedDay: selectedDate,
-                                        hoveredDay,
-                                        onPointerEnter: () => setHoveredDay(ownerState.day),
-                                        onPointerLeave: () => setHoveredDay(null),
-                                      }) as any,
-                                  }}
+                                        ({
+                                            selectedDay: selectedDate,
+                                            hoveredDay,
+                                            onPointerEnter: () => setHoveredDay(ownerState.day),
+                                            onPointerLeave: () => setHoveredDay(null),
+                                        }) as any,
+                                }}
                                 sx={{
                                     background: 'linear-gradient(to right, #4b79a1, #283e51)',
                                     '& .Mui-selected': {
@@ -214,7 +214,6 @@ export function CalendarPicker({ filter }: CalendarPickerProps) {
                                         fontWeight: '500',
                                         margin: 0,
                                         padding: 0,
-                                        // minWidth: '36px',
                                         width: '36px',
                                         height: '36px',
                                     },
@@ -252,11 +251,39 @@ export function CalendarPicker({ filter }: CalendarPickerProps) {
                     )}
 
                     {filter === 'By Year' && (
-                        <DatePicker
-                            views={['year']}
-                            label="Pick a year"
+                        <YearCalendar
                             value={selectedDate}
                             onChange={handleDateChange}
+                            disableFuture={true}
+                            disableHighlightToday={true}
+                            sx={{
+                                background: 'linear-gradient(to right, #4b79a1, #283e51)',
+                                color: 'white',
+                                borderRadius: '10px',
+                                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+                                '& .MuiYearCalendar-root': {
+                                    fontFamily: 'Poppins, sans-serif',
+                                    fontSize: '0.9em',
+                                    fontWeight: '700',
+                                },
+                                '& .MuiPickersYear-yearButton': {
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    // width: '100%',
+                                    color: 'white',
+                                    '&.Mui-selected': {
+                                        fontWeight: '600',
+                                        backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                                        outline: 'none',
+                                    },
+                                    '&:hover': {
+                                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                                    }
+                                },
+                            }}
+
+
                         />
                     )}
                 </Box>
