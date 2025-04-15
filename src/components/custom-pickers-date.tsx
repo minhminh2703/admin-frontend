@@ -4,16 +4,24 @@ import { startOfWeek, endOfWeek } from 'date-fns';
 
 interface CustomPickersDayProps extends PickersDayProps<Date> {
   selectedDate: Date | null;
+  hoveredDay?: Date | null;
 }
 
 const CustomPickersDay: React.FC<CustomPickersDayProps> = (props) => {
-  const { day, selectedDate, ...other } = props;
+  const { day, selectedDate, hoveredDay, ...other } = props;
 
   let isWithinSelectedWeek = false;
   if (selectedDate) {
     const start = startOfWeek(selectedDate, { weekStartsOn: 0 }); // Sunday
     const end = endOfWeek(selectedDate, { weekStartsOn: 0 });     // Saturday
     isWithinSelectedWeek = day >= start && day <= end;
+  }
+
+  let isHovered = false;
+  if (hoveredDay) {
+    const start = startOfWeek(hoveredDay, { weekStartsOn: 0 }); // Sunday
+    const end = endOfWeek(hoveredDay, { weekStartsOn: 0 });     // Saturday
+    isHovered = day >= start && day <= end;
   }
 
   return (
@@ -29,8 +37,7 @@ const CustomPickersDay: React.FC<CustomPickersDayProps> = (props) => {
         minWidth: '36px',
         width: '36px',
         height: '36px',
-        ...(isWithinSelectedWeek
-          ? {
+        ...(isWithinSelectedWeek && {
             borderRadius: 0,
             backgroundColor: 'rgba(42, 54, 99, 0.5)',
             color: '#FFD63A',
@@ -53,8 +60,24 @@ const CustomPickersDay: React.FC<CustomPickersDayProps> = (props) => {
               backgroundColor: 'rgba(42, 54, 99, 0.5)',
               color: '#FFD63A',
             },
-          }
-          : {}),
+          }),
+        ...(isHovered && {
+          borderRadius: 0,
+            backgroundColor: '#3D90D7',
+            color: '#FFD63A',
+            '&:not(:last-of-type)': {
+              borderRight: 'none',
+            },
+            '&:first-of-type': {
+              borderTopLeftRadius: '50%',
+              borderBottomLeftRadius: '50%',
+            },
+            '&:last-of-type': {
+              borderTopRightRadius: '50%',
+              borderBottomRightRadius: '50%',
+              borderRight: '1px solid rgba(0, 0, 0, 0.23)',
+            },
+        }),
       }}
     />
   );

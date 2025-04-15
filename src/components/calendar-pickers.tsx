@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Box, Button, Popover, Typography } from '@mui/material';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import { format } from 'date-fns';
+import { format, set } from 'date-fns';
 import { DatePicker, DateCalendar, LocalizationProvider, YearCalendar } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
 import CustomPickersDay from './custom-pickers-date';
@@ -15,10 +15,12 @@ interface CalendarPickerProps {
 export function CalendarPicker({ filter }: CalendarPickerProps) {
     const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
     const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+    const [hoveredDay, setHoveredDay] = React.useState<Date | null>(null);
 
     const open = Boolean(anchorEl);
 
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+        setHoveredDay(null);
         setAnchorEl(event.currentTarget);
     };
 
@@ -190,13 +192,19 @@ export function CalendarPicker({ filter }: CalendarPickerProps) {
                                         <CustomPickersDay {...slotProps} selectedDate={selectedDate} />
                                     ),
                                 }}
+                                slotProps={{
+                                    day: (ownerState) =>
+                                      ({
+                                        selectedDay: selectedDate,
+                                        hoveredDay,
+                                        onPointerEnter: () => setHoveredDay(ownerState.day),
+                                        onPointerLeave: () => setHoveredDay(null),
+                                      }) as any,
+                                  }}
                                 sx={{
                                     background: 'linear-gradient(to right, #4b79a1, #283e51)',
                                     '& .Mui-selected': {
-                                        backgroundColor: 'rgba(42, 54, 99, 0.5) !important',
-                                        '&:hover': {
-                                            backgroundColor: 'rgba(42, 54, 99, 0.5)',
-                                        },
+                                        color: 'yellow !important',
                                         outline: 'none',
                                     },
                                     '& .MuiDayCalendar-weekDayLabel': {
@@ -217,7 +225,7 @@ export function CalendarPicker({ filter }: CalendarPickerProps) {
                                     '& .MuiButtonBase-root': {
                                         color: 'white',
                                         '&:hover': {
-                                            backgroundColor: 'transparent',
+                                            backgroundColor: '#3D90D7',
                                         },
                                         border: 'none',
                                     },
