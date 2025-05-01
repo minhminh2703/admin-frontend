@@ -1,11 +1,13 @@
 import OverallStatistic from './overal-statistic';
-import Parent from './web-traffic';
+import WebTraffic from './web-traffic';
+import MediaReport from './media-report';
 
 const Dashboard = () => {
     return (
         <>
             <OverallStatistic />
-            <Parent />
+            <WebTraffic />
+            <MediaReport />
         </>
     );
 }

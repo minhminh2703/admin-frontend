@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Box, Typography, TextField, Button, Grid } from '@mui/material';
 import { useTheme } from '../../theme';  // Assuming custom theme is applied
-import { User } from '../../types/User';
+import { User } from '../../types/user';
 import { useAuth } from '../../context/auth-context';
 
 const ManageAccount = () => {
