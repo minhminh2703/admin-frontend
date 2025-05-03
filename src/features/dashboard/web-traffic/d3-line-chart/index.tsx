@@ -6,8 +6,9 @@ import {
     axisBottom,
     axisLeft,
     pointer,
+    transition,
 } from 'd3';
-import { line as d3Line, area as d3Area, curveMonotoneX } from 'd3-shape';
+import { line as d3Line, area as d3Area, curveMonotoneX, line } from 'd3-shape';
 
 
 type Point = { date: string; value: number };
@@ -74,10 +75,9 @@ export function D3LineChart({
         const areaGenerator = d3Area<Point>()
             .curve(curveMonotoneX)
             .x(d => xScale(d.date) ?? 0)
-            .y0(innerH)
+            .y0(innerH)                  // baseline at the bottom
             .y1(d => yScale(d.value) ?? 0);
 
-        // Define gradient
         const defs = svg.append('defs');
         const gradient = defs.append('linearGradient')
             .attr('id', 'areaGrad')
@@ -96,22 +96,18 @@ export function D3LineChart({
         const g = svg.append<SVGGElement>('g')
             .attr('transform', `translate(${marginLeft},${marginTop})`);
 
-        // Create axes
+        // Create axes (same as before)
         const xAxis = g.append<SVGGElement>('g')
             .attr('transform', `translate(0,${innerH})`)
             .call(axisBottom(xScale)
                 .tickSize(0)
-                .tickPadding(12)
-            );
+                .tickPadding(12));
 
         const yAxis = g.append<SVGGElement>('g')
-            .attr('transform', `translate(0,0), ${innerH}`)
             .call(axisLeft(yScale)
                 .tickSize(0)
-                .tickPadding(12)
-            );
+                .tickPadding(12));
 
-        // Style axis text
         xAxis.selectAll('text')
             .attr('transform', d => (typeof d === 'string' && d.includes(':') ? 'rotate(-90)' : null))
             .attr('text-anchor', d => ((d as string).includes(':') ? 'end' : 'middle'))
@@ -125,13 +121,12 @@ export function D3LineChart({
                 .attr('fill', '#F1EFEC');
         });
 
-        // Draw area
         g.append<SVGPathElement>('path')
             .datum(data)
             .attr('fill', 'url(#areaGrad)')
+            .attr('stroke', 'none')
             .attr('d', areaGenerator);
 
-        // Draw line
         g.append<SVGPathElement>('path')
             .datum(data)
             .attr('fill', 'none')
@@ -140,18 +135,101 @@ export function D3LineChart({
             .attr('d', lineGenerator);
 
         // Setup tooltip
-        const tooltip = g.append<SVGGElement>('g')
-            .style('display', 'none')
-            .attr('pointer-events', 'none');
 
-        tooltip.append('circle')
-            .attr('r', 5)
-            .attr('fill', '#fff')
-            .attr('stroke', '#ff7300')
-            .attr('stroke-width', 2);
+        // Hover circle
+        const hoverCircle = g.append('circle')
+            .attr('r', 0)
+            .attr('fill', '#ff7300')
+            .attr('stroke', 'white')
+            .attr('stroke-width', 2)
+            .style('opacity', 0);
+
+        // Tooltip background
+        const tooltipWidth = 150;
+        const tooltipHeight = 60;
+
+        const tooltip = g.append('g')
+            .attr('class', 'tooltip')
+            .style('opacity', 0)
+            .style('pointer-events', 'none');
+
+        const tooltipBg = tooltip.append('rect')
+            .attr('width', tooltipWidth)
+            .attr('height', tooltipHeight)
+            .attr('rx', 4)
+            .attr('fill', 'rgba(30, 30, 30, 0.9)')
+
+
+        // Tooltip date text
+        const tooltipDate = tooltip.append('text')
+            .attr('x', 10)
+            .attr('y', 20)
+            .attr('font-family', 'Poppins, Sora, sans-serif')
+            .attr('font-size', '15px')
+            .attr('fill', '#F1EFEC');
+
+        // Tooltip value text
+        const tooltipValue = tooltip.append('text')
+            .attr('x', 10)
+            .attr('y', 38)
+            .attr('font-family', 'Poppins, Sora, sans-serif')
+            .attr('font-size', '15px')
+            .attr('fill', '#ff7300');
+
+        const getValueAtX = (mouseX: number) => {
+            const points = data
+                .map(d => ({ date: d.date, value: d.value, x: xScale(d.date) ?? 0 }))
+                .sort((a, b) => a.x - b.x);
+
+            let leftIdx = 0, rightIdx = points.length - 1;
+            for (let i = 0; i < points.length - 1; i++) {
+                if (mouseX >= points[i].x && mouseX <= points[i + 1].x) {
+                    leftIdx = i; rightIdx = i + 1;
+                    break;
+                }
+            }
+
+            const leftPoint = points[leftIdx];
+            const rightPoint = points[rightIdx];
+            if (mouseX === leftPoint.x) return leftPoint;
+            if (mouseX === rightPoint.x) return rightPoint;
+
+            const ratio = (mouseX - leftPoint.x) / (rightPoint.x - leftPoint.x);
+            return {
+                date: ratio < 0.5 ? leftPoint.date : rightPoint.date,
+                value: leftPoint.value + ratio * (rightPoint.value - leftPoint.value),
+                x: mouseX,
+            };
+        };
+
+        const handleMouseMove = (event: MouseEvent) => {
+            const [mouseX] = pointer(event, g.node()!);
+            const interpolatedData = getValueAtX(mouseX);
+            // Update hover circle
+            hoverCircle
+                .attr("cx", mouseX)
+                .attr("cy", yScale(interpolatedData.value) ?? 0)
+                .attr("r", 5)
+                .style("opacity", 1);
+
+            tooltip
+                .attr("transform", `translate(${interpolatedData.x + 10},${yScale(interpolatedData.value) - 30})`)
+                .style("opacity", 1);
+            tooltipDate.text(interpolatedData.date);
+            tooltipValue.text(interpolatedData.value.toFixed(2));
+        };
+
+        const handleMouseLeave = () => {
+            hoverCircle.style("opacity", 0);
+            tooltip.style("opacity", 0);
+        };
+
+        svg
+            .on("mousemove", handleMouseMove)
+            .on("mouseleave", handleMouseLeave);
 
         return () => {
-
+            svg.on("mousemove", null).on("mouseleave", null);
         };
     }, [data, width, height, marginTop, marginRight, marginBottom, marginLeft, maxValue, xValues]);
 
@@ -162,7 +240,8 @@ export function D3LineChart({
             height={height}
             viewBox={`0 0 ${width} ${height}`}
             style={{
-                overflow: 'visible'
+                overflow: 'visible',
+                backgroundColor: 'transparent'
             }}
             role="img"
             aria-label="Interactive line chart showing data over time"
