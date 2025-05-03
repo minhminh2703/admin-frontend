@@ -11,7 +11,7 @@ interface PeriodSelectorProps {
 
 function PeriodSelector({ onFilterSelect }: PeriodSelectorProps) {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-    const [selectedFilter, setSelectedFilter] = useState<string>('Filter by');
+    const [selectedFilter, setSelectedFilter] = useState<string>('By day');
 
     const handleButtonClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
@@ -73,7 +73,7 @@ function PeriodSelector({ onFilterSelect }: PeriodSelectorProps) {
                     paper: {
                         sx: {
                             mt: 1,
-                            backgroundColor: 'rgba(42, 54, 99, 0.5)',
+                            backgroundColor: '#232D4D',
                             borderRadius: '10px',
                             color: 'white',
                             '& .MuiMenuItem-root': {

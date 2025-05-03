@@ -13,8 +13,9 @@ interface CalendarPickerProps {
 }
 
 export function CalendarPicker({ filter, onDateChange }: CalendarPickerProps) {
+    const today = format(new Date(), 'yyyy-MM-dd');
     const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
-    const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+    const [selectedDate, setSelectedDate] = useState<Date | null>(new Date(today));
     const [hoveredDay, setHoveredDay] = useState<Date | null>(null);
 
     const open = Boolean(anchorEl);
@@ -267,6 +268,9 @@ export function CalendarPicker({ filter, onDateChange }: CalendarPickerProps) {
                                     justifyContent: 'center',
                                     alignItems: 'center',
                                     color: 'white',
+                                    fontFamily: 'Poppins, sans-serif',
+                                    fontSize: '0.9em',
+                                    fontWeight: '500',
                                     '&.Mui-selected': {
                                         fontWeight: '600',
                                         backgroundColor: 'rgba(255, 255, 255, 0.2)',

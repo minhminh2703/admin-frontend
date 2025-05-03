@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { Box, Typography } from '@mui/material';
+import React, { useEffect, useState, useRef } from 'react';
+import { Box, Typography, CircularProgress } from '@mui/material';
 import { CalendarPicker } from '../../../components/calendar-pickers';
 import PeriodSelector from '../../../components/period-selector';
 import { fetchTrafficReport } from '../../../api/web-traffic.api';
 import { format } from 'date-fns/format';
 import { transformTrafficData } from '../../../utils/transform-traffic';
 import { D3LineChart } from './d3-line-chart';
+import { useTheme } from '../../../theme';
+
 
 const mapFilterToType = (filter: 'By Day' | 'By Week' | 'By Year'): 'day' | 'week' | 'year' => {
   switch (filter) {
@@ -21,10 +23,12 @@ const mapFilterToType = (filter: 'By Day' | 'By Week' | 'By Year'): 'day' | 'wee
 };
 
 export default function WebTraffic() {
+  const today = format(new Date(), 'yyyy-MM-dd');
+  const [currentDay, setCurrentDay] = useState<string>(today);
   const [filter, setFilter] = useState<'By Day' | 'By Week' | 'By Year'>('By Day');
-  const [currentDay, setCurrentDay] = useState<string>('');
   const [reportData, setReportData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
+  const theme = useTheme();
 
 
   const handleFilterSelect = (selectedFilter: string) => {
@@ -39,13 +43,33 @@ export default function WebTraffic() {
   };
 
   const handleFetchReport = async () => {
-    if (!currentDay) return;
     setLoading(true);
+
+    const MIN_LOAD_TIME = 1000; 
+    const MAX_LOAD_TIME = 10000; 
+    const startTime = Date.now();
+
     try {
-      const data = await fetchTrafficReport({
+      const fetchPromise = fetchTrafficReport({
         current_day: currentDay,
         type: mapFilterToType(filter),
       });
+
+      const fetchWithTimeout = Promise.race([
+        fetchPromise,
+        new Promise<never>((_, reject) =>
+          setTimeout(() => reject(new Error('Request timed out')), MAX_LOAD_TIME)
+        )
+      ]);
+
+      const data = await fetchWithTimeout;
+      const fetchDuration = Date.now() - startTime;
+      const remainingTime = MIN_LOAD_TIME - fetchDuration;
+
+      if (remainingTime > 0) {
+        await new Promise(resolve => setTimeout(resolve, remainingTime));
+      }
+
       setReportData(transformTrafficData(data));
     } catch (error) {
       console.error('Error fetching traffic report:', error);
@@ -54,6 +78,7 @@ export default function WebTraffic() {
     }
   };
 
+
   useEffect(() => {
     if (currentDay) {
       handleFetchReport();
@@ -61,17 +86,26 @@ export default function WebTraffic() {
   }, [currentDay, filter]);
 
   return (
-    <Box p={10} >
-      <Typography variant="h4" gutterBottom>
-        Web Traffic Report
+    <Box sx={{ width: '100%', height: '100%', padding: '0', marginTop: '3em' }}>
+      <Typography gutterBottom
+        sx={{
+          fontFamily: theme.typography.body2.fontFamily,
+          fontSize: '1.5em',
+          fontWeight: '700',
+          color: theme.status.inProgress.backgroundColor,
+          textAlign: 'left',
+        }} >
+        WEB TRAFFIC
       </Typography>
-      <PeriodSelector onFilterSelect={handleFilterSelect} />
-      <CalendarPicker filter={filter} onDateChange={handleDateChange} />
-      {loading && <div>Loading...</div>}
+      <Box sx={{ paddingBottom: '1em', display: 'flex', flexDirection: 'row', gap: '1em' }}>
+        <PeriodSelector onFilterSelect={handleFilterSelect} />
+        <CalendarPicker filter={filter} onDateChange={handleDateChange} />
+        {loading && <CircularProgress sx={{ display: 'block', margin: '0', color: '#EC994B' }} />}
+      </Box>
       {reportData && (
-        <div style={{ width: '100%', height: '500px' }}>
-          <D3LineChart data={reportData} width={800} height={400} />
-        </div>
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+          <D3LineChart data={reportData} width={1000} height={500} />
+        </Box>
       )}
     </Box>
   );

@@ -4,11 +4,13 @@ import MediaReport from './media-report';
 
 const Dashboard = () => {
     return (
-        <>
+        <div style={{
+            overflowY: 'auto',         // Enable vertical scrolling
+        }}>
             <OverallStatistic />
             <WebTraffic />
-            <MediaReport />
-        </>
+            {/* <MediaReport /> */}
+        </div>
     );
 }
 

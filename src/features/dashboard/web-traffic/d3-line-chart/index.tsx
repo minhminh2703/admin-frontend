@@ -1,155 +1,171 @@
-import React, { useRef, useEffect } from 'react'
+import React, { useRef, useEffect, useMemo } from 'react';
 import {
     select,
     scalePoint,
     scaleLinear,
     axisBottom,
     axisLeft,
-    extent,
     pointer,
-} from 'd3'
-import { line as d3Line, area as d3Area, curveMonotoneX } from 'd3-shape'
-import { bisector } from 'd3-array'
+} from 'd3';
+import { line as d3Line, area as d3Area, curveMonotoneX } from 'd3-shape';
 
-type Point = { date: string; value: number }
+
+type Point = { date: string; value: number };
 
 interface Props {
-    data: Point[]
-    width: number
-    height: number
+    data: Point[];
+    width: number;
+    height: number;
+    margin?: {
+        top?: number;
+        right?: number;
+        bottom?: number;
+        left?: number;
+    };
 }
 
-export function D3LineChart({ data, width, height }: Props) {
-    const svgRef = useRef<SVGSVGElement>(null)
+export function D3LineChart({
+    data,
+    width,
+    height,
+    margin = {}
+}: Props) {
+    const svgRef = useRef<SVGSVGElement>(null);
+
+    // Default margin values with overrides from props
+    const marginTop = margin.top ?? 20;
+    const marginRight = margin.right ?? 20;
+    const marginBottom = margin.bottom ?? 100;
+    const marginLeft = margin.left ?? 40;
+
+    // Memoize expensive computations
+    const maxValue = useMemo(() => Math.max(...data.map(d => d.value)), [data]);
+    const xValues = useMemo(() => data.map(d => d.date), [data]);
 
     useEffect(() => {
-        if (!svgRef.current) return
+        if (!svgRef.current || data.length === 0) return;
 
-        const margin = { top: 20, right: 30, bottom: 30, left: 40 }
-        const innerW = width - margin.left - margin.right
-        const innerH = height - margin.top - margin.bottom
+        const innerW = width - marginLeft - marginRight;
+        const innerH = height - marginTop - marginBottom;
 
-        const xValues = data.map(d => d.date)
+        // Clear previous SVG content
+        const svg = select<SVGSVGElement, unknown>(svgRef.current);
+        svg.selectAll('*').remove();
 
-        // Scales
-        const xScale = scalePoint()
+        // Setup scales
+        const xScale = scalePoint<string>()
             .domain(xValues)
             .range([0, innerW])
-            .padding(0.5)
+            .padding(0.5);
 
+        const headRoom = 0.1 * maxValue;
+        const adjustedMaxValue = maxValue + headRoom;
         const yScale = scaleLinear()
-            .domain([0, Math.max(...data.map(d => d.value))])
+            .domain([0, adjustedMaxValue])
             .nice()
-            .range([innerH, 0])
+            .range([innerH, 0]);
 
-        // Generators
+        // Create generators
         const lineGenerator = d3Line<Point>()
             .curve(curveMonotoneX)
-            .x(d => xScale(d.date)!)
-            .y(d => yScale(d.value))
+            .x(d => xScale(d.date) ?? 0)
+            .y(d => yScale(d.value) ?? 0);
 
         const areaGenerator = d3Area<Point>()
             .curve(curveMonotoneX)
-            .x(d => xScale(d.date)!)
+            .x(d => xScale(d.date) ?? 0)
             .y0(innerH)
-            .y1(d => yScale(d.value))
-
-        // Clear previous svg content
-        const svg = select(svgRef.current)
-        svg.selectAll('*').remove()
+            .y1(d => yScale(d.value) ?? 0);
 
         // Define gradient
-        const defs = svg.append('defs')
+        const defs = svg.append('defs');
         const gradient = defs.append('linearGradient')
             .attr('id', 'areaGrad')
             .attr('x1', '0').attr('y1', '0')
-            .attr('x2', '0').attr('y2', '1')
+            .attr('x2', '0').attr('y2', '1');
         gradient.append('stop')
             .attr('offset', '0%')
             .attr('stop-color', '#ff7300')
-            .attr('stop-opacity', 0.4)
+            .attr('stop-opacity', 0.4);
         gradient.append('stop')
             .attr('offset', '100%')
             .attr('stop-color', '#ff7300')
-            .attr('stop-opacity', 0)
+            .attr('stop-opacity', 0.1);
 
-        // Main group
-        const g = svg
-            .append('g')
-            .attr('transform', `translate(${margin.left},${margin.top})`)
+        // Main chart group
+        const g = svg.append<SVGGElement>('g')
+            .attr('transform', `translate(${marginLeft},${marginTop})`);
 
-        // Axes
-        g.append('g')
+        // Create axes
+        const xAxis = g.append<SVGGElement>('g')
             .attr('transform', `translate(0,${innerH})`)
-            .call(axisBottom(xScale))
+            .call(axisBottom(xScale)
+                .tickSize(0)
+                .tickPadding(12)
+            );
 
-        g.append('g')
-            .call(axisLeft(yScale))
+        const yAxis = g.append<SVGGElement>('g')
+            .attr('transform', `translate(0,0), ${innerH}`)
+            .call(axisLeft(yScale)
+                .tickSize(0)
+                .tickPadding(12)
+            );
+
+        // Style axis text
+        xAxis.selectAll('text')
+            .attr('transform', d => (typeof d === 'string' && d.includes(':') ? 'rotate(-90)' : null))
+            .attr('text-anchor', d => ((d as string).includes(':') ? 'end' : 'middle'))
+            .attr('dx', d => ((d as string).includes(':') ? '-0.6em' : '0'))
+            .attr('dy', d => (typeof d === 'string' && d.includes(':') ? '-0.3em' : '0.71em'));
+
+        [xAxis, yAxis].forEach(axis => {
+            axis.selectAll('text')
+                .attr('font-family', 'Poppins, Sora, sans-serif')
+                .attr('font-size', '13px')
+                .attr('fill', '#F1EFEC');
+        });
 
         // Draw area
-        g.append('path')
+        g.append<SVGPathElement>('path')
             .datum(data)
             .attr('fill', 'url(#areaGrad)')
-            .attr('d', areaGenerator)
+            .attr('d', areaGenerator);
 
         // Draw line
-        const linePath = g.append('path')
+        g.append<SVGPathElement>('path')
             .datum(data)
             .attr('fill', 'none')
             .attr('stroke', '#ff7300')
             .attr('stroke-width', 2)
-            .attr('d', lineGenerator)
+            .attr('d', lineGenerator);
 
-        // Invisible hover path
-        const hoverPath = g.append('path')
-            .datum(data)
-            .attr('fill', 'none')
-            .attr('stroke', 'transparent')
-            .attr('stroke-width', 12)
-            .attr('d', lineGenerator)
+        // Setup tooltip
+        const tooltip = g.append<SVGGElement>('g')
+            .style('display', 'none')
+            .attr('pointer-events', 'none');
 
-        // Tooltip setup
-        const tooltip = g.append('g').style('display', 'none')
         tooltip.append('circle')
             .attr('r', 5)
             .attr('fill', '#fff')
             .attr('stroke', '#ff7300')
-            .attr('stroke-width', 2)
-        tooltip.append('rect')
-            .attr('x', 8)
-            .attr('y', -24)
-            .attr('width', 100)
-            .attr('height', 24)
-            .attr('fill', 'rgba(255,255,255,0.8)')
-            .attr('rx', 4)
-        const tipText = tooltip.append('text')
-            .attr('x', 12)
-            .attr('y', -8)
-            .style('font-size', '12px')
-            .attr('fill', '#333')
+            .attr('stroke-width', 2);
 
-        // Bisector
-        const bisectIndex = bisector<Point, string>(d => d.date).center
+        return () => {
 
-        hoverPath
-            .on('mouseover', () => tooltip.style('display', null))
-            .on('mouseout', () => tooltip.style('display', 'none'))
-            .on('mousemove', (event) => {
-                const [mx] = pointer(event, g.node()!)
-                const index = Math.round((mx / innerW) * (xValues.length - 1))
-                const x0 = xValues[Math.max(0, Math.min(index, xValues.length - 1))]
-                const i = bisectIndex(data, x0)
-                const d = data[i]
-                const prev = data[Math.max(i - 1, 0)]
-                const rel = prev.value
-                    ? ((d.value - prev.value) / prev.value * 100).toFixed(1) + '%'
-                    : '–'
+        };
+    }, [data, width, height, marginTop, marginRight, marginBottom, marginLeft, maxValue, xValues]);
 
-                tooltip.attr('transform', `translate(${xScale(d.date)},${yScale(d.value)})`)
-                tipText.text(`${d.date}: ${d.value} (${rel})`)
-            })
-
-    }, [data, width, height])
-
-    return <svg ref={svgRef} width={width} height={height} />
+    return (
+        <svg
+            ref={svgRef}
+            width="100%"
+            height={height}
+            viewBox={`0 0 ${width} ${height}`}
+            style={{
+                overflow: 'visible'
+            }}
+            role="img"
+            aria-label="Interactive line chart showing data over time"
+        />
+    );
 }

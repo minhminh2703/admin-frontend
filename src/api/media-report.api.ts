@@ -1,4 +1,4 @@
-wimport baseApi from "./base.api";
+import baseApi from "./base.api";
 
 export async function fetchMediaReport() {
   try {
