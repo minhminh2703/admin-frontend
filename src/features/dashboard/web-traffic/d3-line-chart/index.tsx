@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useMemo } from 'react';
+import { useRef, useEffect, useMemo } from 'react';
 import {
     select,
     scalePoint,
@@ -6,10 +6,9 @@ import {
     axisBottom,
     axisLeft,
     pointer,
-    transition,
 } from 'd3';
-import { line as d3Line, area as d3Area, curveMonotoneX, line } from 'd3-shape';
-
+import { line as d3Line, area as d3Area, curveMonotoneX } from 'd3-shape';
+import { timeParse, timeFormat } from 'd3-time-format';
 
 type Point = { date: string; value: number };
 
@@ -75,7 +74,7 @@ export function D3LineChart({
         const areaGenerator = d3Area<Point>()
             .curve(curveMonotoneX)
             .x(d => xScale(d.date) ?? 0)
-            .y0(innerH)                  // baseline at the bottom
+            .y0(innerH)
             .y1(d => yScale(d.value) ?? 0);
 
         const defs = svg.append('defs');
@@ -91,6 +90,23 @@ export function D3LineChart({
             .attr('offset', '100%')
             .attr('stop-color', '#ff7300')
             .attr('stop-opacity', 0.1);
+
+        const tooltipGradient = defs.append('linearGradient')
+            .attr('id', 'tooltipBgGrad')
+            .attr('gradientUnits', 'objectBoundingBox')
+            .attr('x1', '0%')
+            .attr('y1', '0%')
+            .attr('x2', '100%')
+            .attr('y2', '0%')
+            .attr('gradientTransform', 'rotate(115)');
+
+        tooltipGradient.append('stop')
+            .attr('offset', '0%')
+            .attr('stop-color', '#ffffff');
+
+        tooltipGradient.append('stop')
+            .attr('offset', '100%')
+            .attr('stop-color', '#d4dfed');
 
         // Main chart group
         const g = svg.append<SVGGElement>('g')
@@ -145,8 +161,8 @@ export function D3LineChart({
             .style('opacity', 0);
 
         // Tooltip background
-        const tooltipWidth = 150;
-        const tooltipHeight = 60;
+        const tooltipWidth = 180;
+        const tooltipHeight = 80;
 
         const tooltip = g.append('g')
             .attr('class', 'tooltip')
@@ -156,25 +172,45 @@ export function D3LineChart({
         const tooltipBg = tooltip.append('rect')
             .attr('width', tooltipWidth)
             .attr('height', tooltipHeight)
-            .attr('rx', 4)
-            .attr('fill', 'rgba(30, 30, 30, 0.9)')
+            .attr('rx', 15)
+            .attr('ry', 15)
+            .attr('x', 0)
+            .attr('y', 0)
+            .attr('transform', `translate(-${tooltipWidth / 2},-${tooltipHeight})`)
+            .attr('fill', 'url(#tooltipBgGrad)')
 
-
-        // Tooltip date text
-        const tooltipDate = tooltip.append('text')
-            .attr('x', 10)
-            .attr('y', 20)
-            .attr('font-family', 'Poppins, Sora, sans-serif')
-            .attr('font-size', '15px')
-            .attr('fill', '#F1EFEC');
+        // // Tooltip text
+        function appendTooltipText(text: string, x: number, y: number) {
+            return tooltip.append('text')
+                .attr('x', x)
+                .attr('y', y)
+                .attr('text-anchor', 'start')
+                .attr('dominant-baseline', 'start')
+                .attr('font-family', 'Poppins, Sora, sans-serif')
+                .attr('font-size', '12px')
+                .attr('fill', '#27548A')
+                .text(text);
+        }
 
         // Tooltip value text
         const tooltipValue = tooltip.append('text')
-            .attr('x', 10)
-            .attr('y', 38)
+            .attr('x', -tooltipWidth / 2 + 70)
+            .attr('y', -tooltipHeight / 2 - 10)
+            .attr('text-anchor', 'start')
+            .attr('dominant-baseline', 'middle')
             .attr('font-family', 'Poppins, Sora, sans-serif')
-            .attr('font-size', '15px')
-            .attr('fill', '#ff7300');
+            .attr('font-size', '25px')
+            .attr('font-weight', 'bold')
+            .attr('fill', '#3F7D58');
+
+        // Tooltip date text
+        const tooltipDate = tooltip.append('text')
+            .attr('x', -tooltipWidth / 2 + 70)
+            .attr('y', -tooltipHeight / 2 + 21)
+            .attr('font-family', 'Poppins, Sora, sans-serif')
+            .attr('font-size', '13px')
+            .attr('fill', '#393E46');
+
 
         const getValueAtX = (mouseX: number) => {
             const points = data
@@ -203,20 +239,27 @@ export function D3LineChart({
         };
 
         const handleMouseMove = (event: MouseEvent) => {
+            const parseMonth = timeParse('%b');
+            const formatMonth = timeFormat('%B');
             const [mouseX] = pointer(event, g.node()!);
-            const interpolatedData = getValueAtX(mouseX);
-            // Update hover circle
+            // const interpolatedData = getValueAtX(mouseX);
+            const { date: rawDate, value, x } = getValueAtX(mouseX);
+            const parsed = parseMonth(rawDate);
+            const displayDate = parsed ? formatMonth(parsed) : rawDate;
+
             hoverCircle
                 .attr("cx", mouseX)
-                .attr("cy", yScale(interpolatedData.value) ?? 0)
+                .attr("cy", yScale(value) ?? 0)
                 .attr("r", 5)
                 .style("opacity", 1);
 
             tooltip
-                .attr("transform", `translate(${interpolatedData.x + 10},${yScale(interpolatedData.value) - 30})`)
+                .attr("transform", `translate(${x + 10},${yScale(value) - 30})`)
                 .style("opacity", 1);
-            tooltipDate.text(interpolatedData.date);
-            tooltipValue.text(interpolatedData.value.toFixed(2));
+            tooltipValue.text(value.toFixed(2));
+            appendTooltipText('Visits', -tooltipWidth / 2 + 20, -tooltipHeight / 2 - 10);
+            appendTooltipText('Time', -tooltipWidth / 2 + 20, -tooltipHeight / 2 + 20);
+            tooltipDate.text(displayDate);
         };
 
         const handleMouseLeave = () => {
