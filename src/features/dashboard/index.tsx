@@ -1,15 +1,15 @@
 import OverallStatistic from './overal-statistic';
 import WebTraffic from './web-traffic';
-import MediaReport from './media-report';
+import PipelineReport from './pipeline-report';
 
 const Dashboard = () => {
     return (
         <div style={{
-            overflowY: 'auto',         // Enable vertical scrolling
+            overflowY: 'auto',         
         }}>
             <OverallStatistic />
             <WebTraffic />
-            {/* <MediaReport /> */}
+            <PipelineReport />
         </div>
     );
 }

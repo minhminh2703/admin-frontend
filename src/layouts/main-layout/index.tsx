@@ -4,32 +4,45 @@ import { useTheme } from '../../theme';
 import Sidebar from './side-bar';
 import { Outlet } from 'react-router-dom';
 import HeaderBar from './header-bar/index';
-import zIndex from '@mui/material/styles/zIndex';
 
 const MainLayout: React.FC = () => {
     const theme = useTheme();
 
     return (
-        <Box sx={{
-            display: 'flex',
-            height: '100vh', 
-            background: `linear-gradient(180deg, ${theme.background.dark} 0%, ${theme.background.lightDark} 100%)`,
-            backgroundBlendMode: 'multiply',
-            overflow: 'hidden', 
-        }}>
-
+        <Box
+            sx={{
+                display: 'flex',
+                height: '100vh',
+                background: `linear-gradient(180deg, ${theme.background.dark} 0%, ${theme.background.lightDark} 100%)`,
+                backgroundBlendMode: 'multiply',
+                overflow: 'hidden',            
+            }}
+        >
             <Sidebar />
-
-            <Box sx={{ flexGrow: 1, overflowY: 'auto' }}>
-                <HeaderBar
+            <Box
+                sx={{
+                    flex: 1,
+                    display: 'flex',
+                    flexDirection: 'column',     
+                    overflow: 'hidden',          
+                }}
+            >
+                <Box
                     sx={{
-                        background: "none",
-                        paddingTop: "1em",
+                        flex: 1,
+                        overflowY: 'auto',         
                     }}
-                />
+                >
+                    <HeaderBar
+                        sx={{
+                            background: 'none',
+                            paddingTop: '1em',
+                        }}
+                    />
 
-                <Box sx={{ padding: '3em' }}>
-                    <Outlet />
+                    <Box sx={{ padding: '3em' }}>
+                        <Outlet />
+                    </Box>
                 </Box>
             </Box>
         </Box>

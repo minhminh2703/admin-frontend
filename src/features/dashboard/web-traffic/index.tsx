@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Box, Typography, CircularProgress } from '@mui/material';
 import { CalendarPicker } from '../../../components/calendar-pickers';
 import PeriodSelector from '../../../components/period-selector';
-import { fetchTrafficReport } from '../../../api/web-traffic.api';
+import { fetchTrafficReport } from '../../../api/dashboard.api';
 import { format } from 'date-fns/format';
 import { transformTrafficData } from '../../../utils/transform-traffic';
 import { D3LineChart } from './d3-line-chart';
