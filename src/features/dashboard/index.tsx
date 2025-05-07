@@ -1,6 +1,8 @@
-import OverallStatistic from './overal-statistic';
+import OverallStatistic from './overall-statistic';
 import WebTraffic from './web-traffic';
-import PipelineReport from './pipeline-report';
+import { fetchMediaReport, fetchPipelineReport } from '../../api/dashboard.api';
+import AnalyticsReport from './analytics-reports';
+
 
 const Dashboard = () => {
     return (
@@ -9,7 +11,14 @@ const Dashboard = () => {
         }}>
             <OverallStatistic />
             <WebTraffic />
-            <PipelineReport />
+            <AnalyticsReport
+                fetchReport={fetchMediaReport}
+                title="MEDIA REPORT"
+            />
+            <AnalyticsReport
+                fetchReport={fetchPipelineReport}
+                title="PIPELINE REPORT"
+            />
         </div>
     );
 }
