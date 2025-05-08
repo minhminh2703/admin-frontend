@@ -1,34 +1,36 @@
 import React from 'react';
 import { Box } from '@mui/material';
-import { useTheme } from '../../theme';  
+import { useTheme } from '../../theme';
 import Sidebar from './side-bar';
 import { Outlet } from 'react-router-dom';
 import HeaderBar from './header-bar/index';
 
 const MainLayout: React.FC = () => {
-    const theme = useTheme(); 
+    const theme = useTheme();
 
     return (
-        <Box sx={{ 
-            display: 'flex', 
-            height: '100%', 
-            background: `linear-gradient(180deg, ${theme.background.dark} 0%, ${theme.background.lightDark} 100%)`,
-            backgroundBlendMode: 'multiply',
-        }}>
+        <Box
+            sx={{
+                display: 'flex',
+                height: '100%',
+                background: `linear-gradient(180deg, ${theme.background.dark} 0%, ${theme.background.lightDark} 100%)`,
+                backgroundBlendMode: 'multiply',
+            }}
+        >
             <Sidebar />
-            
+
             {/* Main content area */}
             <Box sx={{ flexGrow: 1 }}>
                 {/* HeaderBar */}
                 <HeaderBar
                     sx={{
-                        background: "none",
-                        paddingTop: "1em",
+                        background: 'none',
+                        paddingTop: '1em',
                     }}
                 />
 
                 {/* Main content (children) */}
-                <Box sx={{ padding: '20px' }}>
+                <Box sx={{ padding: '20px', overflowX: 'auto', maxWidth: '100%' }}>
                     <Outlet />
                 </Box>
             </Box>

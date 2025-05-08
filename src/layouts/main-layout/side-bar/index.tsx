@@ -1,7 +1,13 @@
 import React from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { Box, Typography, Link as MuiLink } from '@mui/material';
-import { Person, InsertChartOutlined, DashboardOutlined, DashboardCustomizeOutlined, AddCardOutlined } from '@mui/icons-material';
+import {
+    Person,
+    InsertChartOutlined,
+    DashboardOutlined,
+    DashboardCustomizeOutlined,
+    AddCardOutlined,
+} from '@mui/icons-material';
 import MLVTLogo from '../../../assets/mlvt_logo.png';
 import { useTheme } from '../../../theme';
 
@@ -13,29 +19,29 @@ interface NavLink {
 
 const navLinks: NavLink[] = [
     {
-        name: "Dashboard",
+        name: 'Dashboard',
         icon: <DashboardOutlined sx={{ fontSize: '1.8em' }} />,
-        link: "/dashboard",
+        link: '/dashboard',
     },
     {
-        name: "Performance",
+        name: 'Performance',
         icon: <InsertChartOutlined sx={{ fontSize: '1.8em' }} />,
-        link: "/performance",
+        link: '/performance',
     },
     {
-        name: "Manage Accounts",
+        name: 'Manage Accounts',
         icon: <Person sx={{ fontSize: '1.8em' }} />,
-        link: "/manage_accounts",
+        link: '/manage_accounts',
     },
     {
-        name: "Billing",
+        name: 'Manage Vouchers',
         icon: <AddCardOutlined sx={{ fontSize: '1.8em' }} />,
-        link: "/billing",
+        link: '/manage_vouchers',
     },
     {
-        name: "Configuration",
+        name: 'Configuration',
         icon: <DashboardCustomizeOutlined sx={{ fontSize: '1.8em' }} />,
-        link: "/feature_configuration",
+        link: '/feature_configuration',
     },
 ];
 
@@ -49,21 +55,21 @@ const Sidebar: React.FC = () => {
             sx={{
                 background: `linear-gradient(180deg, ${theme.background.sidebarDark} 0%, ${theme.background.sidebarDarkLight} 90%)`,
                 padding: 0,
-                display: { xs: "none", lg: "flex" },
-                flexDirection: "column",
-                alignItems: "center",
-                minWidth: "18em",
+                display: { xs: 'none', lg: 'flex' },
+                flexDirection: 'column',
+                alignItems: 'center',
+                minWidth: '18em',
             }}
         >
             <Box
                 sx={{
-                    py: "1em",
-                    display: "flex",
-                    flexDirection: "column",
+                    py: '1em',
+                    display: 'flex',
+                    flexDirection: 'column',
                     gap: 4,
-                    justifyContent: "flex-start",
-                    alignItems: "center",
-                    width: "100%",
+                    justifyContent: 'flex-start',
+                    alignItems: 'center',
+                    width: '100%',
                     paddingY: 3,
                     flexGrow: 1,
                 }}
@@ -72,21 +78,21 @@ const Sidebar: React.FC = () => {
                     src={MLVTLogo}
                     alt="logo"
                     style={{
-                        width: "7em",
-                        height: "7em",
-                        borderRadius: "10%",
-                        cursor: "pointer",
+                        width: '7em',
+                        height: '7em',
+                        borderRadius: '10%',
+                        cursor: 'pointer',
                     }}
-                    onClick={() =>  navigate("/dashboard")}
+                    onClick={() => navigate('/dashboard')}
                     role="button"
                 />
 
                 <Box
                     sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: "1em",
-                        alignItems: "center",
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '1em',
+                        alignItems: 'center',
                     }}
                 >
                     {navLinks.map((item) => (
@@ -96,32 +102,31 @@ const Sidebar: React.FC = () => {
                             to={item.link}
                             underline="none"
                             sx={{
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "flex-start",
-                                borderRadius: "8px",
-                                width: "100%",
-                                padding: "0.5em",
-                                textDecoration: "none",
-                                "&:hover": {
-                                    backgroundColor: "#2c3e50"
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'flex-start',
+                                borderRadius: '8px',
+                                width: '100%',
+                                padding: '0.5em',
+                                textDecoration: 'none',
+                                '&:hover': {
+                                    backgroundColor: '#2c3e50',
                                 },
-                                "& svg": {
-                                    color: location.pathname === item.link ? "#F5D061" : "white",
-                                    transition: "color 0.3s ease-in-out",
+                                '& svg': {
+                                    color: location.pathname === item.link ? '#F5D061' : 'white',
+                                    transition: 'color 0.3s ease-in-out',
                                 },
                             }}
                         >
                             {item.icon}
                             <Typography
                                 sx={{
-                                    marginLeft: "1em",
-                                    fontWeight: "500",
-                                    fontSize: "0.9em",
-                                    transition: "color 0.3s ease-in-out",
+                                    marginLeft: '1em',
+                                    fontWeight: '500',
+                                    fontSize: '0.9em',
+                                    transition: 'color 0.3s ease-in-out',
                                     fontFamily: theme.typography.body2.fontFamily,
-                                    color: location.pathname === item.link ? "#F5D061" : "white",
-
+                                    color: location.pathname === item.link ? '#F5D061' : 'white',
                                 }}
                             >
                                 {item.name}

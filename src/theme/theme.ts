@@ -19,6 +19,7 @@ declare module '@mui/material/styles' {
             lightDark: string;
             sidebarDark: string;
             sidebarDarkLight: string;
+            darkBlue: string;
             white: string;
             lightPink: string;
             lightPurple: string;
@@ -27,6 +28,7 @@ declare module '@mui/material/styles' {
             black: string;
             gray: string;
             yellow: string;
+            white: string;
         };
     }
     interface ThemeOptions {
@@ -39,10 +41,11 @@ declare module '@mui/material/styles' {
         background: {
             main: string;
             white: string;
-            dark: string,
-            lightDark: string,
-            sidebarDark: string,
-            sidebarDarkLight: string,
+            dark: string;
+            lightDark: string;
+            sidebarDark: string;
+            darkBlue: string;
+            sidebarDarkLight: string;
             lightPink: string;
             lightPurple: string;
         };
@@ -50,6 +53,7 @@ declare module '@mui/material/styles' {
             black: string;
             gray: string;
             yellow: string;
+            white: string;
         };
     }
 }
@@ -74,11 +78,12 @@ const theme = createTheme({
         },
     },
     background: {
-        main: "#A60195",
+        main: '#A60195',
         dark: '#10161c',
         lightDark: '#23395d',
-        sidebarDark: "#0A0A0A",
-        sidebarDarkLight: "#1c2e4a",
+        sidebarDark: '#0A0A0A',
+        darkBlue: '##1616FF',
+        sidebarDarkLight: '#1c2e4a',
         white: '#FFFFFF',
         lightPink: '#F1EAFF',
         lightPurple: '#E4B1F0',
@@ -87,6 +92,7 @@ const theme = createTheme({
         black: '#000000',
         gray: '#49454F',
         yellow: '#FFB200',
+        white: '#FFFFFF',
     },
     typography: {
         h1: {
@@ -97,7 +103,7 @@ const theme = createTheme({
         },
         body2: {
             fontFamily: 'Sora, Poppins, sans-serif',
-        }
+        },
     },
     components: {
         MuiCardContent: {

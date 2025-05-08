@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { Box, AppBar, Toolbar, Typography, TextField, IconButton, Avatar } from "@mui/material";
-import { Search } from "@mui/icons-material";
-import { useTheme } from "../../../theme";
-import { useAuth } from "../../../context/auth-context"
+import React, { useEffect, useState } from 'react';
+import { Box, AppBar, Toolbar, Typography, TextField, IconButton, Avatar } from '@mui/material';
+import { Search } from '@mui/icons-material';
+import { useTheme } from '../../../theme';
+import { useAuth } from '../../../context/auth-context';
 import LogoutIcon from '@mui/icons-material/Logout';
-import { getUser } from "../../../api/user.api";
-import { useNavigate } from "react-router-dom";
+import { getUser } from '../../../api/user.api';
+import { useNavigate } from 'react-router-dom';
 
 const HeaderBar: React.FC<{ sx?: any }> = ({ sx }) => {
     const theme = useTheme();
@@ -13,9 +13,9 @@ const HeaderBar: React.FC<{ sx?: any }> = ({ sx }) => {
     const [avatarUrl, setAvatarUrl] = useState('avatar.jpg');
     const [userData, setUserData] = useState({
         firstName: 'Minh Minh',
-        lastName: 'Nguyen'
-    })
-    const [fullName, setFullName] = useState("Nguyen Minh Minh");
+        lastName: 'Nguyen',
+    });
+    const [fullName, setFullName] = useState('Nguyen Minh Minh');
     const [isLoading, setIsLoading] = useState(true);
     const { userId } = useAuth();
 
@@ -41,9 +41,9 @@ const HeaderBar: React.FC<{ sx?: any }> = ({ sx }) => {
                 const avatarResponse = await fetch(`http://localhost:8080/api/users/${userId}/avatar-download-url`, {
                     method: 'GET',
                     headers: {
-                        'Authorization': `Bearer ${token}`, 
-                        'Content-Type': 'application/json'
-                    }
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
                 });
 
                 const avatarData = await avatarResponse.json();
@@ -56,6 +56,7 @@ const HeaderBar: React.FC<{ sx?: any }> = ({ sx }) => {
         };
 
         fetchUserData();
+        console.log('User id: ', userId);
     }, [userId]);
 
     return (
@@ -65,13 +66,14 @@ const HeaderBar: React.FC<{ sx?: any }> = ({ sx }) => {
                 boxShadow: 'none',
             }}
             position="sticky"
-
         >
-            <Toolbar sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-            }}>
+            <Toolbar
+                sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                }}
+            >
                 {/* Left (empty spacer) */}
                 <Box sx={{ flex: 1, maxWidth: '17em' }} />
 
@@ -79,9 +81,9 @@ const HeaderBar: React.FC<{ sx?: any }> = ({ sx }) => {
                 <Box
                     sx={{
                         flex: 1,
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
                     }}
                 >
                     <TextField
@@ -89,69 +91,84 @@ const HeaderBar: React.FC<{ sx?: any }> = ({ sx }) => {
                         placeholder="Search"
                         sx={{
                             backgroundColor: theme.background.dark,
-                            borderRadius: "100%",
+                            borderRadius: '100%',
                             borderWidth: 1,
-                            width: "100%", // Full width of the container
-                            "& .MuiOutlinedInput-root": {
+                            width: '100%', // Full width of the container
+                            '& .MuiOutlinedInput-root': {
                                 backgroundColor: theme.background.dark,
-                                borderRadius: "10px",
-                                height: "90%",
+                                borderRadius: '10px',
+                                height: '90%',
                                 paddingLeft: 1.5,
                                 paddingRight: 3.5,
-                                "&:hover .MuiOutlinedInput-notchedOutline": {
-                                    borderColor: "white",
+                                '&:hover .MuiOutlinedInput-notchedOutline': {
+                                    borderColor: 'white',
                                 },
-                                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                                    borderColor: "white",
+                                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                                    borderColor: 'white',
                                 },
                             },
-                            "& .MuiOutlinedInput-notchedOutline": {
-                                borderColor: "white",
+                            '& .MuiOutlinedInput-notchedOutline': {
+                                borderColor: 'white',
                             },
-                            height: "50px",
+                            height: '50px',
                         }}
                         slotProps={{
                             input: {
-                                style: { color: "white", fontFamily: theme.typography.body2.fontFamily, fontSize: '0.9em' },
+                                style: {
+                                    color: 'white',
+                                    fontFamily: theme.typography.body2.fontFamily,
+                                    fontSize: '0.9em',
+                                },
                                 endAdornment: (
                                     <IconButton edge="end" aria-label="search">
-                                        <Search sx={{ color: "white" }} />
+                                        <Search sx={{ color: 'white' }} />
                                     </IconButton>
                                 ),
                             },
                             inputLabel: {
-                                style: { color: "white", fontFamily: theme.typography.body2.fontFamily, fontSize: '0.9em' },
-                            }
+                                style: {
+                                    color: 'white',
+                                    fontFamily: theme.typography.body2.fontFamily,
+                                    fontSize: '0.9em',
+                                },
+                            },
                         }}
                     />
                 </Box>
 
                 {/* Logout and Profile Section */}
-                <Box sx={{
-                    flex: 1,
-                    display: "flex",
-                    justifyContent: "flex-end",
-                    alignItems: "center",
-                    maxWidth: '20em',
-                    gap: 2,
-                }}>
+                <Box
+                    sx={{
+                        flex: 1,
+                        display: 'flex',
+                        justifyContent: 'flex-end',
+                        alignItems: 'center',
+                        maxWidth: '20em',
+                        gap: 2,
+                    }}
+                >
                     {/* Profile Section */}
                     <Box>
-                        <Box sx={{
-                            display: 'flex',
-                            flexDirection: 'row',
-                            gap: 2,
-                            marginLeft: '1rem',
-                            alignItems: 'center',
-                            borderRadius: '0.4rem',
-                        }}>
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                flexDirection: 'row',
+                                gap: 2,
+                                marginLeft: '1rem',
+                                alignItems: 'center',
+                                borderRadius: '0.4rem',
+                            }}
+                        >
                             <Box>
-                                <Typography variant="body2" sx={{
-                                    color: "white",
-                                    fontFamily: theme.typography.body1,
-                                    fontWeight: '600',
-                                    fontSize: '0.95rem'
-                                }}>
+                                <Typography
+                                    variant="body2"
+                                    sx={{
+                                        color: 'white',
+                                        fontFamily: theme.typography.body1,
+                                        fontWeight: '600',
+                                        fontSize: '0.95rem',
+                                    }}
+                                >
                                     {`${userData?.firstName} ${userData?.lastName}`}
                                 </Typography>
                             </Box>
@@ -161,11 +178,11 @@ const HeaderBar: React.FC<{ sx?: any }> = ({ sx }) => {
                     <IconButton
                         onClick={() => {
                             localStorage.removeItem('authToken');
-                            navigate("/auth");
+                            navigate('/auth');
                         }}
                         sx={{
-                            color: "white",
-                            marginRight: "1rem",
+                            color: 'white',
+                            marginRight: '1rem',
                             gap: 1,
                         }}
                     >
