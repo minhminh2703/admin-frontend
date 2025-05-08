@@ -30,7 +30,7 @@ const MainLayout: React.FC = () => {
                 />
 
                 {/* Main content (children) */}
-                <Box sx={{ padding: '20px', overflowX: 'auto', maxWidth: '100%' }}>
+                <Box sx={{ padding: '3em' }}>
                     <Outlet />
                 </Box>
             </Box>

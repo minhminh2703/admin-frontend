@@ -1,5 +1,5 @@
 import apiClient from './base.api';
-import { GetUserResponse, UserUpdateData } from '../types/User';
+import { AvatarResponse, GetUserResponse, UserUpdateData } from '../types/User';
 
 export const getUser = async (userId: string): Promise<GetUserResponse> => {
     try {
@@ -9,6 +9,16 @@ export const getUser = async (userId: string): Promise<GetUserResponse> => {
         throw new Error(`Failed to fetch user data: ${error}`);
     }
 };
+
+export const getUserAvatar = async (userId: string): Promise<string> => {
+    try {
+        const response = await apiClient.get<AvatarResponse>(`/users/${userId}/avatar-download-url`);
+        const avatarDownloadUrl = response.data.avatar_download_url;
+        return avatarDownloadUrl.split('?X-Amz-Algorithm')[0];
+    } catch (error) {
+        throw new Error(`Failed to fetch user data: ${error}`);
+    }
+}
 
 export const updateUser = async (userId: string, updatedData: UserUpdateData) => {
     try {

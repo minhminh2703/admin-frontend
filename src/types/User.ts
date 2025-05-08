@@ -26,3 +26,7 @@ export interface UserUpdateData {
     premium: boolean;
     role: string;
 }
+
+export interface AvatarResponse {
+    avatar_download_url: string;
+}
