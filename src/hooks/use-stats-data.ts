@@ -14,7 +14,6 @@ interface UseStatsDataResult {
     error: Error | null;
 }
 
-// Now accepts a fetcher function that returns Promise<ApiResponse>
 export function useStatsData(
     fetcher: () => Promise<ApiResponse>
 ): UseStatsDataResult {

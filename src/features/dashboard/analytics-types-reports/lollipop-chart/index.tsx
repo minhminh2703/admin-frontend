@@ -4,6 +4,8 @@ import { flattenStats, getMetrics } from '../../../../utils/transform-stats';
 import MetricToggle from '../index';
 import { StatsResponse } from '../../../../types/stats';
 import { Box } from '@mui/material';
+import { metricColorMap } from '../index';
+import { smartCap } from '../../../../utils/string';
 
 interface Props {
     data: StatsResponse;
@@ -49,7 +51,6 @@ const LollipopChart: React.FC<Props> = ({ data, width = 520, height = 240 }) => 
         g.attr('transform', `translate(${margin.left},${margin.top})`);
 
         /* ---- axes ---- */
-        const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
         const xAxis = d3.axisBottom(x)
             .ticks(5)
             .tickSizeOuter(0)
@@ -58,8 +59,8 @@ const LollipopChart: React.FC<Props> = ({ data, width = 520, height = 240 }) => 
         const yAxis = d3.axisLeft(y)
             .tickSizeOuter(0)
             .tickSizeInner(0)
-            .tickPadding(10)
-            .tickFormat(d => capitalize(d as string));
+            .tickPadding(15)
+            .tickFormat(d => smartCap(String(d)));
 
         // X-axis
         g.selectAll<SVGGElement, null>('.x-axis')
@@ -69,9 +70,10 @@ const LollipopChart: React.FC<Props> = ({ data, width = 520, height = 240 }) => 
             .attr('transform', `translate(0,${ih})`)
             .transition()
             .duration(600)
-            .style('font-family', 'Poppins, sans-serif')   
-            .style('font-size', '0.8em')                 
-            .style('fill', '#F0EBE3')       
+            .style('font-family', 'Poppins, sans-serif')
+            .style('font-size', '0.8em')
+            .style('font-weight', '600')
+            .style('fill', '#F0EBE3')
             .call(sel => (xAxis as any)(sel));
 
         // Y-axis
@@ -81,12 +83,23 @@ const LollipopChart: React.FC<Props> = ({ data, width = 520, height = 240 }) => 
             .attr('class', 'y-axis')
             .transition()
             .duration(600)
-            .style('font-family', 'Poppins, sans-serif')   
-            .style('font-size', '0.9em')                 
-            .style('fill', '#F0EBE3') 
+            .style('font-family', 'Poppins, sans-serif')
+            .style('font-size', '0.8em')
+            .style('font-weight', '600')
+            .style('fill', '#F0EBE3')
             .call(sel => (yAxis as any)(sel));
 
         /* ---- stems ---- */
+        const baseDotColor = metricColorMap[metric] ?? '#82CD47';
+
+        /* build a stem color that’s ~40 % lighter & 50 % desaturated */
+        const stemColor = (() => {
+            if (baseDotColor === '#82CD47') return '#AAC8A7';
+            if (baseDotColor === '#F44336') return '#F8B2B2';
+            if (baseDotColor === '#0096FF') return '#A4C8E1';
+            return '#CCCCCC';
+        })();
+
         const stems = g
             .selectAll<SVGLineElement, typeof flat[number]>('.stem')
             .data(flat, d => d.media);
@@ -103,7 +116,7 @@ const LollipopChart: React.FC<Props> = ({ data, width = 520, height = 240 }) => 
             .attr('y1', d => y(d.media)! + y.bandwidth() / 2)
             .attr('x2', d => x(Number(d[metric])))
             .attr('y2', d => y(d.media)! + y.bandwidth() / 2)
-            .attr('stroke', '#AAC8A7')
+            .attr('stroke', stemColor)
             .attr('stroke-width', 2);
 
         /* ---- dots ---- */
@@ -124,8 +137,8 @@ const LollipopChart: React.FC<Props> = ({ data, width = 520, height = 240 }) => 
             .duration(600)
             .attr('cx', d => x(Number(d[metric])))          // ← cast to number
             .attr('cy', d => y(d.media)! + y.bandwidth() / 2)
-            .attr('r', 7)
-            .attr('fill', '#82CD47');
+            .attr('r', 6)
+            .attr('fill', baseDotColor);
 
     }, [flat, metric, width, height]);
 

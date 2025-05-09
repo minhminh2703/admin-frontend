@@ -7,9 +7,9 @@ interface Props {
     onChange: (m: string) => void;
 }
 
-const colorMap: Record<string, string> = {
+export const metricColorMap: Record<string, string> = {
     count: '#0096FF',
-    succeeded: '#4CAF50',
+    succeeded: '#82CD47',
     failed: '#F44336',
 }
 
@@ -23,7 +23,7 @@ const MetricToggle: React.FC<Props> = ({ metrics, current, onChange }) => (
     <Box paddingTop={3.5} display="flex" gap={1}>
         {metrics.map(m => {
             const isActive = m === current;
-            const color = colorMap[m] ?? '#111';
+            const color = metricColorMap[m] ?? '#111';
 
             return (
 
@@ -34,7 +34,7 @@ const MetricToggle: React.FC<Props> = ({ metrics, current, onChange }) => (
                         flex: 1,
                         borderRadius: 4,
                         background: isActive ? color : 'transparent',
-                        color: isActive ? '#fff' : color,
+                        color: isActive ? '#FCFCFC' : color,
                         cursor: 'pointer',
                         fontWeight: '600',
                         fontSize: '0.9em',

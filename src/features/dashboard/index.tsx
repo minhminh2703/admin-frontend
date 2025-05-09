@@ -35,10 +35,13 @@ const Dashboard = () => {
 
                 {mediaStats && <LollipopChart data={mediaStats} width={500} height={300} />}
             </Box>
-            <AnalyticsReport
-                fetchReport={fetchPipelineReport}
-                title="PIPELINE REPORT"
-            />
+            <Box display="flex" flexWrap="wrap" justifyContent="space-between" gap={2}>
+                <AnalyticsReport
+                    fetchReport={fetchPipelineReport}
+                    title="PIPELINE REPORT"
+                />
+                {articleStats && <LollipopChart data={articleStats} width={500} height={300} />}
+            </Box>
         </Box>
     );
 }

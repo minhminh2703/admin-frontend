@@ -68,28 +68,37 @@ const AnalyticsReport: React.FC<AnalyticsReportProps> = ({ fetchReport, title })
                     }}>
                     {title}
                 </Typography>
-                <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
-                    {data && Object.keys(data).map(cat => (
-                        <Button
-                            key={cat}
-                            variant={cat === selectedCategory ? 'contained' : 'text'}
-                            onClick={() => {
-                                setSelectedCategory(cat);
-                            }}
-                            sx={{
-                                backgroundColor: cat === selectedCategory ? theme.background.lightPurple : 'transparent',
-                                color: cat === selectedCategory ? theme.fontColor.black : theme.background.lightPink,
-                                fontFamily: 'IBM Plex Mono',
-                                fontWeight: '600',
-                                ":focus": {
-                                    outline: 'none'
-                                }
-                            }}
-                        >
-                            {cat.charAt(0).toUpperCase() + cat.slice(1)}
-                        </Button>
-                    ))}
+                <Box
+                    sx={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(3, auto)',   
+                        gap: 2,
+                        mb: 2,
+                    }}
+                >
+                    {data &&
+                        Object.keys(data).map(cat => (
+                            <Button
+                                key={cat}
+                                variant={cat === selectedCategory ? 'contained' : 'text'}
+                                onClick={() => setSelectedCategory(cat)}
+                                sx={{
+                                    // full-width inside its grid cell
+                                    width: '100%',
+                                    backgroundColor:
+                                        cat === selectedCategory ? theme.background.lightPurple : 'transparent',
+                                    color:
+                                        cat === selectedCategory ? theme.fontColor.black : theme.background.lightPink,
+                                    fontFamily: 'IBM Plex Mono',
+                                    fontWeight: 600,
+                                    ':focus': { outline: 'none' },
+                                }}
+                            >
+                                {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                            </Button>
+                        ))}
                 </Box>
+
             </Box>
 
             {stats && (
