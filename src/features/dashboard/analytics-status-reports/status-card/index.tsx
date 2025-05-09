@@ -37,14 +37,14 @@ const StatusCard: React.FC<StatusCardProps> = ({ status, count }) => {
       display: 'flex',
       alignItems: 'center',
       gap: 2,
-      borderRadius: 3,
+      borderRadius: 2,
       bgcolor: bg,
       boxShadow: 3,
-      p: 2
+      p: 1
     }}>
       <Box sx={{
-        width: 56,
-        height: 56,
+        width: 35,
+        height: 35,
         borderRadius: '50%',
         bgcolor: fg,
         display: 'flex',
@@ -52,19 +52,19 @@ const StatusCard: React.FC<StatusCardProps> = ({ status, count }) => {
         justifyContent: 'center',
         flexShrink: 0
       }}>
-        <Icon sx={{ fontSize: 32, color: '#fff' }} />
+        <Icon sx={{ fontSize: 22, color: '#fff' }} />
       </Box>
       <Box sx={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 0.7 }}>
         <Typography variant="subtitle2" sx={{
           fontWeight: 700,
           color: fg,
-          textTransform: 'uppercase',
+          textTransform: 'capitalize',
           letterSpacing: 1,
           lineHeight: 1.2,
           whiteSpace: 'nowrap',
           overflow: 'hidden',
           textOverflow: 'ellipsis',
-          fontSize: '1em',
+          fontSize: '0.8em',
           fontFamily: 'Sora, sans-serif',
         }}>
           {status}
@@ -75,7 +75,7 @@ const StatusCard: React.FC<StatusCardProps> = ({ status, count }) => {
           whiteSpace: 'nowrap',
           overflow: 'hidden',
           textOverflow: 'ellipsis',
-          fontSize: '2em',
+          fontSize: '1.8em',
           fontFamily: 'Poppins, Sora, sans-serif',
           color: theme.palette.text.primary,
         }}>

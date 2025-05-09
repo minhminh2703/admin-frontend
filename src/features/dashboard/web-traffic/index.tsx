@@ -86,7 +86,7 @@ export default function WebTraffic() {
   }, [currentDay, filter]);
 
   return (
-    <Box sx={{ width: '100%', height: '100%', padding: '0', marginTop: '3em' }}>
+    <Box sx={{ width: '100%', height: '100%', padding: '0' }}>
       <Typography gutterBottom
         sx={{
           fontFamily: theme.typography.body2.fontFamily,

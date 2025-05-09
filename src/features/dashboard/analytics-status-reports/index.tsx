@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import PieChart, { PieData } from './d3-pie-chart';
 import { useStatsData, ApiResponse, StatsData } from '../../../hooks/use-stats-data';
 import { Button, Box, Typography } from '@mui/material';
@@ -14,6 +14,13 @@ const AnalyticsReport: React.FC<AnalyticsReportProps> = ({ fetchReport, title })
     const theme = useTheme();
     const { data, loading, error } = useStatsData(fetchReport);
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (data && !selectedCategory) {
+            const firstKey = Object.keys(data)[0];
+            if (firstKey) setSelectedCategory(firstKey);
+        }
+    }, [data, selectedCategory]);
 
     /* ---------- pick the category ---------- */
     const stats: StatsData | null = useMemo(() => {
@@ -44,33 +51,49 @@ const AnalyticsReport: React.FC<AnalyticsReportProps> = ({ fetchReport, title })
     if (error) return <Typography color="error">Error: {error.message}</Typography>;
 
     return (
-        <Box sx={{ mb: 4 }}>
-            <Typography gutterBottom
-                sx={{
-                    fontFamily: theme.typography.body2.fontFamily,
-                    fontSize: '1.5em',
-                    fontWeight: '700',
-                    color: theme.status.inProgress.backgroundColor,
-                    textAlign: 'left',
-                }}>
-                {title}
-            </Typography>
-            <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
-                {data && Object.keys(data).map(cat => (
-                    <Button
-                        key={cat}
-                        variant={cat === selectedCategory ? 'contained' : 'outlined'}
-                        onClick={() => {
-                            setSelectedCategory(cat);
-                        }}
-                    >
-                        {cat.charAt(0).toUpperCase() + cat.slice(1)}
-                    </Button>
-                ))}
+        <Box sx={{
+            background: 'linear-gradient(to right, rgba(44,62,80,0.8) 40%,rgba(44,62,80,0.2) 70%)',
+            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+            padding: 3.5,
+            borderRadius: 4
+        }}>
+            <Box display={'flex'} flexDirection='row' gap={2} mb={4} alignItems='center' justifyContent='space-between' >
+                <Typography gutterBottom
+                    sx={{
+                        fontFamily: theme.typography.body2.fontFamily,
+                        fontSize: '1.5em',
+                        fontWeight: '700',
+                        color: '#BCFFB9',
+                        textAlign: 'left',
+                    }}>
+                    {title}
+                </Typography>
+                <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+                    {data && Object.keys(data).map(cat => (
+                        <Button
+                            key={cat}
+                            variant={cat === selectedCategory ? 'contained' : 'text'}
+                            onClick={() => {
+                                setSelectedCategory(cat);
+                            }}
+                            sx={{
+                                backgroundColor: cat === selectedCategory ? theme.background.lightPurple : 'transparent',
+                                color: cat === selectedCategory ? theme.fontColor.black : theme.background.lightPink,
+                                fontFamily: 'IBM Plex Mono',
+                                fontWeight: '600',
+                                ":focus": {
+                                    outline: 'none'
+                                }
+                            }}
+                        >
+                            {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                        </Button>
+                    ))}
+                </Box>
             </Box>
 
             {stats && (
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                         <StatusCard
                             status="all"
