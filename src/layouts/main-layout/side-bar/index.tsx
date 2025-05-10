@@ -54,6 +54,7 @@ const Sidebar: React.FC = () => {
                 flexDirection: "column",
                 alignItems: "center",
                 minWidth: "18em",
+                height: "100vh",
             }}
         >
             <Box

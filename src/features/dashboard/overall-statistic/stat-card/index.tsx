@@ -18,7 +18,7 @@ const StatCard: React.FC<StatCardProps> = ({ icon, title, value, percentage, des
                 backgroundColor: '#2c3e50',
                 borderRadius: '10px',
                 padding: '0.8em',
-                paddingX: '1.5em',
+                paddingX: '1em',
                 display: 'flex',
                 boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
             }}

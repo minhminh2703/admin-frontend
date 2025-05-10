@@ -237,7 +237,7 @@ const Login: React.FC = () => {
             </Box>
 
             {errors.errorMessage && (
-                <Typography color="error" sx={{ marginTop: 2 }}>
+                <Typography color="error" sx={{ marginTop: 2, fontSize: 14, fontFamily: theme.typography.body1.fontFamily }}>
                     {errors.errorMessage}
                 </Typography>
             )}
