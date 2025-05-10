@@ -23,11 +23,11 @@ const navLinks: NavLink[] = [
         icon: <DashboardOutlined sx={{ fontSize: '1.8em' }} />,
         link: '/dashboard',
     },
-    {
-        name: 'Performance',
-        icon: <InsertChartOutlined sx={{ fontSize: '1.8em' }} />,
-        link: '/performance',
-    },
+    // {
+    //     name: 'Performance',
+    //     icon: <InsertChartOutlined sx={{ fontSize: '1.8em' }} />,
+    //     link: '/performance',
+    // },
     {
         name: 'Manage Accounts',
         icon: <Person sx={{ fontSize: '1.8em' }} />,
@@ -38,11 +38,11 @@ const navLinks: NavLink[] = [
         icon: <AddCardOutlined sx={{ fontSize: '1.8em' }} />,
         link: '/manage_vouchers',
     },
-    {
-        name: 'Configuration',
-        icon: <DashboardCustomizeOutlined sx={{ fontSize: '1.8em' }} />,
-        link: '/feature_configuration',
-    },
+    // {
+    //     name: 'Configuration',
+    //     icon: <DashboardCustomizeOutlined sx={{ fontSize: '1.8em' }} />,
+    //     link: '/feature_configuration',
+    // },
 ];
 
 const Sidebar: React.FC = () => {
