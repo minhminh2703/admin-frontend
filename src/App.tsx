@@ -4,7 +4,7 @@ import ManageAccounts from './features/manage-accounts';
 import Dashboard from './features/dashboard';
 import { AuthProvider } from './context/auth-context';
 import MainLayout from './layouts/main-layout';
-import { VoucherManagement } from './features/manage_vouchers';
+import { VoucherManagement } from './features/manage-vouchers';
 
 function App() {
     return (

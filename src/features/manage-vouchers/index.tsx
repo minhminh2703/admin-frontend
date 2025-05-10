@@ -1,12 +1,12 @@
 import { Box, Typography, Button, MenuItem, TextField } from '@mui/material';
-import { React, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTheme } from '../../theme';
 import DownloadIcon from '@mui/icons-material/Download';
-import VoucherTable from './VoucherTable';
+import VoucherTable from '../manage-vouchers/voucher-table';
 import { Voucher } from '../../types/Response/Vouchers';
 import { createVoucherAPI, editVoucherAPI, getAllVouchersAPI } from '../../api/voucher.api';
-import { CreateVoucherPopup } from './CreateVoucherPopup';
+import { CreateVoucherPopup } from './create-voucher-popup';
 
 export const VoucherManagement: React.FC = () => {
     const theme = useTheme();
