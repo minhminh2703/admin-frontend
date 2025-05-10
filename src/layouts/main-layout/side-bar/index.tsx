@@ -55,10 +55,11 @@ const Sidebar: React.FC = () => {
             sx={{
                 background: `linear-gradient(180deg, ${theme.background.sidebarDark} 0%, ${theme.background.sidebarDarkLight} 90%)`,
                 padding: 0,
-                display: { xs: 'none', lg: 'flex' },
-                flexDirection: 'column',
-                alignItems: 'center',
-                minWidth: '18em',
+                display: { xs: "none", lg: "flex" },
+                height: '100vh',
+                flexDirection: "column",
+                alignItems: "center",
+                minWidth: "18em"
             }}
         >
             <Box

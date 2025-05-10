@@ -23,12 +23,14 @@ declare module '@mui/material/styles' {
             white: string;
             lightPink: string;
             lightPurple: string;
+            searchBar: string;
         };
         fontColor: {
             black: string;
             gray: string;
             yellow: string;
             white: string;
+            greyWhite: string;
         };
     }
     interface ThemeOptions {
@@ -48,12 +50,14 @@ declare module '@mui/material/styles' {
             sidebarDarkLight: string;
             lightPink: string;
             lightPurple: string;
+            searchBar: string;
         };
         fontColor: {
             black: string;
             gray: string;
             yellow: string;
             white: string;
+            greyWhite: string;
         };
     }
 }
@@ -87,12 +91,14 @@ const theme = createTheme({
         white: '#FFFFFF',
         lightPink: '#F1EAFF',
         lightPurple: '#E4B1F0',
+        searchBar: '#1c2641'
     },
     fontColor: {
         black: '#000000',
         gray: '#49454F',
         yellow: '#FFB200',
         white: '#FFFFFF',
+        greyWhite: 'rgba(255, 255, 255, 0.6)'
     },
     typography: {
         h1: {

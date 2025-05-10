@@ -12,26 +12,37 @@ const MainLayout: React.FC = () => {
         <Box
             sx={{
                 display: 'flex',
-                height: '100%',
+                height: '100vh',
                 background: `linear-gradient(180deg, ${theme.background.dark} 0%, ${theme.background.lightDark} 100%)`,
                 backgroundBlendMode: 'multiply',
+                overflow: 'hidden',            
             }}
         >
             <Sidebar />
-
-            {/* Main content area */}
-            <Box sx={{ flexGrow: 1 }}>
-                {/* HeaderBar */}
-                <HeaderBar
+            <Box
+                sx={{
+                    flex: 1,
+                    display: 'flex',
+                    flexDirection: 'column',     
+                    overflow: 'hidden',          
+                }}
+            >
+                <Box
                     sx={{
-                        background: 'none',
-                        paddingTop: '1em',
+                        flex: 1,
+                        overflowY: 'auto',         
                     }}
-                />
+                >
+                    <HeaderBar
+                        sx={{
+                            background: 'none',
+                            paddingTop: '1em',
+                        }}
+                    />
 
-                {/* Main content (children) */}
-                <Box sx={{ padding: '3em' }}>
-                    <Outlet />
+                    <Box sx={{ padding: '3em' }}>
+                        <Outlet />
+                    </Box>
                 </Box>
             </Box>
         </Box>

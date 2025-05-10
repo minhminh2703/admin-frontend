@@ -9,7 +9,7 @@ export interface User {
     password: string;
     premium: boolean;
     role: string;
-    status: number;
+    status: string;
     updated_at: string;
     username: string;
 }
@@ -18,12 +18,17 @@ export interface GetUserResponse {
     user: User;
 }
 
+export interface ListUser {
+    users: User[];
+}
+
 export interface UserUpdateData {
     first_name: string;
     last_name: string;
     username: string;
     email: string;
     premium: boolean;
+    status: string;
     role: string;
 }
 

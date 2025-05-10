@@ -33,7 +33,7 @@ const HeaderBar: React.FC<{ sx?: any }> = ({ sx }) => {
                 const avatarUrl = await getUserAvatar(userId);
                 setAvatarUrl(avatarUrl);
             } catch (error) {
-                console.error('Failed to fetch user data:', error);
+                console.error("Error fetching user data:", error);
             }
         };
 
@@ -42,11 +42,10 @@ const HeaderBar: React.FC<{ sx?: any }> = ({ sx }) => {
     }, [userId]);
 
     return (
-        <AppBar sx={{ ...sx, boxShadow: 'none' }} position="sticky">
-            <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <AppBar sx={{ ...sx, boxShadow: 'none' }} position="static">
+            <Toolbar sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <Box sx={{ flex: 1, maxWidth: '17em' }} />
-
-                <Box sx={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <Box sx={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center" }}>
                     <TextField
                         variant="outlined"
                         placeholder="Search"
