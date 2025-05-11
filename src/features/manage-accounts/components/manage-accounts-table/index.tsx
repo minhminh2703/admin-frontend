@@ -8,47 +8,49 @@ import {
     TableHead,
     TableRow,
     Paper,
-    Typography,
     IconButton,
     Chip,
     Pagination,
     TableFooter,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
-import { ListUser, User } from "../../../../types/User";
+import { ListUser } from "../../../../types/User";
+import dayjs from "dayjs";
 
-// Define the valid status types
 export type AccountStatus = "ACTIVE" | "DELETED" | "SUSPENDED";
 
 const brightColors: Record<AccountStatus, string> = {
-    ACTIVE: "#4caf50",  // Less bright green
-    DELETED: "#f44336",  // Less bright red
-    SUSPENDED: "#ffc107"  // Less bright yellow
+    ACTIVE: "#4caf50",
+    DELETED: "#f44336",
+    SUSPENDED: "#ffc107"
 };
 
 const headerStyle = {
-    color: 'white',
+    color: '#ECDFCC',
     borderBottom: "none",
-    fontWeight: 'bold',
-    padding: '20px 30px 6px 30px', 
-    fontSize: '1rem'
+    fontWeight: 600,
+    padding: '20px 30px 6px 30px',
+    fontSize: '0.9rem',
+    fontFamily: 'Poppins, sans-serif',
 };
 
 const cellStyle = {
     color: 'white',
     borderBottom: "none",
-    padding: '6px 30px',  // Reduced padding for cells
-    fontSize: '0.875rem',  // Smaller font size for cells
-    align: 'left'
+    padding: '6px 30px',
+    fontSize: '0.8em',
+    fontFamily: 'Poppins, sans-serif',
+    align: 'left',
 };
 
 const footerStyle = {
-    color: 'white',
-    padding: '10px 24px 20px 24px', // Adjusted padding for footer
+    color: '#F0EB8D',
+    padding: '20px 24px 20px 24px', 
     fontSize: '0.875rem',
     textAlign: 'left',
-    fontWeight: 'bold',
-    colSpan: 6  // Adjust this based on the number of columns in your table
+    fontWeight: 500,
+    colSpan: 6,
+    fontFamily: 'Poppins, sans-serif',
 };
 
 interface ManageAccountsTableProps extends ListUser {
@@ -57,9 +59,7 @@ interface ManageAccountsTableProps extends ListUser {
 
 const ManageAccountsTable: React.FC<ManageAccountsTableProps> = ({ users, onEdit }) => {
     const [currentPage, setCurrentPage] = useState(1);
-    const accountsPerPage = 8;
-
-    // Calculate the number of pages
+    const accountsPerPage = 10;
     const pageCount = Math.ceil(users.length / accountsPerPage);
 
     // Get current accounts to display
@@ -73,11 +73,11 @@ const ManageAccountsTable: React.FC<ManageAccountsTableProps> = ({ users, onEdit
 
     return (
         <Box p={3} sx={{ backgroundColor: "transparent", border: "none" }}>
-            <TableContainer 
-                component={Paper} 
-                sx={{ 
+            <TableContainer
+                component={Paper}
+                sx={{
                     backgroundColor: 'transparent',
-                    border: '1px solid white',
+                    border: '0.6px solid white',
                     borderRadius: '10px',
                     overflow: 'hidden',
                     width: '100%',
@@ -106,16 +106,17 @@ const ManageAccountsTable: React.FC<ManageAccountsTableProps> = ({ users, onEdit
                                 <TableCell sx={cellStyle}>{user.id}</TableCell>
                                 <TableCell sx={cellStyle}>{user.username}</TableCell>
                                 <TableCell sx={cellStyle}>{user.first_name + " " + user.last_name}</TableCell>
-                                <TableCell sx={cellStyle}>{user.created_at}</TableCell>
+                                <TableCell sx={cellStyle}>{dayjs(user.created_at).format('DD MMM YYYY HH:mm')}</TableCell>
                                 <TableCell sx={cellStyle}>{user.role}</TableCell>
                                 <TableCell sx={cellStyle}>
                                     <Chip
                                         label={user.status}
                                         sx={{
-                                            color: brightColors[user.status as AccountStatus],  // Bright text color
-                                            borderColor: brightColors[user.status as AccountStatus],  // Bright border color
-                                            borderWidth: '2px',  // Thicker border
-                                            fontWeight: 'bold',  // Bold text
+                                            color: brightColors[user.status as AccountStatus],
+                                            borderColor: brightColors[user.status as AccountStatus],
+                                            borderWidth: '1.5px',
+                                            fontWeight: 700,
+                                            fontFamily: 'Poppins, sans-serif',
                                         }}
                                         variant="outlined"
                                     />
@@ -123,7 +124,11 @@ const ManageAccountsTable: React.FC<ManageAccountsTableProps> = ({ users, onEdit
                             </TableRow>
                         ))}
                     </TableBody>
-                    <TableFooter>
+                    <TableFooter sx={{
+                        '& .MuiTableCell-root': {
+                            borderBottom: "none",
+                        }
+                    }}>
                         <TableRow>
                             <TableCell sx={footerStyle} colSpan={7}>Total: {users.length} account(s) across all pages</TableCell>
                         </TableRow>
@@ -138,7 +143,12 @@ const ManageAccountsTable: React.FC<ManageAccountsTableProps> = ({ users, onEdit
                     shape="rounded"
                     sx={{
                         '& .MuiPaginationItem-root': {
-                            color: 'white',
+                            color: 'transparent',
+                            backgroundColor: 'transparent',
+                            borderRadius: 2,
+                            fontFamily: 'Poppins, sans-serif',
+                            fontSize: '0.8em',
+                            fontWeight: 600,
                         },
                         '& .MuiPaginationItem-root.Mui-selected': {
                             backgroundColor: 'white',
@@ -146,6 +156,9 @@ const ManageAccountsTable: React.FC<ManageAccountsTableProps> = ({ users, onEdit
                             '&:hover': {
                                 backgroundColor: 'white',
                             }
+                        },
+                        '& .MuiPaginationItem-previousNext': {
+                            color: 'white',
                         }
                     }}
                 />

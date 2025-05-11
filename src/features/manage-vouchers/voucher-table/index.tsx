@@ -90,7 +90,6 @@ const VoucherTable: React.FC<VoucherTableProps> = ({ data, handleChangeVoucher }
 
         let value: string | number = e.target.value;
 
-        // Ép kiểu đúng cho từng field
         if (['token', 'max_usage', 'used_count'].includes(field)) {
             const parsed = parseInt(value, 10);
             value = isNaN(parsed) ? 0 : parsed;
