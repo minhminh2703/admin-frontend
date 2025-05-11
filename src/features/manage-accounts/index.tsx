@@ -9,7 +9,7 @@ import {
     SelectChangeEvent,
     Button,
 } from "@mui/material";
-import { useTheme } from '../../theme';  // Assuming custom theme is applied
+import { useTheme } from '../../theme';
 import { User } from '../../types/User';
 import ManageAccountsTable from './components/manage-accounts-table';
 import { getAllUser } from '../../api/user.api';
@@ -18,6 +18,90 @@ import EditAccount from './components/edit-account';
 function capitalizeFirstLetter(string: string) {
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
 }
+
+const FilterSelect = ({
+    label,
+    name,
+    value,
+    onChange,
+    options,
+    theme,
+}: {
+    label: string;
+    name: string;
+    value: string;
+    onChange: (event: SelectChangeEvent<string>) => void;
+    options: { value: string; label: string }[];
+    theme: any;
+}) => (
+    <FormControl sx={{ flex: 1 }}>
+        <Typography sx={{
+            mb: 1,
+            fontFamily: 'Poppins, Sora, sans-serif',
+            fontWeight: '400',
+            fontSize: '0.8em',
+            color: theme.fontColor.greyWhite
+        }}>
+            {label}
+        </Typography>
+        <Select
+            name={name}
+            value={value}
+            onChange={onChange}
+            fullWidth
+            variant="outlined"
+            MenuProps={{
+                PaperProps: {
+                    sx: {
+                        bgcolor: '#232D4D',
+                        borderRadius: 2,
+                        mt: 0.5,
+                        boxShadow: 4,
+                        '& .MuiMenuItem-root': {
+                            fontFamily: 'Sora, Poppins, sans-serif',
+                            fontSize: '0.8em',
+                            color: '#F3F8FF',
+                            py: 1.2,
+                            '&:hover': {
+                                bgcolor: 'rgba(255,255,255,0.08)',
+                            },
+                            '&.Mui-selected': {
+                                fontWeight: 500,
+                                bgcolor: 'rgba(255,255,255,0.14)',
+                                '&:hover': {
+                                    bgcolor: 'rgba(255,255,255,0.18)',
+                                },
+                            },
+                        },
+                    },
+                },
+                MenuListProps: { sx: { p: 0 } },
+            }}
+            sx={{
+                bgcolor: theme.background.searchBar,
+                height: 39,
+                borderRadius: 2,
+                color: theme.fontColor.greyWhite,
+                fontFamily: 'Sora, Poppins, sans-serif',
+                '& .MuiOutlinedInput-notchedOutline': { border: 'none' },
+                '&:hover .MuiOutlinedInput-notchedOutline': { border: 'none' },
+                '&.Mui-focused .MuiOutlinedInput-notchedOutline': { border: 'none' },
+                '& .MuiSelect-select': {
+                    color: theme.fontColor.greyWhite,
+                    p: '8px 14px',
+                    fontSize: '0.875rem',
+                },
+                '& .MuiSvgIcon-root': { color: theme.fontColor.greyWhite },
+            }}
+        >
+            {options.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                </MenuItem>
+            ))}
+        </Select>
+    </FormControl>
+);
 
 const ManageAccount = () => {
     const theme = useTheme();
@@ -40,12 +124,12 @@ const ManageAccount = () => {
         const fetchUsers = async () => {
             setLoading(true);
             try {
-                const response = await getAllUser(); // Adjust this to your actual API call
+                const response = await getAllUser();
                 console.log(response)
                 setUsers(response.map(user => ({
                     ...user,
-                    status: user.status.toUpperCase() ,
-                    role: capitalizeFirstLetter(user.role) 
+                    status: user.status.toUpperCase(),
+                    role: capitalizeFirstLetter(user.role)
                 })));
             } catch (error) {
                 setError('Failed to fetch users');
@@ -55,7 +139,7 @@ const ManageAccount = () => {
         };
 
         fetchUsers();
-    }, []);  
+    }, []);
 
     const handleTempFilterChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent<string>) => {
         const { name, value } = event.target;
@@ -78,13 +162,13 @@ const ManageAccount = () => {
 
     if (selectedUserId !== null) {
         return <EditAccount userId={selectedUserId} onBack={() => setSelectedUserId(null)} />;
-    }    
+    }
 
     if (loading) return <Box>Loading...</Box>;
     if (error) return <Box>Error: {error}</Box>;
 
     return (
-        <Box sx={{ padding: 4, backgroundColor: 'transparent', border: 'none' }}>
+        <Box sx={{ backgroundColor: 'transparent', border: 'none' }}>
             <Box sx={{
                 marginBottom: 2,
                 display: 'flex',
@@ -92,102 +176,94 @@ const ManageAccount = () => {
                 alignItems: 'flex-end',
                 gap: 2,
                 flexWrap: 'wrap',
+                px: 3,
+                py: 1,
             }}>
-                <Box sx={{ flex: 1 }}>
-                    <Typography variant="subtitle2" sx={{ mb: 1 }}>What are you looking for?</Typography>
+                <Box width={{ xs: '100%', sm: '100%', md: '50%' }}>
+                    <Typography sx={{
+                        mb: 1,
+                        fontFamily: 'Poppins, Sora, sans-serif',
+                        fontWeight: '400',
+                        fontSize: '0.8em',
+                        color: theme.fontColor.greyWhite,
+                    }}>
+                        What are you looking for?
+                    </Typography>
                     <TextField
-                        variant="outlined"
                         name="search"
                         value={tempFilters.search}
                         onChange={handleTempFilterChange}
                         fullWidth
                         placeholder="Search for users, admins or by status"
-                        InputProps={{
-                            sx: {
-                                color: theme.fontColor.greyWhite, // Text color inside the input
-                                height: '39px', 
-                                '&::placeholder': {
-                                    color: theme.fontColor.greyWhite // Lighter color for placeholder text
+                        slotProps={{
+                            input: {
+                                sx: {
+                                    color: '#fff',
+                                    '&::placeholder': {
+                                        color: theme.fontColor.greyWhite
+                                    }
                                 }
                             }
                         }}
                         sx={{
-                            background: theme.background.searchBar, // Change background color
+                            height: '39px',
+                            background: theme.background.searchBar,
+                            borderRadius: 2,
                             color: theme.fontColor.greyWhite,
-                            borderRadius: '4px',
                             '& .MuiInputBase-input': {
-                                color: theme.fontColor.greyWhite, 
-                                padding: '8px 14px', 
-                                fontSize: '0.875rem',
+                                fontFamily: 'Poppins, Sora, sans-serif',
+                                color: theme.fontColor.greyWhite,
+                                padding: '8px 14px',
+                                fontSize: '0.75em',
                                 height: '39px',
                                 boxSizing: 'border-box',
                             },
-                            '& label.Mui-focused': {
-                                color: theme.fontColor.greyWhite, // Label color when focused
-                            }
+                            '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                    border: 'none',
+                                },
+                            },
                         }}
                     />
                 </Box>
-                <FormControl sx={{ flex: 1 }}>
-                    <Typography variant="subtitle2" sx={{ mb: 1 }}>Role</Typography>
-                    <Select
-                        name="role"
-                        value={tempFilters.role}
-                        onChange={handleTempFilterChange}
-                        fullWidth
-                        sx={{
-                            background: theme.background.searchBar,
-                            borderRadius: '4px',
-                            color: theme.fontColor.greyWhite, // Text color
-                            '& .MuiSelect-select': {
-                                color: theme.fontColor.greyWhite, // Dropdown text color
-                                padding: '8px 14px', 
-                                fontSize: '0.875rem',
-                            },
-                            '& .MuiSvgIcon-root': {
-                                color: theme.fontColor.greyWhite,  // Makes the dropdown arrow white
-                            }
-                        }}
-                    >
-                        <MenuItem value="All">All</MenuItem>
-                        <MenuItem value="User">User</MenuItem>
-                        <MenuItem value="Admin">Admin</MenuItem>
-                    </Select>
-                </FormControl>
-                <FormControl sx={{ flex: 1 }}>
-                    <Typography variant="subtitle2" sx={{ mb: 1 }}>Status</Typography>
-                    <Select
-                        name="status"
-                        value={tempFilters.status}
-                        onChange={handleTempFilterChange}
-                        fullWidth
-                        inputProps={{ 'aria-label': 'Without label' }}
-                        sx={{
-                            background: theme.background.searchBar,
-                            borderRadius: '4px',
-                            color: theme.fontColor.greyWhite, // Text color
-                            '& .MuiSelect-select': {
-                                color: theme.fontColor.greyWhite, // Dropdown text color
-                                padding: '8px 14px', 
-                                fontSize: '0.875rem',
-                            },
-                            '& .MuiSvgIcon-root': {
-                                color: theme.fontColor.greyWhite,  // Makes the dropdown arrow white
-                            }
-                        }}
-                    >
-                        <MenuItem value="All">All</MenuItem>
-                        <MenuItem value="ACTIVE">Active</MenuItem>
-                        <MenuItem value="DELETED">Deleted</MenuItem>
-                        <MenuItem value="SUSPENDED">Suspended</MenuItem>
-                    </Select>
-                </FormControl>
+
+                <FilterSelect
+                    label="Role"
+                    name="role"
+                    value={tempFilters.role}
+                    onChange={handleTempFilterChange}
+                    options={[
+                        { value: 'All', label: 'All' },
+                        { value: 'User', label: 'User' },
+                        { value: 'Admin', label: 'Admin' },
+                    ]}
+                    theme={theme}
+                />
+
+                <FilterSelect
+                    label="Status"
+                    name="status"
+                    value={tempFilters.status}
+                    onChange={handleTempFilterChange}
+                    options={[
+                        { value: 'All', label: 'All' },
+                        { value: 'ACTIVE', label: 'Active' },
+                        { value: 'DELETED', label: 'Deleted' },
+                        { value: 'SUSPENDED', label: 'Suspended' },
+                    ]}
+                    theme={theme}
+                />
+
                 <Button
                     variant="contained"
                     onClick={applyFilters}
                     sx={{
-                        height: '39px', 
-                        fontWeight: 'bold'
+                        height: 39,
+                        borderRadius: 2,
+                        fontWeight: 700,
+                        bgcolor: '#B6FFA1',
+                        color: '#000',
+                        fontFamily: 'Poppins, Sora, sans-serif',
                     }}
                 >
                     SEARCH
