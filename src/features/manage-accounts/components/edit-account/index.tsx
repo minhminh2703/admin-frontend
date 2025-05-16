@@ -1,11 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Box, Typography, TextField, Button, Avatar, Grid, FormControl, MenuItem, Select } from "@mui/material";
+import { Box, Typography, TextField, Button, Avatar, FormControl, MenuItem, Select } from "@mui/material";
+import Grid from "@mui/material/Grid2";
 import { useTheme } from "../../../../theme";
 import { getUser, getUserAvatar, updateUser } from "../../../../api/user.api";
 import SuccessPopup from "../success-popup/index";
-import LabeledInput from "./labled-input";
-import { useNavigate } from "react-router-dom";
-import LabeledFormControl from "./labled-formcontrol";
+import { LabeledInput } from "./labeled-input";
+import LabeledFormControl from "./labled-form-control";
+import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
+import dayjs from "dayjs";
 
 interface UserDetails {
     id: string,
@@ -16,7 +18,7 @@ interface UserDetails {
     status: string,
     createdDate: string;
     userRole: string;
-    premiumExpiredDate: string;
+    premium: boolean;
     avatarSrc: string;
 }
 
@@ -25,13 +27,12 @@ interface EditAccountProps {
     onBack: () => void;
 }
 
-const EditAccount: React.FC<EditAccountProps> = ({ userId, onBack}) => {
+const EditAccount: React.FC<EditAccountProps> = ({ userId, onBack }) => {
     const [userData, setUserData] = useState<UserDetails | null>(null);;
     const [showSuccessPopup, setShowSuccessPopup] = useState(false); // Manage snackbar state
     const [loading, setLoading] = useState(true);
     const theme = useTheme();
     const [avatar, setAvatar] = useState<string>("image.png");
-    const navigate = useNavigate();
 
 
     useEffect(() => {
@@ -48,7 +49,7 @@ const EditAccount: React.FC<EditAccountProps> = ({ userId, onBack}) => {
                     status: response.user.status,
                     createdDate: response.user.created_at,
                     userRole: response.user.role.toUpperCase(),
-                    premiumExpiredDate: '',
+                    premium: response.user.premium,
                     avatarSrc: response.user.avatar || '',
                 });
                 setLoading(false);
@@ -56,7 +57,7 @@ const EditAccount: React.FC<EditAccountProps> = ({ userId, onBack}) => {
                 console.error("Error loading user:", error);
             }
         };
-    
+
         fetchUser();
     }, [userId]);
 
@@ -73,7 +74,7 @@ const EditAccount: React.FC<EditAccountProps> = ({ userId, onBack}) => {
                 console.error("Error loading user avatar:", error);
             }
         };
-    
+
         fetchUser();
     }, [userData]);
 
@@ -86,7 +87,6 @@ const EditAccount: React.FC<EditAccountProps> = ({ userId, onBack}) => {
     };
 
     const handleSave = async () => {
-        console.log('UPDATING USER');
         if (!userId || !userData) {
             console.error("User ID is null. Cannot update user data.");
             return;
@@ -94,25 +94,11 @@ const EditAccount: React.FC<EditAccountProps> = ({ userId, onBack}) => {
 
         try {
             const updatedData = {
-                first_name: userData.firstName,
-                last_name: userData.lastName,
-                username: userData.username,
-                email: userData.email,
                 status: userData.status,
                 premium: false,
                 role: userData.userRole
             }
-
-            const updatedDataResponse = await updateUser(String(userId), updatedData);
-            console.log(updatedDataResponse);
-            
-            // if (fileInputRef.current?.files && fileInputRef.current.files[0]) {
-            //     const file = fileInputRef.current.files[0];
-            //     console.log("Uploading avatar...");
-            //     await uploadAvatar(file);
-            //     console.log("Avatar uploaded successfully!");
-            // }
-
+            await updateUser(String(userId), updatedData);
             setShowSuccessPopup(true);
 
             setTimeout(() => {
@@ -130,113 +116,131 @@ const EditAccount: React.FC<EditAccountProps> = ({ userId, onBack}) => {
             <Box >
                 <Typography
                     onClick={onBack}
-                    sx={{ 
-                        color: theme.fontColor.greyWhite, 
-                        fontWeight: 600, 
-                        fontSize: '1rem', 
-                        mb: 2, 
-                        cursor: 'pointer' 
+                    sx={{
+                        color: theme.fontColor.greyWhite,
+                        fontFamily: 'Sora, Poppins, sans-serif',
+                        fontWeight: 500,
+                        fontSize: '1rem',
+                        mb: 2,
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        '&:hover': {
+                            color: '#B6FFA1',
+                        },
                     }}
                 >
-                    &lt;&lt; Back to Account List
+                    <KeyboardBackspaceIcon sx={{ fontSize: '2em', marginRight: '0.5rem', cursor: 'pointer' }} />
+                    Back to Account List
                 </Typography>
-                <Typography variant="h5" sx={{ fontWeight: "bold", mb: 2 }}>
+                <Typography sx={{
+                    fontFamily: theme.typography.body2.fontFamily,
+                    fontSize: '1.5em',
+                    fontWeight: '600',
+                    color: '#B6FFA1',
+                    textAlign: 'left',
+                    mb: '1em',
+                }}>
                     Account Details
                 </Typography>
 
-                <Grid container spacing={4}>
-                    <Grid item xs={12} md={3}>
+                <Grid container spacing={3} sx={{ mt: 5 }}>
+                    <Grid size={{ xs: 12, md: 3 }}>
                         <Box display="flex" flexDirection="column" alignItems="center">
-                            <Typography sx={{ mb: 2 }}>Profile avatar</Typography>
                             <Avatar
-                            src={avatar || "image.png"}
-                            alt="Avatar"
-                            sx={{ width: 80, height: 80, mb: 2 }}
+                                src={avatar || 'image.png'}
+                                alt="Avatar"
+                                sx={{ width: 150, height: 150, mb: 2 }}
                             />
-                            <Button variant="outlined" size="small" sx={{ textTransform: "uppercase", fontWeight: "bold" }}>
-                            Upload
-                            </Button>
                         </Box>
                     </Grid>
 
-                    <Grid item xs={12} md={9}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={12} sm={6}>
+                    {/* Form */}
+                    <Grid size={{ xs: 12, md: 9 }}>
+                        <Grid container spacing={4}>
+                            <Grid size={{ xs: 12, sm: 6 }}>
                                 <LabeledInput
                                     label="First name"
                                     name="firstName"
                                     value={userData.firstName}
-                                    onChange={handleChange}
+                                    readOnly
                                 />
                             </Grid>
-                            <Grid item xs={12} sm={6}>
+                            <Grid size={{ xs: 12, sm: 6 }}>
                                 <LabeledInput
                                     label="Last name"
                                     name="lastName"
                                     value={userData.lastName}
-                                    onChange={handleChange}
+                                    readOnly
                                 />
                             </Grid>
-                            <Grid item xs={12}>
-                                <LabeledInput
-                                    label="Username"
-                                    name="username"
-                                    value={userData.username}
-                                    onChange={handleChange}
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
+
+                            <Grid size={{ xs: 12 }}>
                                 <LabeledInput
                                     label="Email"
                                     name="email"
                                     value={userData.email}
-                                    onChange={handleChange}
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <LabeledInput
-                                    label="Created date"
-                                    name="createdDate"
-                                    value={userData.createdDate}
-                                    onChange={handleChange}
                                     readOnly
                                 />
                             </Grid>
-                            <Grid item xs={12} sm={6}>
+
+                            <Grid size={{ xs: 12, sm: 6 }}>
+                                <LabeledInput
+                                    label="Username"
+                                    name="username"
+                                    value={userData.username}
+                                    readOnly
+                                />
+                            </Grid>
+                            <Grid size={{ xs: 12, sm: 6 }}>
+                                <LabeledInput
+                                    label="Created date"
+                                    name="createdDate"
+                                    value={dayjs(userData.createdDate).format('DD MMM YYYY HH:mm')}
+                                    readOnly
+                                />
+                            </Grid>
+                            <Grid size={{ xs: 12, sm: 6 }}>
+                                <LabeledInput
+                                    label="Premium"
+                                    name="premiumExpiredDate"
+                                    value={userData.premium ? 'Yes' : 'No'}
+                                    readOnly
+                                />
+                            </Grid>
+
+                            <Grid size={{ xs: 12, sm: 6 }}>
                                 <LabeledFormControl
                                     label="User role"
                                     name="userRole"
                                     value={userData.userRole}
                                     onChange={(e) =>
                                         handleChange({
-                                            target: {
-                                                name: "userRole",
-                                                value: e.target.value,
-                                            },
+                                            target: { name: 'userRole', value: e.target.value },
                                         } as any)
                                     }
-                                    options={["ADMIN", "USER", "MANAGER"]}
+                                    options={['ADMIN', 'USER', 'MANAGER']}
                                 />
                             </Grid>
-                            <Grid item xs={12} sm={6}>
+
+                            {/* Uncomment if you still need status ------------------- */}
+                            <Grid size={{ xs: 12, sm: 6 }}>
                                 <LabeledFormControl
                                     label="User status"
                                     name="userStatus"
                                     value={userData.status.toUpperCase()}
                                     onChange={(e) =>
                                         handleChange({
-                                            target: {
-                                                name: "status",
-                                                value: e.target.value,
-                                            },
+                                            target: { name: 'status', value: e.target.value },
                                         } as any)
                                     }
-                                    options={["ACTIVE", "DELETED", "SUSPENDED"]}
+                                    options={['ACTIVE', 'DELETED', 'SUSPENDED']}
                                 />
                             </Grid>
                         </Grid>
                     </Grid>
                 </Grid>
+
 
 
                 {/* Save Button */}
@@ -247,17 +251,20 @@ const EditAccount: React.FC<EditAccountProps> = ({ userId, onBack}) => {
                     <Button
                         variant="contained"
                         sx={{
-                            borderRadius: "10px",
-                            fontWeight: "bold",
-                            textTransform: "uppercase",
-                            padding: "0.6rem 2rem",
+                            borderRadius: 2,
+                            fontWeight: 600,
+                            textTransform: 'none',
                             marginLeft: "auto",
                             marginTop: "20px",
-                            boxShadow: "none"
+                            boxShadow: "none",
+                            fontFamily: 'Poppins, sans-serif',
+                            bgcolor: '#B6FFA1',
+                            color: '#000',
+                            fontSize: '1em',
                         }}
                         onClick={handleSave}
                     >
-                        SAVE
+                        Save Changes
                     </Button>
                 </Box>
             </Box>
