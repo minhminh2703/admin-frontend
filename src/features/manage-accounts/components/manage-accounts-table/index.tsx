@@ -116,6 +116,7 @@ const ManageAccountsTable: React.FC<ManageAccountsTableProps> = ({ users, onEdit
                                             borderColor: brightColors[user.status as AccountStatus],
                                             borderWidth: '1.5px',
                                             fontWeight: 700,
+                                            minWidth: '80px',
                                             fontFamily: 'Poppins, sans-serif',
                                         }}
                                         variant="outlined"

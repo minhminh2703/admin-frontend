@@ -14,6 +14,8 @@ import { User } from '../../types/user';
 import ManageAccountsTable from './components/manage-accounts-table';
 import { getAllUser } from '../../api/user.api';
 import EditAccount from './components/edit-account';
+import { CustomButton } from '../../components/custom-button';
+
 
 function capitalizeFirstLetter(string: string) {
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
@@ -253,21 +255,11 @@ const ManageAccount = () => {
                     ]}
                     theme={theme}
                 />
-
-                <Button
-                    variant="contained"
+                <CustomButton
+                    text="SEARCH"
+                    height={39}
                     onClick={applyFilters}
-                    sx={{
-                        height: 39,
-                        borderRadius: 2,
-                        fontWeight: 700,
-                        bgcolor: '#B6FFA1',
-                        color: '#000',
-                        fontFamily: 'Poppins, Sora, sans-serif',
-                    }}
-                >
-                    SEARCH
-                </Button>
+                />
             </Box>
             <ManageAccountsTable users={filteredData} onEdit={(id: number) => setSelectedUserId(id)} />
         </Box>

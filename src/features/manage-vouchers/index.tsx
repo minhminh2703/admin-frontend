@@ -6,6 +6,7 @@ import { Voucher } from '../../types/voucher';
 import { createVoucherAPI, editVoucherAPI, getAllVouchersAPI } from '../../api/voucher.api';
 import { CreateVoucherPopup } from './create-voucher-popup';
 import { checkVoucherStatus } from '../../utils/check-voucher-status';
+import { CustomButton } from '../../components/custom-button';
 
 type VoucherStatus = "Active" | "Used" | "Expired" | "All"
 
@@ -160,34 +161,17 @@ export const VoucherManagement: React.FC = () => {
                     </Box>
 
                     {/* Search button */}
-                    <Button
-                        variant="contained"
-                        sx={{
-                            borderRadius: 2,
-                            fontWeight: 700,
-                            bgcolor: '#B6FFA1',
-                            color: '#000',
-                            fontFamily: 'Sora, Poppins, sans-serif',
-                        }}
+                    <CustomButton
+                        text="SEARCH"
+                        height='100%'
                         onClick={() => filterVouchers(status)}
-                    >
-                        Search
-                    </Button>
-                </Box>
-                <Button
-                    variant="contained"
-                    sx={{
-                        height: 39,
-                        borderRadius: 2,
-                        fontWeight: 700,
-                        bgcolor: '#B6FFA1',
-                        color: '#000',
-                        fontFamily: 'Sora, Poppins, sans-serif',
-                    }}
+                    />
+                </Box>            
+                <CustomButton
+                    text="ADD NEW VOUCHER"
+                    height='100%'
                     onClick={() => handleOpenCreateVoucherPopup()}
-                >
-                    ADD NEW VOUCHER
-                </Button>
+                />
             </Box>
 
             {/* ======================================  */}
