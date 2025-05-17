@@ -14,23 +14,61 @@ import {
     Box,
     TextField,
     ChipProps,
+    Tooltip,
+    TableFooter,
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import CheckIcon from '@mui/icons-material/Check';
-import { Voucher } from '../../../types/Response/Vouchers';
+import { Voucher } from '../../../types/voucher';
 import dayjs from 'dayjs';
 import { useTheme } from '../../../theme';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateField, TimeField } from '@mui/x-date-pickers';
+import SnackbarNotification from '../../../components/stack-bar-notification';
+import { checkVoucherStatus } from '../../../utils/check-voucher-status';
 
-const getStatus = (used: number, max: number, expired: string): { label: string; color: ChipProps['color'] } => {
-    const now = new Date();
-    const exp = new Date(expired);
-    if (used >= max) return { label: 'USED', color: 'warning' };
-    if (exp < now) return { label: 'EXPIRED', color: 'error' };
-    return { label: 'ACTIVE', color: 'success' };
+export type VoucherStatus = 'ACTIVE' | 'EXPIRED' | 'USED';
+
+const headerStyle = {
+    color: '#ECDFCC',
+    borderBottom: "none",
+    fontWeight: 600,
+    fontSize: '0.8em',
+    fontFamily: 'Poppins, sans-serif',
 };
+
+const cellStyle = {
+    color: 'white',
+    borderBottom: "none",
+    padding: '5px 20px',
+    fontSize: '0.8em',
+    fontFamily: 'Poppins, sans-serif',
+    align: 'left',
+};
+
+const footerStyle = {
+    color: '#F0EB8D',
+    padding: '20px 24px 20px 24px',
+    fontSize: '0.875rem',
+    textAlign: 'left',
+    fontWeight: 500,
+    colSpan: 6,
+    fontFamily: 'Poppins, sans-serif',
+};
+
+const getStatus = (voucher: Voucher): { label: string; color: string } => {
+  switch (checkVoucherStatus(voucher)) {
+    case "Expired":
+      return { label: "EXPIRED", color: "#f44336" };
+    case "Used":
+      return { label: "USED",    color: "#ffc107" };
+    case "Active":
+    default:
+      return { label: "ACTIVE",  color: "#4CAF50" };
+  }
+};
+
 
 interface VoucherTableProps {
     data?: Voucher[] | null;
@@ -76,6 +114,15 @@ const VoucherTable: React.FC<VoucherTableProps> = ({ data, handleChangeVoucher }
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, [editRow]);
+
+    const handleCopyToClipboard = (text: string) => {
+        navigator.clipboard.writeText(text).then(() => {
+            console.log('Text copied to clipboard:', text);
+            alert('Copied to clipboard!');
+        }).catch((err) => {
+            console.error('Failed to copy text:', err);
+        });
+    }
 
     const handleEditClick = (row: Voucher) => {
         setEditRow({
@@ -144,66 +191,91 @@ const VoucherTable: React.FC<VoucherTableProps> = ({ data, handleChangeVoucher }
                 <TableContainer
                     component={Paper}
                     sx={{
-                        backgroundColor: 'inherit',
-                        borderRadius: 2,
+                        backgroundColor: 'transparent',
+                        border: '0.6px solid white',
+                        borderRadius: '10px',
+                        overflow: 'hidden',
                         width: '100%',
                         overflowX: 'auto',
+                        '&::-webkit-scrollbar': {
+                            display: 'none',
+                        },
                     }}
                 >
-                    <Table size="small" sx={{ minWidth: 1000, width: '100%' }}>
+                    <Table sx={{ width: '100%', border: 'none' }}>
                         <TableHead>
                             <TableRow>
-                                <TableCell sx={{ color: theme.fontColor.white, fontSize: '0.75rem' }}>Edit</TableCell>
-                                <TableCell sx={{ color: theme.fontColor.white, fontSize: '0.75rem' }}>ID</TableCell>
-                                <TableCell sx={{ color: theme.fontColor.white, fontSize: '0.75rem' }}>
+                                <TableCell sx={headerStyle} >Edit</TableCell>
+                                <TableCell sx={headerStyle}>ID</TableCell>
+                                <TableCell sx={headerStyle}>
                                     Voucher Code
                                 </TableCell>
-                                <TableCell sx={{ color: theme.fontColor.white, fontSize: '0.75rem' }}>Token</TableCell>
-                                <TableCell sx={{ color: theme.fontColor.white, fontSize: '0.75rem' }}>
+                                <TableCell sx={headerStyle}>Token</TableCell>
+                                <TableCell sx={headerStyle}>
                                     Max Usage
                                 </TableCell>
-                                <TableCell sx={{ color: theme.fontColor.white, fontSize: '0.75rem' }}>
+                                <TableCell sx={headerStyle}>
                                     Used Count
                                 </TableCell>
-                                <TableCell sx={{ color: theme.fontColor.white, fontSize: '0.75rem' }}>
+                                <TableCell sx={headerStyle}>
                                     Expired Time
                                 </TableCell>
-                                <TableCell sx={{ color: theme.fontColor.white, fontSize: '0.75rem' }}>
+                                <TableCell sx={headerStyle}>
                                     Created At
                                 </TableCell>
-                                <TableCell sx={{ color: theme.fontColor.white, fontSize: '0.75rem' }}>
+                                <TableCell sx={headerStyle}>
                                     Updated At
                                 </TableCell>
-                                <TableCell sx={{ color: theme.fontColor.white, fontSize: '0.75rem' }}>Status</TableCell>
+                                <TableCell sx={{ ...headerStyle, textAlign: 'center' }}>Status</TableCell>
                             </TableRow>
                         </TableHead>
                         {displayData && (
                             <TableBody>
                                 {displayData.map((row) => {
-                                    const status = getStatus(row.used_count, row.max_usage, row.expired_time);
+                                    const status = getStatus(row);
                                     return (
                                         <TableRow
                                             key={row.id}
                                             ref={editRow.isEdited && editRow.rowData?.id === row.id ? editRowRef : null}
                                         >
-                                            <TableCell>
-                                                <IconButton size="small" onClick={() => handleEditClick(row)}>
+                                            <TableCell sx={{ ...cellStyle, padding: 0, width: 50, textAlign: 'center', py: 1.5 }}>
+                                                <IconButton onClick={() => handleEditClick(row)}>
                                                     {editRow.isEdited && editRow.rowData?.id === row.id ? (
                                                         <CheckIcon
                                                             data-checkicon="true"
-                                                            sx={{ color: theme.fontColor.white, fontSize: '1rem' }}
+                                                            sx={{ color: 'white', fontSize: '1.2rem', margin: 0 }}
                                                         />
                                                     ) : (
                                                         <EditIcon
-                                                            sx={{ color: theme.fontColor.white, fontSize: '1rem' }}
+                                                            sx={{ color: 'white', fontSize: '1.2rem', margin: 0 }}
                                                         />
                                                     )}
                                                 </IconButton>
                                             </TableCell>
-                                            <TableCell sx={{ color: theme.fontColor.white, fontSize: '0.75rem' }}>
-                                                {row.id}
+                                            <TableCell
+                                                sx={{
+                                                    ...cellStyle,
+                                                    maxWidth: '100px',
+                                                    overflow: 'hidden',
+                                                    textOverflow: 'ellipsis',
+                                                    whiteSpace: 'nowrap',
+                                                    cursor: 'pointer',
+                                                }}
+                                                onClick={() => handleCopyToClipboard(row.id)}
+                                            >
+                                                <Tooltip title={row.id} arrow>
+                                                    <span>{row.id}</span>
+                                                </Tooltip>
                                             </TableCell>
-                                            <TableCell sx={{ color: theme.fontColor.white, fontSize: '0.75rem' }}>
+
+                                            <TableCell
+                                                sx={{ ...cellStyle, cursor: 'pointer', maxWidth: '150px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+                                                onClick={() => {
+                                                    if (!editRow.isEdited || editRow.rowData?.id !== row.id) {
+                                                        handleCopyToClipboard(editRow.isEdited && editRow.rowData?.id === row.id ? editRow.rowData?.code : row.code);
+                                                    }
+                                                }}
+                                            >
                                                 {editRow.isEdited && editRow.rowData?.id === row.id ? (
                                                     <TextField
                                                         value={editRow.rowData?.code}
@@ -222,7 +294,7 @@ const VoucherTable: React.FC<VoucherTableProps> = ({ data, handleChangeVoucher }
                                                     row.code
                                                 )}
                                             </TableCell>
-                                            <TableCell sx={{ color: theme.fontColor.white, fontSize: '0.75rem' }}>
+                                            <TableCell sx={cellStyle}>
                                                 {editRow.isEdited && editRow.rowData?.id === row.id ? (
                                                     <TextField
                                                         value={editRow.rowData?.token}
@@ -241,7 +313,7 @@ const VoucherTable: React.FC<VoucherTableProps> = ({ data, handleChangeVoucher }
                                                     row.token
                                                 )}
                                             </TableCell>
-                                            <TableCell sx={{ color: theme.fontColor.white, fontSize: '0.75rem' }}>
+                                            <TableCell sx={cellStyle}>
                                                 {editRow.isEdited && editRow.rowData?.id === row.id ? (
                                                     <TextField
                                                         value={editRow.rowData?.max_usage}
@@ -260,7 +332,7 @@ const VoucherTable: React.FC<VoucherTableProps> = ({ data, handleChangeVoucher }
                                                     row.max_usage
                                                 )}
                                             </TableCell>
-                                            <TableCell sx={{ color: theme.fontColor.white, fontSize: '0.75rem' }}>
+                                            <TableCell sx={cellStyle}>
                                                 {editRow.isEdited && editRow.rowData?.id === row.id ? (
                                                     <TextField
                                                         value={editRow.rowData?.used_count}
@@ -280,14 +352,7 @@ const VoucherTable: React.FC<VoucherTableProps> = ({ data, handleChangeVoucher }
                                                 )}
                                             </TableCell>
                                             <TableCell
-                                                sx={{
-                                                    color: theme.fontColor.white,
-                                                    fontSize: '0.75rem',
-                                                    whiteSpace: 'nowrap',
-                                                    p: 0.5,
-                                                    width: 120,
-                                                    overflow: 'hidden',
-                                                }}
+                                                sx={cellStyle}
                                             >
                                                 {editRow.isEdited && editRow.rowData?.id === row.id ? (
                                                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.1 }}>
@@ -375,23 +440,32 @@ const VoucherTable: React.FC<VoucherTableProps> = ({ data, handleChangeVoucher }
                                                 )}
                                             </TableCell>
 
-                                            <TableCell sx={{ color: theme.fontColor.white, fontSize: '0.75rem' }}>
+                                            <TableCell sx={cellStyle}>
                                                 {dayjs(row.created_at).format('DD/MM/YYYY')}
                                                 <br />
                                                 {dayjs(row.created_at).format('HH:mm:ss')}
                                             </TableCell>
-                                            <TableCell sx={{ color: theme.fontColor.white, fontSize: '0.75rem' }}>
+                                            <TableCell sx={cellStyle}>
                                                 {dayjs(row.updated_at).format('DD/MM/YYYY')}
                                                 <br />
                                                 {dayjs(row.updated_at).format('HH:mm:ss')}
                                             </TableCell>
-                                            <TableCell>
+                                            <TableCell sx={{ ...cellStyle, textAlign: 'center' }}>
                                                 <Chip
                                                     label={status.label}
-                                                    color={status.color}
                                                     variant="outlined"
                                                     size="small"
-                                                    sx={{ fontSize: '0.7rem', height: '22px' }}
+                                                    sx={{
+                                                        fontSize: '1em',
+                                                        height: '22px',
+                                                        color: status.color,
+                                                        borderColor: status.color,
+                                                        borderWidth: '1.5px',
+                                                        py: '5px',
+                                                        fontWeight: 600,
+                                                        minWidth: '80px',
+                                                        fontFamily: 'Poppins, Sora, sans-serif'
+                                                    }}
                                                 />
                                             </TableCell>
                                         </TableRow>
@@ -399,35 +473,47 @@ const VoucherTable: React.FC<VoucherTableProps> = ({ data, handleChangeVoucher }
                                 })}
                             </TableBody>
                         )}
+                        <TableFooter sx={{
+                            '& .MuiTableCell-root': {
+                                borderBottom: "none",
+                            }
+                        }}>
+                            <TableRow>
+                                <TableCell sx={footerStyle} colSpan={9}>
+                                    Total: {data?.length ?? 0} voucher(s) across all pages
+                                </TableCell>
+                            </TableRow>
+                        </TableFooter>
                     </Table>
                 </TableContainer>
             </LocalizationProvider>
 
-            <Box display="flex" justifyContent="space-between" alignItems="center" mt={2}>
-                <Typography sx={{ color: '#ccc' }}>Total: {data?.length ?? 0} voucher(s)</Typography>
+            <Box display="flex" justifyContent="flex-end" alignItems="center" mt={2}>
                 {data && (
                     <Pagination
                         count={Math.ceil((data?.length ?? 0) / rowsPerPage)}
                         page={page}
                         onChange={(_, value) => setPage(value)}
-                        variant="outlined"
+                        shape="rounded"
                         sx={{
                             '& .MuiPaginationItem-root': {
                                 color: 'white',
-                                borderColor: 'white',
-                            },
-                            '& .MuiPaginationItem-root:hover': {
-                                backgroundColor: 'white',
-                                borderColor: 'black',
-                                color: 'black',
+                                backgroundColor: 'transparent',
+                                borderRadius: 2,
+                                fontFamily: 'Poppins, sans-serif',
+                                fontSize: '0.8em',
+                                fontWeight: 600,
                             },
                             '& .MuiPaginationItem-root.Mui-selected': {
                                 backgroundColor: 'white',
                                 color: 'black',
                                 '&:hover': {
                                     backgroundColor: 'white',
-                                },
+                                }
                             },
+                            '& .MuiPaginationItem-previousNext': {
+                                color: 'white',
+                            }
                         }}
                     />
                 )}

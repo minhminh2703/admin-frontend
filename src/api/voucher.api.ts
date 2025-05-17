@@ -1,4 +1,4 @@
-import { Voucher } from '../types/Response/Vouchers';
+import { Voucher } from '../types/voucher';
 import apiClient from './base.api';
 
 export const getAllVouchersAPI = async (): Promise<Voucher[]> => {

@@ -10,7 +10,7 @@ import {
     Button,
 } from "@mui/material";
 import { useTheme } from '../../theme';
-import { User } from '../../types/User';
+import { User } from '../../types/user';
 import ManageAccountsTable from './components/manage-accounts-table';
 import { getAllUser } from '../../api/user.api';
 import EditAccount from './components/edit-account';

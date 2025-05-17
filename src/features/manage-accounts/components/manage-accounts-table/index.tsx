@@ -14,7 +14,7 @@ import {
     TableFooter,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
-import { ListUser } from "../../../../types/User";
+import { ListUser } from "../../../../types/user";
 import dayjs from "dayjs";
 
 export type AccountStatus = "ACTIVE" | "DELETED" | "SUSPENDED";
@@ -143,7 +143,7 @@ const ManageAccountsTable: React.FC<ManageAccountsTableProps> = ({ users, onEdit
                     shape="rounded"
                     sx={{
                         '& .MuiPaginationItem-root': {
-                            color: 'transparent',
+                            color: 'white',
                             backgroundColor: 'transparent',
                             borderRadius: 2,
                             fontFamily: 'Poppins, sans-serif',
