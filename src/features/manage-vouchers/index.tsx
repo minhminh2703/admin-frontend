@@ -11,7 +11,7 @@ type VoucherStatus = "Active" | "Used" | "Expired" | "All"
 
 export const VoucherManagement: React.FC = () => {
     const theme = useTheme();
-    const [status, setStatus] = useState<VoucherStatus>('Active');
+    const [status, setStatus] = useState<VoucherStatus>('All');
     const [vouchers, setVouchers] = useState<Voucher[] | null>(null);
     const [openCreateVoucherPopup, setOpenCreateVoucherPopup] = useState(false);
     const [filteredVouchers, setFilteredVouchers] = useState<Voucher[]>([]);

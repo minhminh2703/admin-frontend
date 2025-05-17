@@ -34,14 +34,97 @@ export const CreateVoucherPopup: React.FC<CreateVoucherPopupProps> = ({ open, on
         slotProps: {
             popper: {
                 sx: {
-                    '.MuiPaper-root': { border: '1px solid blue', borderRadius: '10px' },
+                    '.MuiPaper-root': { border: 'none', borderRadius: 3 },
+                    '& .MuiDialogActions-root .MuiButtonBase-root': {
+                        fontFamily: 'Sora',
+                        fontSize: '16px',
+                        color: '#1E3E62',
+                        fontWeight: 700,
+                        '&:hover': {
+                            backgroundColor: '#B7E0FF',
+                        },
+                        '&:focus, &:active': {
+                            outline: 'none !important',
+                            boxShadow: 'none !important',  
+                        }
+                    },
+                    '& .MuiDateCalendar-root': {
+                        fontFamily: 'Poppins',
+                        fontSize: '16px',
+                        color: 'black',
+                    },
+                    '& .MuiPickersFadeTransitionGroup-root': {
+                        fontFamily: 'Poppins',
+                        fontSize: '1em',
+                        color: 'black',
+                    },
+                    '& .MuiMultiSectionDigitalClock-root': {
+                        '& .MuiButtonBase-root': {
+                            fontFamily: 'Poppins',
+                            fontSize: '16px',
+                        },
+                    },
+                    '& .MuiPickersCalendarHeader-switchViewButton': {
+                        border: 'none !important',
+                        boxShadow: 'none !important',
+                        '&:focus, &:active': {
+                            outline: 'none !important',
+                            boxShadow: 'none !important',
+                        },
+                    },
+                    '& .MuiPickersYear-yearButton': {
+                        fontFamily: 'Poppins',
+                        fontSize: '0.9em',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        textAlign: 'center',
+                        '&:focus, &:active': {
+                            outline: 'none !important',
+                            boxShadow: 'none !important',
+                        },
+                        '&:hover': {
+                            backgroundColor: '#B7E0FF',
+                        }
+                    },
+                    '& .MuiPickersArrowSwitcher-button': {
+                        '&:focus, &:active': {
+                            outline: 'none !important',
+                            boxShadow: 'none !important',
+                        },
+                    },
+                    '& .MuiDayCalendar-header .MuiTypography-root': {
+                        fontFamily: 'Poppins',
+                        fontSize: '0.8em',
+                        fontWeight: 500,
+                    },
+
+                    '& .MuiPickersDay-root': {
+                        fontFamily: 'Poppins',
+                        fontSize: '0.8em',
+                        '&:focus, &:active': {
+                            outline: 'none !important',
+                        },
+                        '&:hover': {
+                            backgroundColor: '#B7E0FF',
+                        },
+                    },
+                    '& .MuiPickersDay-hiddenDaySpacingFiller': {
+                        fontFamily: 'Poppins',
+                    },
+                    '& .MuiPickersTimeListItemButton-root.Mui-selected': {
+                        borderRadius: 3,
+                    },
+                    '& .MuiMultiSectionDigitalClock-root .Mui-selected': {
+                        borderRadius: 3,
+                    },
                 },
             },
             textField: {
                 fullWidth: true,
                 sx: {
                     '& .MuiInputLabel-root': {
-                        color: theme.fontColor.white,
+                        color: theme.fontColor.yellow,
                     },
                     '& fieldset': {
                         borderColor: theme.fontColor.white,
@@ -53,7 +136,7 @@ export const CreateVoucherPopup: React.FC<CreateVoucherPopupProps> = ({ open, on
                 InputProps: {
                     disableUnderline: true,
                     sx: {
-                        color: '#FFFF',
+                        color: '#FFF',
                     },
                 },
             },
@@ -63,14 +146,13 @@ export const CreateVoucherPopup: React.FC<CreateVoucherPopupProps> = ({ open, on
         },
     };
 
+
+
     const textFieldInputSx = {
         sx: {
-            // use for text field component
-            // label color
             '& .MuiInputLabel-root': {
                 color: '#FFFF',
             },
-            // border color
             '& .MuiOutlinedInput-root': {
                 color: '#FFFF',
                 '& fieldset': {
@@ -131,6 +213,11 @@ export const CreateVoucherPopup: React.FC<CreateVoucherPopupProps> = ({ open, on
                             value={expiredTime}
                             onChange={(newValue) => setExpiredTime(newValue)}
                             {...dateTimePickerSx}
+                            localeText={
+                                {
+                                    okButtonLabel: 'Confirm',
+                                }
+                            }
                         />
                     </LocalizationProvider>
                 </Stack>
