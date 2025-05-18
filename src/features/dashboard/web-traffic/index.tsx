@@ -30,7 +30,6 @@ export default function WebTraffic() {
   const [loading, setLoading] = useState(false);
   const theme = useTheme();
 
-
   const handleFilterSelect = (selectedFilter: string) => {
     setFilter(selectedFilter as 'By Day' | 'By Week' | 'By Year');
   };
@@ -45,8 +44,8 @@ export default function WebTraffic() {
   const handleFetchReport = async () => {
     setLoading(true);
 
-    const MIN_LOAD_TIME = 1000; 
-    const MAX_LOAD_TIME = 10000; 
+    const MIN_LOAD_TIME = 1000;
+    const MAX_LOAD_TIME = 10000;
     const startTime = Date.now();
 
     try {
@@ -86,14 +85,15 @@ export default function WebTraffic() {
   }, [currentDay, filter]);
 
   return (
-    <Box sx={{ width: '100%', height: '100%', padding: '0' }}>
+    <Box padding={3.5} sx={{ width: '100%', height: '100%', background: 'linear-gradient(to right, rgba(44,62,80,0.8) 20%,rgba(44,62,80,0) 70%)', borderRadius: 4}}>
       <Typography gutterBottom
         sx={{
           fontFamily: theme.typography.body2.fontFamily,
           fontSize: '1.5em',
           fontWeight: '700',
-          color: theme.status.inProgress.backgroundColor,
+          color: '#FBF46D',
           textAlign: 'left',
+          mb: '1em',
         }} >
         WEB TRAFFIC
       </Typography>

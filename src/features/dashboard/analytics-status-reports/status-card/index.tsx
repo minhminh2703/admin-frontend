@@ -7,8 +7,8 @@ import HourglassTopIcon from '@mui/icons-material/HourglassTop';
 import HelpIcon from '@mui/icons-material/Help';
 
 export interface StatusCardProps {
-  status: string;   
-  count: number;   
+  status: string;
+  count: number;
 }
 
 const StatusCard: React.FC<StatusCardProps> = ({ status, count }) => {
