@@ -4,13 +4,14 @@ import { fetchMediaReport, fetchPipelineReport } from '../../api/dashboard.api';
 import AnalyticsReport from './analytics-status-reports';
 import { Box } from '@mui/material';
 import LollipopChart from './analytics-types-reports/lollipop-chart';
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import PipelineAnnotation from '../dashboard/pipeline-annotation';
+import { useEffect, useState } from 'react';
 import { StatsResponse } from '../../types/stats';
+
 
 const Dashboard = () => {
     const [mediaStats, setMediaStats] = useState<StatsResponse | null>(null);
     const [articleStats, setArticleStats] = useState<StatsResponse | null>(null);
-
 
     useEffect(() => {
         fetchMediaReport().then(setMediaStats);
@@ -35,6 +36,7 @@ const Dashboard = () => {
 
                 {mediaStats && <LollipopChart data={mediaStats} width={500} height={300} />}
             </Box>
+            <PipelineAnnotation />
             <Box display="flex" flexWrap="wrap" justifyContent="space-between" gap={2}>
                 <AnalyticsReport
                     fetchReport={fetchPipelineReport}

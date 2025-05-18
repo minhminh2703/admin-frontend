@@ -30,7 +30,7 @@ const SuccessPopup: React.FC<SuccessPopupProps> = ({ open, onClose, message }) =
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
-                borderRadius: 2
+                borderRadius: 4
             }}>
                 <CheckCircleIcon sx={{
                     fontSize: 100,
@@ -39,11 +39,12 @@ const SuccessPopup: React.FC<SuccessPopupProps> = ({ open, onClose, message }) =
                 }} />
 
                 <Typography sx={{
-                    fontFamily: theme.typography.fontFamily,
-                    fontWeight: theme.typography.fontWeightBold,
+                    fontFamily: 'Poppins, Sora, sans-serif',
+                    fontWeight: 600,
                     fontSize: '1.5rem',
-                    marginTop: 5,
+                    marginTop: 3,
                     color: theme.status.complete.fontColor,
+                    textAlign: 'center',
                 }}>
                     {message}
                 </Typography>

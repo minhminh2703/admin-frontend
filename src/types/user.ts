@@ -23,10 +23,6 @@ export interface ListUser {
 }
 
 export interface UserUpdateData {
-    first_name: string;
-    last_name: string;
-    username: string;
-    email: string;
     premium: boolean;
     status: string;
     role: string;

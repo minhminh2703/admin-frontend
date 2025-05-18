@@ -1,5 +1,5 @@
 import apiClient from './base.api';
-import { AvatarResponse, GetPresignedURL, GetUserResponse, ListUser, UserUpdateData } from '../types/User';
+import { AvatarResponse, GetPresignedURL, GetUserResponse, ListUser, UserUpdateData } from '../types/user';
 
 export const getUser = async (userId: string): Promise<GetUserResponse> => {
     try {

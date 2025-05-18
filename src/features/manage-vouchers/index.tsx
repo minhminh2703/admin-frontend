@@ -1,19 +1,21 @@
-import { Box, Typography, Button, MenuItem, TextField } from '@mui/material';
+import { Box, Typography, Button, MenuItem, TextField, Select, SelectChangeEvent } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { useTheme } from '../../theme';
-import DownloadIcon from '@mui/icons-material/Download';
 import VoucherTable from '../manage-vouchers/voucher-table';
-import { Voucher } from '../../types/Response/Vouchers';
+import { Voucher } from '../../types/voucher';
 import { createVoucherAPI, editVoucherAPI, getAllVouchersAPI } from '../../api/voucher.api';
 import { CreateVoucherPopup } from './create-voucher-popup';
+import { checkVoucherStatus } from '../../utils/check-voucher-status';
+import { CustomButton } from '../../components/custom-button';
+
+type VoucherStatus = "Active" | "Used" | "Expired" | "All"
 
 export const VoucherManagement: React.FC = () => {
     const theme = useTheme();
-    const [status, setStatus] = useState('Active');
-    const [query, setQuery] = useState('');
+    const [status, setStatus] = useState<VoucherStatus>('All');
     const [vouchers, setVouchers] = useState<Voucher[] | null>(null);
     const [openCreateVoucherPopup, setOpenCreateVoucherPopup] = useState(false);
+    const [filteredVouchers, setFilteredVouchers] = useState<Voucher[]>([]);
 
     const handleOpenCreateVoucherPopup = () => setOpenCreateVoucherPopup(true);
     const handleCloseCreateVoucherPopup = () => setOpenCreateVoucherPopup(false);
@@ -21,6 +23,7 @@ export const VoucherManagement: React.FC = () => {
         try {
             const allVouchers = await getAllVouchersAPI();
             setVouchers(allVouchers);
+            setFilteredVouchers(allVouchers);
         } catch (error) {
             console.error('Failed to fetch vouchers:', error);
         }
@@ -50,6 +53,18 @@ export const VoucherManagement: React.FC = () => {
         handleCloseCreateVoucherPopup();
     };
 
+    const filterVouchers = (keepStatus: VoucherStatus) => {
+        if (!vouchers) return;
+
+        const filtered =
+            keepStatus === "All"
+                ? vouchers
+                : vouchers.filter(voucher => checkVoucherStatus(voucher) === keepStatus);
+
+        setFilteredVouchers(filtered);
+    };
+
+
     useEffect(() => {
         fetchAllVoucher();
     }, []);
@@ -57,64 +72,13 @@ export const VoucherManagement: React.FC = () => {
     return (
         <Box
             sx={{
-                zoom: 0.95,
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'justify',
+                alignItems: 'space-between',
+                margin: 0,
             }}
         >
-            <Box
-                sx={{
-                    marginTop: '0.2rem',
-                    marginBottom: '0.2rem',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.3rem',
-                }}
-            >
-                <Link to="/dashboard" style={{ textDecoration: 'none' }}>
-                    <Typography
-                        sx={{
-                            color: theme.fontColor.gray,
-                            cursor: 'pointer',
-                            fontSize: '0.9rem',
-                            '&:hover': {
-                                textDecoration: 'underline',
-                                color: theme.palette.primary.main,
-                            },
-                        }}
-                    >
-                        Pages
-                    </Typography>
-                </Link>
-                <Typography>/</Typography>
-                <Link to="/manage_vouchers" style={{ textDecoration: 'none' }}>
-                    <Typography
-                        sx={{
-                            color: theme.fontColor.white,
-                            cursor: 'pointer',
-                            fontSize: '0.9rem',
-                            '&:hover': {
-                                textDecoration: 'underline',
-                                color: theme.palette.primary.main,
-                            },
-                        }}
-                    >
-                        Manage Voucher
-                    </Typography>
-                </Link>
-            </Box>
-            <Typography
-                sx={{
-                    color: theme.fontColor.white,
-                }}
-            >
-                Manage Voucher
-            </Typography>
-
-            {/* ======================================  */}
-            {/* =                                    =  */}
-            {/* =          Search Section            =  */}
-            {/* =                                    =  */}
-            {/* ======================================  */}
-
             <Box
                 sx={{
                     display: 'flex',
@@ -124,116 +88,98 @@ export const VoucherManagement: React.FC = () => {
                     gap: 2,
                     borderRadius: 2,
                     marginTop: '1.5rem',
+                    marginBottom: '1.5rem',
+                    p: 2,
                 }}
             >
                 {/* Left section */}
-                <Box sx={{ display: 'flex', alignItems: 'flex-end', flexWrap: 'wrap', gap: 2, marginBottom: '1rem' }}>
-                    {/* Search box */}
-                    <Box sx={{ marginRight: '1.5rem' }}>
-                        <Typography sx={{ color: 'white', fontSize: '0.9rem', mb: 0.5 }}>
-                            What are you looking for ?
-                        </Typography>
-                        <TextField
-                            placeholder="Search for users, admin or by status"
-                            size="small"
-                            value={query}
-                            onChange={(e) => setQuery(e.target.value)}
-                            sx={{
-                                minWidth: '23rem',
-                                '& .MuiOutlinedInput-root': {
-                                    borderRadius: '8px',
-                                    color: 'white',
-                                    fontSize: '0.9rem',
-                                    backgroundColor: '#1e293b',
-                                },
-                                input: { color: 'white' },
-                            }}
-                        />
-                    </Box>
-
-                    {/* Status dropdown */}
-                    <Box sx={{ marginRight: '1.5rem' }}>
-                        <Typography sx={{ color: 'white', fontSize: '0.9rem', mb: 0.5 }}>Status</Typography>
-                        <TextField
-                            select
-                            size="small"
+                <Box sx={{ display: 'flex', alignItems: 'flex-end', flexWrap: 'wrap', gap: 2, marginBottom: 'none' }}>
+                    <Box sx={{ marginRight: '1.5rem', display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 2, justifyContent: 'center' }}>
+                        <Typography sx={{
+                            fontFamily: 'Poppins, Sora, sans-serif',
+                            fontWeight: '400',
+                            fontSize: '0.8em',
+                            color: theme.fontColor.greyWhite
+                        }}>Status</Typography>
+                        <Select
                             value={status}
-                            onChange={(e) => setStatus(e.target.value)}
+                            size="small"
+                            fullWidth
+                            onChange={(e: SelectChangeEvent<VoucherStatus>) => {
+                                const next = e.target.value as VoucherStatus;
+                                setStatus(next);
+                            }}
+                            MenuProps={{
+                                PaperProps: {
+                                    sx: {
+                                        bgcolor: '#232D4D',
+                                        borderRadius: 2,
+                                        mt: 0.5,
+                                        boxShadow: 4,
+                                        '& .MuiMenuItem-root': {
+                                            fontFamily: 'Sora, Poppins, sans-serif',
+                                            fontSize: '0.8em',
+                                            color: '#F3F8FF',
+                                            py: 1.2,
+                                            '&:hover': {
+                                                bgcolor: 'rgba(255,255,255,0.08)',
+                                            },
+                                            '&.Mui-selected': {
+                                                fontWeight: 500,
+                                                bgcolor: 'rgba(255,255,255,0.14)',
+                                                '&:hover': {
+                                                    bgcolor: 'rgba(255,255,255,0.18)',
+                                                },
+                                            },
+                                        },
+                                    },
+                                },
+                                MenuListProps: { sx: { p: 0 } },
+                            }}
                             sx={{
-                                minWidth: 120,
-                                '& .MuiOutlinedInput-root': {
-                                    borderRadius: '8px',
-                                    color: 'white',
-                                    fontSize: '0.9rem',
-                                    backgroundColor: '#1e293b',
+                                bgcolor: theme.background.searchBar,
+                                minWidth: '120px',
+                                borderRadius: 2,
+                                color: theme.fontColor.greyWhite,
+                                fontFamily: 'Sora, Poppins, sans-serif',
+                                '& .MuiOutlinedInput-notchedOutline': { border: 'none' },
+                                '&:hover .MuiOutlinedInput-notchedOutline': { border: 'none' },
+                                '&.Mui-focused .MuiOutlinedInput-notchedOutline': { border: 'none' },
+                                '& .MuiSelect-select': {
+                                    color: theme.fontColor.greyWhite,
+                                    p: '8px 14px',
+                                    fontSize: '0.875rem',
                                 },
-                                '& .MuiSvgIcon-root': {
-                                    color: 'white',
-                                },
+                                '& .MuiSvgIcon-root': { color: theme.fontColor.greyWhite },
                             }}
                         >
+                            <MenuItem value="All">All</MenuItem>
                             <MenuItem value="Active">Active</MenuItem>
                             <MenuItem value="Expired">Expired</MenuItem>
                             <MenuItem value="Used">Used</MenuItem>
-                        </TextField>
+                        </Select>
                     </Box>
 
                     {/* Search button */}
-                    <Button
-                        variant="contained"
-                        sx={{
-                            height: 40,
-                            borderRadius: '8px',
-                            fontSize: '0.9rem',
-                            textTransform: 'none',
-                        }}
-                        onClick={() => console.log('Searching...')}
-                    >
-                        Search
-                    </Button>
-                </Box>
-
-                {/* Right section: Export */}
-                <Button
-                    variant="outlined"
-                    startIcon={<DownloadIcon />}
-                    sx={{
-                        color: 'white',
-                        borderColor: '#3b82f6',
-                        fontSize: '0.9rem',
-                        borderRadius: '8px',
-                        textTransform: 'none',
-                        marginRight: '50px',
-                        '&:hover': {
-                            backgroundColor: '#1e40af',
-                            borderColor: '#3b82f6',
-                        },
-                    }}
-                    onClick={() => console.log('Exporting...')}
-                >
-                    EXPORT
-                </Button>
+                    <CustomButton
+                        text="SEARCH"
+                        height='100%'
+                        onClick={() => filterVouchers(status)}
+                    />
+                </Box>            
+                <CustomButton
+                    text="ADD NEW VOUCHER"
+                    height='100%'
+                    onClick={() => handleOpenCreateVoucherPopup()}
+                />
             </Box>
-            <Button
-                variant="contained"
-                sx={{
-                    height: 35,
-                    borderRadius: '8px',
-                    textTransform: 'none',
-                    fontSize: '0.9rem',
-                    backgroundColor: theme.background.darkBlue,
-                    marginBottom: '1rem',
-                }}
-                onClick={() => handleOpenCreateVoucherPopup()}
-            >
-                ADD NEW VOUCHER
-            </Button>
+
             {/* ======================================  */}
             {/* =                                    =  */}
             {/* =          Table Section             =  */}
             {/* =                                    =  */}
             {/* ======================================  */}
-            <VoucherTable data={vouchers} handleChangeVoucher={handleSubmitEditVoucher} />
+            <VoucherTable data={filteredVouchers} handleChangeVoucher={handleSubmitEditVoucher} />
             <CreateVoucherPopup
                 open={openCreateVoucherPopup}
                 onClose={handleCloseCreateVoucherPopup}
