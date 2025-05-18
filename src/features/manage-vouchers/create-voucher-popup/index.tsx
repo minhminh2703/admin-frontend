@@ -319,7 +319,7 @@ export const CreateVoucherPopup: React.FC<CreateVoucherPopupProps> = ({ open, on
                                         InputLabelProps: { shrink: true },
                                         sx: {
                                             ...textFieldInputSx.sx,
-                                            width: '50%',
+                                            width: '48%',
                                             '& .MuiInputAdornment-root .MuiIconButton-root': {
                                                 outline: 'none !important',
                                                 boxShadow: 'none !important',
