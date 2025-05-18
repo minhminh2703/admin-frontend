@@ -35,3 +35,7 @@ export interface UserUpdateData {
 export interface AvatarResponse {
     avatar_download_url: string;
 }
+
+export interface GetPresignedURL {
+    upload_url: string
+}

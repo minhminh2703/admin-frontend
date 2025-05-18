@@ -1,5 +1,5 @@
 import apiClient from './base.api';
-import { AvatarResponse, GetUserResponse, ListUser, UserUpdateData } from '../types/User';
+import { AvatarResponse, GetPresignedURL, GetUserResponse, ListUser, UserUpdateData } from '../types/User';
 
 export const getUser = async (userId: string): Promise<GetUserResponse> => {
     try {
@@ -47,5 +47,36 @@ export const changePassword = async (userId: string, oldPassword: string, newPas
         return response;
     } catch (error) {
         throw new Error(`Failed to change password: ${error}`);
+    }
+}
+
+// Image request
+export const getPresignedImageURL = async (fileName: string, fileType: string) => {
+    try {
+        const response = await apiClient.post<GetPresignedURL>('/videos/generate-upload-url/image', null, {
+        params: {
+            file_name: fileName,
+            file_type: fileType,
+        },
+        });
+        return response;
+    } catch (error) {
+        console.error('Error generating presigned Image URL:', error);
+        throw error;
+    }
+};
+
+export const updateAvatar = async (userId: string, fileName: string) => {
+    try {
+        const response = await apiClient.put<string>(`/users/${userId}/update-avatar`, null, {
+            params: {
+                user_id: userId,
+                file_name: fileName,
+            }
+        });
+        return response;       
+    } catch (error) {
+        console.error('Error cannot update user avatar:', error);
+        throw error;
     }
 }
