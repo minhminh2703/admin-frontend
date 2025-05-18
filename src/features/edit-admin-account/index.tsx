@@ -3,9 +3,9 @@ import { Box, Typography, TextField, Button, Avatar, Grid, FormControl, MenuItem
 import { useTheme } from "../../theme";
 import { getPresignedImageURL, getUser, getUserAvatar, updateAvatar, updateUser } from "../../api/user.api";
 import SuccessPopup from "../manage-accounts/components/success-popup/index";
-import LabeledInput from "../manage-accounts/components/edit-account/labled-input";
+import { LabeledInput } from "../manage-accounts/components/edit-account/labeled-input/index";
 import { useNavigate, useParams } from "react-router-dom";
-import LabeledFormControl from "../manage-accounts/components/edit-account/labled-formcontrol";
+import LabeledFormControl from "../manage-accounts/components/edit-account/labeled-form-control/index";
 import axios from "axios";
 
 interface UserDetails {

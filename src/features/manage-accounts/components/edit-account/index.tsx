@@ -5,7 +5,7 @@ import { useTheme } from "../../../../theme";
 import { getUser, getUserAvatar, updateUser } from "../../../../api/user.api";
 import SuccessPopup from "../success-popup/index";
 import { LabeledInput } from "./labeled-input";
-import LabeledFormControl from "./labled-form-control";
+import LabeledFormControl from "./labeled-form-control";
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import dayjs from "dayjs";
 
