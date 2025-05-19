@@ -114,7 +114,7 @@ const HeaderBar: React.FC<{ sx?: any }> = ({ sx }) => {
                         avatarUrl={avatarUrl}
                         userId={userId? userId : ''}
                     />
-                    <IconButton onClick={handleLogout} sx={{ color: 'white', marginRight: '1rem', gap: 1 }}>
+                    <IconButton onClick={handleLogout} sx={{ color: 'white', marginRight: '1rem', gap: 1, cursor: 'pointer' }}>
                         <LogoutIcon />
                     </IconButton>
                 </Box>

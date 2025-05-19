@@ -8,6 +8,7 @@ import { LabeledInput } from "./labeled-input";
 import LabeledFormControl from "./labeled-form-control";
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import dayjs from "dayjs";
+import { CustomButton } from "../../../../components/custom-button";
 
 interface UserDetails {
     id: string,
@@ -130,7 +131,7 @@ const EditAccount: React.FC<EditAccountProps> = ({ userId, onBack }) => {
                         },
                     }}
                 >
-                    <KeyboardBackspaceIcon sx={{ fontSize: '2em', marginRight: '0.5rem', cursor: 'pointer' }} />
+                    <KeyboardBackspaceIcon sx={{ fontSize: '1.2em', marginRight: '0.5rem', cursor: 'pointer' }} />
                     Back to Account List
                 </Typography>
                 <Typography sx={{
@@ -248,24 +249,17 @@ const EditAccount: React.FC<EditAccountProps> = ({ userId, onBack }) => {
                     display="flex"
                     justifyContent="flex-end"
                 >
-                    <Button
-                        variant="contained"
-                        sx={{
-                            borderRadius: 2,
-                            fontWeight: 600,
-                            textTransform: 'none',
-                            marginLeft: "auto",
-                            marginTop: "20px",
-                            boxShadow: "none",
-                            fontFamily: 'Poppins, sans-serif',
-                            bgcolor: '#B6FFA1',
-                            color: '#000',
-                            fontSize: '1em',
-                        }}
-                        onClick={handleSave}
+                    <Box
+                        display="flex"
+                        justifyContent="flex-end"
+                        mt={4}
                     >
-                        Save Changes
-                    </Button>
+                        <CustomButton
+                            text="Save changes"
+                            height='100%'
+                            onClick={handleSave}
+                        />
+                    </Box>
                 </Box>
             </Box>
             <SuccessPopup

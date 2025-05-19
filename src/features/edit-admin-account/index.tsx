@@ -1,12 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Box, Typography, TextField, Button, Avatar, Grid, FormControl, MenuItem, Select } from "@mui/material";
-import { useTheme } from "../../theme";
-import { getPresignedImageURL, getUser, getUserAvatar, updateAvatar, updateUser } from "../../api/user.api";
+import { Box, Typography, Button, Avatar } from "@mui/material";
+import { getPresignedImageURL, getUser, updateAvatar, updateUser } from "../../api/user.api";
+import Grid from "@mui/material/Grid2";
 import SuccessPopup from "../manage-accounts/components/success-popup/index";
 import { LabeledInput } from "../manage-accounts/components/edit-account/labeled-input/index";
 import { useNavigate, useParams } from "react-router-dom";
 import LabeledFormControl from "../manage-accounts/components/edit-account/labeled-form-control/index";
 import axios from "axios";
+import dayjs from "dayjs";
+import { CustomButton } from "../../components/custom-button";
 
 interface UserDetails {
     id: string,
@@ -27,7 +29,6 @@ interface EditAccountProps {
 }
 
 const s3ApiClient = axios.create({
-    // No base URL, timeouts, or headers needed here
 });
 
 const uploadImageToS3 = async (uploadUrl: string, file: File) => {
@@ -36,7 +37,7 @@ const uploadImageToS3 = async (uploadUrl: string, file: File) => {
         console.log(file.type);
         const response = await s3ApiClient.put(uploadUrl, file, {
             headers: {
-                'Content-Type': file.type  // As needed, based on your server's presigned URL expectations
+                'Content-Type': file.type
             }
         });
         return response;
@@ -70,7 +71,7 @@ const uploadAvatar = async (file: File) => {
     }
 }
 
-const EditAdminAccount: React.FC<EditAccountProps> = ({ userId, onBack}) => {
+const EditAdminAccount: React.FC<EditAccountProps> = ({ userId, onBack }) => {
     const [userData, setUserData] = useState<UserDetails | null>(null);;
     const [showSuccessPopup, setShowSuccessPopup] = useState(false); // Manage snackbar state
     const [loading, setLoading] = useState(true);
@@ -120,7 +121,7 @@ const EditAdminAccount: React.FC<EditAccountProps> = ({ userId, onBack}) => {
                 console.error("Error loading user:", error);
             }
         };
-    
+
         fetchUser();
     }, [userId]);
 
@@ -128,9 +129,6 @@ const EditAdminAccount: React.FC<EditAccountProps> = ({ userId, onBack}) => {
         const fetchUser = async () => {
             try {
                 if (userData?.id) {
-                    // const response = await getUserAvatar(userData.id);
-                    // const avatarUrl = response.replace(/\/\//g, '/');
-                    // console.log('AVATAR RESPONSE: ', response);
                     const avatarUrl = userData.avatarSrc.split('?X-Amz-Algorithm')[0];
                     console.log('AVATAR SRC: ', avatarUrl);
                     setAvatar(avatarUrl);
@@ -139,14 +137,14 @@ const EditAdminAccount: React.FC<EditAccountProps> = ({ userId, onBack}) => {
                 console.error("Error loading user avatar:", error);
             }
         };
-    
+
         fetchUser();
     }, [userData]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setUserData((prev) => {
-            if (!prev) return prev; // prevent update if null
+            if (!prev) return prev;
             return { ...prev, [name]: value };
         });
     };
@@ -178,13 +176,6 @@ const EditAdminAccount: React.FC<EditAccountProps> = ({ userId, onBack}) => {
                 const updateAvatarDb = await updateAvatar(String(userId), file.name);
                 console.log('Update avatar in DB response: ', updateAvatarDb);
             }
-            
-            // if (fileInputRef.current?.files && fileInputRef.current.files[0]) {
-            //     const file = fileInputRef.current.files[0];
-            //     console.log("Uploading avatar...");
-            //     await uploadAvatar(file);
-            //     console.log("Avatar uploaded successfully!");
-            // }
 
             setShowSuccessPopup(true);
 
@@ -200,41 +191,75 @@ const EditAdminAccount: React.FC<EditAccountProps> = ({ userId, onBack}) => {
 
     return (
         <>
-            <Box >
-                <Typography variant="h5" sx={{ fontWeight: "bold", mb: 2 }}>
+            <Box paddingTop={4} paddingLeft={3}>
+                <Typography sx={{
+                    fontFamily: 'Poppins, Sora',
+                    fontSize: '1.5em',
+                    fontWeight: '600',
+                    color: '#B6FFA1',
+                    textAlign: 'left',
+                    mb: '2.5em',
+                }}>
                     Account Details
                 </Typography>
 
                 <Grid container spacing={4}>
-                    <Grid item xs={12} md={3}>
-                        <Box display="flex" flexDirection="column" alignItems="center">
-                            <Typography sx={{ mb: 2 }}>Profile avatar</Typography>
+                    <Grid size={{ xs: 12, md: 3 }}>
+                        <Box
+                            position="relative"
+                            display="inline-block"
+                            sx={{
+                                "&:hover .overlay": { opacity: 1 },
+                            }}
+                        >
                             <Avatar
                                 src={avatar || "image.png"}
                                 alt="Avatar"
-                                sx={{ width: 80, height: 80, mb: 2 }}
+                                sx={{
+                                    width: 150,
+                                    height: 150,
+                                    border: "1.5px solid #F1EFEC",
+                                }}
                             />
+                            <Box
+                                className="overlay"
+                                onClick={handleClick}
+                                sx={{
+                                    position: "absolute",
+                                    top: 0,
+                                    left: 0,
+                                    width: "100%",
+                                    height: "100%",
+                                    bgcolor: "rgba(0, 0, 0, 0.7)",
+                                    color: "#F4F6FF",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    borderRadius: "50%",
+                                    opacity: 0,
+                                    transition: "opacity 0.3s ease",
+                                    cursor: "pointer",
+                                    userSelect: "none",
+                                    fontFamily: "Poppins, Sora",
+                                }}
+                            >
+                                Edit Avatar
+                            </Box>
+
+                            {/* Hidden file input */}
                             <input
                                 type="file"
-                                hidden
                                 accept="image/*"
+                                hidden
                                 ref={fileInputRef}
                                 onChange={handleFileChange}
                             />
-                            <Button 
-                                variant="outlined" 
-                                size="small" 
-                                sx={{ textTransform: "uppercase", fontWeight: "bold" }}
-                                onClick={handleClick}
-                            >
-                                Upload
-                            </Button>
                         </Box>
                     </Grid>
 
-                    <Grid item xs={12} md={9}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={12} sm={6}>
+                    <Grid size={{ xs: 12, md: 9 }}>
+                        <Grid container spacing={4}>
+                            <Grid size={{ xs: 12, sm: 6 }}>
                                 <LabeledInput
                                     label="First name"
                                     name="firstName"
@@ -242,7 +267,7 @@ const EditAdminAccount: React.FC<EditAccountProps> = ({ userId, onBack}) => {
                                     onChange={handleChange}
                                 />
                             </Grid>
-                            <Grid item xs={12} sm={6}>
+                            <Grid size={{ xs: 12, sm: 6 }}>
                                 <LabeledInput
                                     label="Last name"
                                     name="lastName"
@@ -250,15 +275,7 @@ const EditAdminAccount: React.FC<EditAccountProps> = ({ userId, onBack}) => {
                                     onChange={handleChange}
                                 />
                             </Grid>
-                            <Grid item xs={12}>
-                                <LabeledInput
-                                    label="Username"
-                                    name="username"
-                                    value={userData.username}
-                                    onChange={handleChange}
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
+                            <Grid size={{ xs: 12 }}>
                                 <LabeledInput
                                     label="Email"
                                     name="email"
@@ -266,16 +283,23 @@ const EditAdminAccount: React.FC<EditAccountProps> = ({ userId, onBack}) => {
                                     onChange={handleChange}
                                 />
                             </Grid>
-                            <Grid item xs={12} sm={6}>
+                            <Grid size={{ xs: 12, sm: 6 }}>
+                                <LabeledInput
+                                    label="Username"
+                                    name="username"
+                                    value={userData.username}
+                                    onChange={handleChange}
+                                />
+                            </Grid>
+                            <Grid size={{ xs: 12, sm: 6 }}>
                                 <LabeledInput
                                     label="Created date"
                                     name="createdDate"
-                                    value={userData.createdDate}
-                                    onChange={handleChange}
+                                    value={dayjs(userData.createdDate).format('DD MMM YYYY HH:mm')}
                                     readOnly
                                 />
                             </Grid>
-                            <Grid item xs={12} sm={6}>
+                            <Grid size={{ xs: 12, sm: 6 }}>
                                 <LabeledFormControl
                                     label="User role"
                                     name="userRole"
@@ -291,7 +315,7 @@ const EditAdminAccount: React.FC<EditAccountProps> = ({ userId, onBack}) => {
                                     options={["ADMIN", "USER", "MANAGER"]}
                                 />
                             </Grid>
-                            <Grid item xs={12} sm={6}>
+                            <Grid size={{ xs: 12, sm: 6 }}>
                                 <LabeledFormControl
                                     label="User status"
                                     name="userStatus"
@@ -316,22 +340,13 @@ const EditAdminAccount: React.FC<EditAccountProps> = ({ userId, onBack}) => {
                 <Box
                     display="flex"
                     justifyContent="flex-end"
+                    mt={4}
                 >
-                    <Button
-                        variant="contained"
-                        sx={{
-                            borderRadius: "10px",
-                            fontWeight: "bold",
-                            textTransform: "uppercase",
-                            padding: "0.6rem 2rem",
-                            marginLeft: "auto",
-                            marginTop: "20px",
-                            boxShadow: "none"
-                        }}
+                    <CustomButton
+                        text="Save changes"
+                        height='100%'
                         onClick={handleSave}
-                    >
-                        SAVE
-                    </Button>
+                    />
                 </Box>
             </Box>
             <SuccessPopup
@@ -344,12 +359,12 @@ const EditAdminAccount: React.FC<EditAccountProps> = ({ userId, onBack}) => {
 };
 
 const EditAdminAccountWrapper = () => {
-  const { userId } = useParams();
-  const navigate = useNavigate();
+    const { userId } = useParams();
+    const navigate = useNavigate();
 
-  if (!userId) return <div>Missing userId</div>;
+    if (!userId) return <div>Missing userId</div>;
 
-  return <EditAdminAccount userId={+userId} onBack={() => navigate(-1)} />;
+    return <EditAdminAccount userId={+userId} onBack={() => navigate(-1)} />;
 };
 
 export default EditAdminAccountWrapper;

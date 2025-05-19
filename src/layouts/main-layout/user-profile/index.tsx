@@ -6,17 +6,17 @@ import { AccountCircle, NavigateNext } from '@mui/icons-material';
 import { useNavigate } from "react-router-dom";
 
 interface UserProfileBoxProps {
-  firstName: string;
-  lastName: string;
-  avatarUrl: string;
-  userId: string;
+    firstName: string;
+    lastName: string;
+    avatarUrl: string;
+    userId: string;
 }
 
 const UserProfile: React.FC<UserProfileBoxProps> = ({ firstName, lastName, avatarUrl, userId }) => {
     const theme = useTheme();
     const [anchorDropdown, setAnchorDropdown] = useState<null | HTMLElement>(null);
     const menuItems = [
-        { label: 'Edit account', icon: <AccountCircle />, path: `/edit_account/${userId}` }
+        { label: 'Edit account', icon: <AccountCircle sx={{ fontSize: '2em' }}/>, path: `/edit_account/${userId}` }
     ]
     const navigate = useNavigate();
 
@@ -39,15 +39,16 @@ const UserProfile: React.FC<UserProfileBoxProps> = ({ firstName, lastName, avata
                 marginLeft: '1rem',
                 alignItems: 'center',
                 borderRadius: '0.4rem',
+                cursor: 'pointer',
             }}
         >
             <Typography
                 variant="body2"
                 sx={{
-                color: 'white',
-                fontFamily: theme.typography.body1.fontFamily,
-                fontWeight: 600,
-                fontSize: '0.95rem',
+                    color: 'white',
+                    fontFamily: theme.typography.body1.fontFamily,
+                    fontWeight: 600,
+                    fontSize: '0.95rem',
                 }}
             >
                 {`${firstName} ${lastName}`}
@@ -78,10 +79,12 @@ const UserProfile: React.FC<UserProfileBoxProps> = ({ firstName, lastName, avata
                     overflow: 'hidden',
                     borderRadius: '0.7rem',
                 }}
-                PaperProps={{
-                    style: {
-                        borderRadius: '0.6rem',
-                    },
+                slotProps={{
+                    paper: {
+                        style: {
+                            borderRadius: '0.6rem',
+                        }
+                    }
                 }}
             >
 
@@ -112,14 +115,14 @@ const UserProfile: React.FC<UserProfileBoxProps> = ({ firstName, lastName, avata
                         </Box>
                     </Box>
                 </Box>
-                
+
                 {menuItems.map((item) => (
                     <React.Fragment key={item.label}>
                         {item.label === 'Log out' && <Divider sx={{ margin: '0.5rem 0' }} variant="middle" component="li" />}
                         <MenuItem
-                            onClick={()=>{
+                            onClick={() => {
                                 handleDropdownClose();
-                                navigate(item.path); 
+                                navigate(item.path);
                             }}
                             sx={{
                                 padding: '0.3rem 1.5rem',
