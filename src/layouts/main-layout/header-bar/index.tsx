@@ -6,6 +6,7 @@ import { useAuth } from '../../../context/auth-context';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { getUser, getUserAvatar } from '../../../api/user.api';
 import { useNavigate } from 'react-router-dom';
+import UserProfile from '../user-profile';
 
 const HeaderBar: React.FC<{ sx?: any }> = ({ sx }) => {
     const theme = useTheme();
@@ -30,8 +31,9 @@ const HeaderBar: React.FC<{ sx?: any }> = ({ sx }) => {
                     lastName: userData.user.last_name,
                 });
 
-                const avatarUrl = await getUserAvatar(userId);
-                setAvatarUrl(avatarUrl);
+                const avatarUrl = userData.user.avatar || '';
+                const avatarCorrectUrl = avatarUrl.split('?X-Amz-Algorithm')[0];
+                setAvatarUrl(avatarCorrectUrl);
             } catch (error) {
                 console.error("Error fetching user data:", error);
             }
@@ -106,34 +108,13 @@ const HeaderBar: React.FC<{ sx?: any }> = ({ sx }) => {
                         gap: 2,
                     }}
                 >
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            flexDirection: 'row',
-                            gap: 2,
-                            marginLeft: '1rem',
-                            alignItems: 'center',
-                            borderRadius: '0.4rem',
-                        }}
-                    >
-                        <Typography
-                            variant="body2"
-                            sx={{
-                                color: 'white',
-                                fontFamily: theme.typography.body1,
-                                fontWeight: '600',
-                                fontSize: '0.95rem',
-                            }}
-                        >
-                            {`${userData.firstName} ${userData.lastName}`}
-                        </Typography>
-                        <Avatar
-                            src={avatarUrl}
-                            alt={`${userData.firstName} ${userData.lastName}`}
-                            sx={{ width: '2.8rem', height: '2.5rem' }}
-                        />
-                    </Box>
-                    <IconButton onClick={handleLogout} sx={{ color: 'white', marginRight: '1rem', gap: 1 }}>
+                    <UserProfile
+                        firstName={userData.firstName}
+                        lastName={userData.lastName}
+                        avatarUrl={avatarUrl}
+                        userId={userId? userId : ''}
+                    />
+                    <IconButton onClick={handleLogout} sx={{ color: 'white', marginRight: '1rem', gap: 1, cursor: 'pointer' }}>
                         <LogoutIcon />
                     </IconButton>
                 </Box>
