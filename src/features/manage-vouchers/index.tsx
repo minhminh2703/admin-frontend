@@ -22,8 +22,10 @@ export const VoucherManagement: React.FC = () => {
     const fetchAllVoucher = async () => {
         try {
             const allVouchers = await getAllVouchersAPI();
-            setVouchers(allVouchers);
-            setFilteredVouchers(allVouchers);
+            const sortedVouchers = allVouchers.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+
+            setVouchers(sortedVouchers);
+            setFilteredVouchers(sortedVouchers);
         } catch (error) {
             console.error('Failed to fetch vouchers:', error);
         }

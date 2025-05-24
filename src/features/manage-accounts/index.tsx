@@ -133,6 +133,7 @@ const ManageAccount = () => {
                     status: user.status.toUpperCase(),
                     role: capitalizeFirstLetter(user.role)
                 })));
+                console.log("ALL USERS", response);
             } catch (error) {
                 setError('Failed to fetch users');
                 console.error(error);
@@ -156,9 +157,15 @@ const ManageAccount = () => {
     };
 
     const filteredData = users.filter(user => {
-        const searchMatch = user.username.toLowerCase().includes(filters.search.toLowerCase());
+        const search = filters.search.toLowerCase();
+        const searchMatch =
+            user.username.toLowerCase().includes(search) ||
+            user.role.toLowerCase().includes(search) ||
+            user.status.toLowerCase().includes(search);
+
         const roleMatch = filters.role === 'All' || user.role === filters.role;
         const statusMatch = filters.status === 'All' || user.status === filters.status.toUpperCase();
+
         return searchMatch && roleMatch && statusMatch;
     });
 
