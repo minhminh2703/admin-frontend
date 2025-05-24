@@ -96,34 +96,47 @@ const ManageAccountsTable: React.FC<ManageAccountsTableProps> = ({ users, onEdit
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {currentAccounts.map((user, index) => (
-                            <TableRow key={index}>
-                                <TableCell sx={cellStyle}>
-                                    <IconButton sx={{ color: 'white' }} onClick={() => onEdit(user.id)}>
-                                        <EditIcon />
-                                    </IconButton>
-                                </TableCell>
-                                <TableCell sx={cellStyle}>{user.id}</TableCell>
-                                <TableCell sx={cellStyle}>{user.username}</TableCell>
-                                <TableCell sx={cellStyle}>{user.first_name + " " + user.last_name}</TableCell>
-                                <TableCell sx={cellStyle}>{dayjs(user.created_at).format('DD MMM YYYY HH:mm')}</TableCell>
-                                <TableCell sx={cellStyle}>{user.role}</TableCell>
-                                <TableCell sx={cellStyle}>
-                                    <Chip
-                                        label={user.status}
-                                        sx={{
-                                            color: brightColors[user.status as AccountStatus],
-                                            borderColor: brightColors[user.status as AccountStatus],
-                                            borderWidth: '1.5px',
-                                            fontWeight: 700,
-                                            minWidth: '80px',
-                                            fontFamily: 'Poppins, sans-serif',
-                                        }}
-                                        variant="outlined"
-                                    />
-                                </TableCell>
-                            </TableRow>
-                        ))}
+                        {currentAccounts.map((user, index) => {
+                            const isDeleted = user.status === "DELETED";
+                            return (
+                                <TableRow key={index}>
+                                    <TableCell sx={cellStyle}>
+                                        <IconButton 
+                                            sx={{ 
+                                                color: 'white',
+                                                '&.Mui-disabled': {
+                                                    color: 'white',
+                                                    opacity: 0.4,  
+                                                },
+                                            }} 
+                                            onClick={() => onEdit(user.id)}
+                                            disabled={isDeleted}
+                                        >
+                                            <EditIcon />
+                                        </IconButton>
+                                    </TableCell>
+                                    <TableCell sx={cellStyle}>{user.id}</TableCell>
+                                    <TableCell sx={cellStyle}>{user.username}</TableCell>
+                                    <TableCell sx={cellStyle}>{user.first_name + " " + user.last_name}</TableCell>
+                                    <TableCell sx={cellStyle}>{dayjs(user.created_at).format('DD MMM YYYY HH:mm')}</TableCell>
+                                    <TableCell sx={cellStyle}>{user.role}</TableCell>
+                                    <TableCell sx={cellStyle}>
+                                        <Chip
+                                            label={user.status}
+                                            sx={{
+                                                color: brightColors[user.status as AccountStatus],
+                                                borderColor: brightColors[user.status as AccountStatus],
+                                                borderWidth: '1.5px',
+                                                fontWeight: 700,
+                                                minWidth: '80px',
+                                                fontFamily: 'Poppins, sans-serif',
+                                            }}
+                                            variant="outlined"
+                                        />
+                                    </TableCell>
+                                </TableRow>
+                            )
+                        })}
                     </TableBody>
                     <TableFooter sx={{
                         '& .MuiTableCell-root': {

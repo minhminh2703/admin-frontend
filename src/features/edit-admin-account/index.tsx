@@ -77,6 +77,8 @@ const EditAdminAccount: React.FC<EditAccountProps> = ({ userId, onBack }) => {
     const [loading, setLoading] = useState(true);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [avatar, setAvatar] = useState<string>("image.png");
+    const [originalUserData, setOriginalUserData] = useState<UserDetails | null>(null); // New state
+    const [noChanges, setNoChanges] = useState(false); // Alert trigger
 
     const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files[0]) {
@@ -104,7 +106,7 @@ const EditAdminAccount: React.FC<EditAccountProps> = ({ userId, onBack }) => {
             try {
                 const response = await getUser(String(userId));
                 console.log('RESPONSE: ', response);
-                setUserData({
+                const userDetails: UserDetails = {
                     id: String(response.user.id),
                     firstName: response.user.first_name,
                     lastName: response.user.last_name,
@@ -115,7 +117,9 @@ const EditAdminAccount: React.FC<EditAccountProps> = ({ userId, onBack }) => {
                     userRole: response.user.role.toUpperCase(),
                     premiumExpiredDate: '',
                     avatarSrc: response.user.avatar || '',
-                });
+                };
+                setUserData(userDetails);
+                setOriginalUserData(userDetails);
                 setLoading(false);
             } catch (error) {
                 console.error("Error loading user:", error);
@@ -150,6 +154,26 @@ const EditAdminAccount: React.FC<EditAccountProps> = ({ userId, onBack }) => {
     };
 
     const handleSave = async () => {
+        if (!userId || !userData || !originalUserData) return;
+
+        const file = fileInputRef.current?.files?.[0];
+
+        const hasChanges =
+            userData.firstName !== originalUserData.firstName ||
+            userData.lastName !== originalUserData.lastName ||
+            userData.email !== originalUserData.email ||
+            userData.username !== originalUserData.username ||
+            userData.status !== originalUserData.status ||
+            userData.userRole !== originalUserData.userRole ||
+            !!file;
+
+        if (!hasChanges) {
+            setNoChanges(true);
+            return;
+        }
+
+        setNoChanges(false); // Reset
+
         console.log('UPDATING USER');
         if (!userId || !userData) {
             console.error("User ID is null. Cannot update user data.");
@@ -342,6 +366,18 @@ const EditAdminAccount: React.FC<EditAccountProps> = ({ userId, onBack }) => {
                     justifyContent="flex-end"
                     mt={4}
                 >
+                    {noChanges && (
+                        <Typography 
+                            sx={{ 
+                                color: 'red', 
+                                fontSize: '0.85em',
+                                fontFamily: 'Poppins, Sora, sans-serif',
+                                paddingTop: '0.5em',
+                                marginRight: '1em'
+                            }}>
+                            No changes detected.
+                        </Typography>
+                    )}
                     <CustomButton
                         text="Save changes"
                         height='100%'
