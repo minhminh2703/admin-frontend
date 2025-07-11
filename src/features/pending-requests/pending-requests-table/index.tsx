@@ -1,0 +1,191 @@
+import React, { useState } from "react";
+import {
+    Box,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Paper,
+    Chip,
+    Pagination,
+    TableFooter,
+    Button,
+    Stack
+} from "@mui/material";
+
+// --- Type Definitions ---
+// Define the possible statuses for a request
+export type RequestStatus = "PENDING" | "APPROVED" | "REJECTED";
+
+// Define the shape of a single pending request object
+export interface PendingRequest {
+    id: number; // Unique ID for the request itself
+    userId: number;
+    membershipPlan: "Basic" | "Premium" | "Enterprise"; // Example plans
+    status: RequestStatus;
+}
+
+// Props for our new component
+interface PendingRequestsTableProps {
+    requests: PendingRequest[];
+    onApprove: (requestId: number) => void;
+    onReject: (requestId: number) => void;
+}
+
+// --- Style Constants (reused and adapted from your original component) ---
+
+// Map statuses to colors for the Chip component
+const statusColors: Record<RequestStatus, string> = {
+    PENDING: "#ffc107", // Yellow
+    APPROVED: "#4caf50", // Green
+    REJECTED: "#f44336", // Red
+};
+
+const headerStyle = {
+    color: '#ECDFCC',
+    borderBottom: "none",
+    fontWeight: 600,
+    padding: '20px 30px 6px 30px',
+    fontSize: '0.9rem',
+    fontFamily: 'Poppins, sans-serif',
+};
+
+const cellStyle = {
+    color: 'white',
+    borderBottom: "none",
+    padding: '6px 30px',
+    fontSize: '0.8em',
+    fontFamily: 'Poppins, sans-serif',
+    verticalAlign: 'middle',
+};
+
+const footerStyle = {
+    color: '#F0EB8D',
+    padding: '20px 24px 20px 24px',
+    fontSize: '0.875rem',
+    textAlign: 'left',
+    fontWeight: 500,
+    fontFamily: 'Poppins, sans-serif',
+};
+
+// --- The Component ---
+
+const PendingRequestsTable: React.FC<PendingRequestsTableProps> = ({ requests, onApprove, onReject }) => {
+    const [currentPage, setCurrentPage] = useState(1);
+    const requestsPerPage = 10;
+    const pageCount = Math.ceil(requests.length / requestsPerPage);
+
+    // Pagination logic
+    const indexOfLastRequest = currentPage * requestsPerPage;
+    const indexOfFirstRequest = indexOfLastRequest - requestsPerPage;
+    const currentRequests = requests.slice(indexOfFirstRequest, indexOfLastRequest);
+
+    const handlePageChange = (event: React.ChangeEvent<unknown>, page: number) => {
+        setCurrentPage(page);
+    };
+
+    return (
+        <Box p={3} sx={{ backgroundColor: "transparent", border: "none" }}>
+            <TableContainer
+                component={Paper}
+                sx={{
+                    backgroundColor: 'transparent',
+                    border: '0.6px solid white',
+                    borderRadius: '10px',
+                    overflow: 'hidden',
+                    width: '100%',
+                }}
+            >
+                <Table sx={{ width: '100%', border: 'none' }}>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell sx={headerStyle}>User ID</TableCell>
+                            <TableCell sx={headerStyle}>Membership Plan</TableCell>
+                            <TableCell sx={headerStyle}>Status</TableCell>
+                            <TableCell sx={headerStyle} align="center">Actions</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {currentRequests.map((request) => (
+                            <TableRow key={request.id}>
+                                <TableCell sx={cellStyle}>{request.userId}</TableCell>
+                                <TableCell sx={cellStyle}>{request.membershipPlan}</TableCell>
+                                <TableCell sx={cellStyle}>
+                                    <Chip
+                                        label={request.status}
+                                        sx={{
+                                            color: statusColors[request.status],
+                                            borderColor: statusColors[request.status],
+                                            borderWidth: '1.5px',
+                                            fontWeight: 700,
+                                            minWidth: '90px',
+                                            fontFamily: 'Poppins, sans-serif',
+                                        }}
+                                        variant="outlined"
+                                    />
+                                </TableCell>
+                                <TableCell sx={cellStyle} align="center">
+                                    <Stack direction="row" spacing={1} justifyContent="center">
+                                        <Button
+                                            variant="contained"
+                                            color="success"
+                                            size="small"
+                                            onClick={() => onApprove(request.id)}
+                                            sx={{ fontFamily: 'Poppins, sans-serif', textTransform: 'none' }}
+                                        >
+                                            Approve
+                                        </Button>
+                                        <Button
+                                            variant="contained"
+                                            color="error"
+                                            size="small"
+                                            onClick={() => onReject(request.id)}
+                                            sx={{ fontFamily: 'Poppins, sans-serif', textTransform: 'none' }}
+                                        >
+                                            Reject
+                                        </Button>
+                                    </Stack>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                    <TableFooter sx={{ '& .MuiTableCell-root': { borderBottom: "none" } }}>
+                        <TableRow>
+                            <TableCell sx={footerStyle} colSpan={4}>
+                                Total: {requests.length} request(s) across all pages
+                            </TableCell>
+                        </TableRow>
+                    </TableFooter>
+                </Table>
+            </TableContainer>
+            <Box display="flex" justifyContent="flex-end" alignItems="center" p={2} sx={{ borderBottom: "none" }}>
+                <Pagination
+                    count={pageCount}
+                    page={currentPage}
+                    onChange={handlePageChange}
+                    shape="rounded"
+                    sx={{
+                        '& .MuiPaginationItem-root': {
+                            color: 'white',
+                            backgroundColor: 'transparent',
+                            borderRadius: 2,
+                            fontFamily: 'Poppins, sans-serif',
+                            fontSize: '0.8em',
+                            fontWeight: 600,
+                        },
+                        '& .MuiPaginationItem-root.Mui-selected': {
+                            backgroundColor: 'white',
+                            color: 'black',
+                            '&:hover': { backgroundColor: 'white' }
+                        },
+                        '& .MuiPaginationItem-previousNext': { color: 'white' }
+                    }}
+                />
+            </Box>
+        </Box>
+    );
+};
+
+export default PendingRequestsTable;

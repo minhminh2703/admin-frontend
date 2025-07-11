@@ -7,6 +7,7 @@ import { AuthProvider } from './context/auth-context';
 import MainLayout from './layouts/main-layout';
 import { VoucherManagement } from './features/manage-vouchers';
 import EditAdminAccountWrapper from './features/edit-admin-account';
+import PendingRequests from './features/pending-requests';
 
 function App() {
     return (
@@ -20,6 +21,7 @@ function App() {
                         <Route path="/dashboard" element={<Dashboard />} />
                         <Route path="/manage_vouchers" element={<VoucherManagement />} />
                         <Route path="/edit_account/:userId" element={<EditAdminAccountWrapper />} />
+                        <Route path='/pending_requests' element={<PendingRequests />} />
                     </Route>
                 </Routes>
             </AuthProvider>
