@@ -6,11 +6,27 @@ import { Typography, Box, Snackbar, Alert, AlertColor } from "@mui/material";
 const fetchPendingRequests = (): Promise<PendingRequest[]> => {
     return new Promise(resolve => {
         setTimeout(() => {
-            resolve([
+            const moreRequests: PendingRequest[] = [
                 { id: 101, userId: 23, membershipPlan: "Premium", status: "PENDING" },
                 { id: 102, userId: 45, membershipPlan: "Basic", status: "PENDING" },
                 { id: 103, userId: 12, membershipPlan: "Enterprise", status: "PENDING" },
-            ]);
+                { id: 104, userId: 88, membershipPlan: "Basic", status: "PENDING" },
+                { id: 105, userId: 101, membershipPlan: "Premium", status: "PENDING" },
+                { id: 106, userId: 6, membershipPlan: "Premium", status: "PENDING" },
+                { id: 107, userId: 234, membershipPlan: "Basic", status: "PENDING" },
+                { id: 108, userId: 119, membershipPlan: "Enterprise", status: "PENDING" },
+                { id: 109, userId: 55, membershipPlan: "Premium", status: "PENDING" },
+                { id: 110, userId: 73, membershipPlan: "Basic", status: "PENDING" },
+                // --- Page 2 Data ---
+                { id: 111, userId: 91, membershipPlan: "Enterprise", status: "PENDING" },
+                { id: 112, userId: 142, membershipPlan: "Basic", status: "PENDING" },
+                { id: 113, userId: 3, membershipPlan: "Premium", status: "PENDING" },
+                { id: 114, userId: 205, membershipPlan: "Premium", status: "PENDING" },
+                { id: 115, userId: 8, membershipPlan: "Basic", status: "PENDING" },
+                { id: 116, userId: 401, membershipPlan: "Enterprise", status: "PENDING" },
+                { id: 117, userId: 31, membershipPlan: "Basic", status: "PENDING" },
+            ];
+            resolve(moreRequests);
         }, 500);
     });
 };

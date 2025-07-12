@@ -74,7 +74,7 @@ const footerStyle = {
 
 const PendingRequestsTable: React.FC<PendingRequestsTableProps> = ({ requests, onApprove, onReject }) => {
     const [currentPage, setCurrentPage] = useState(1);
-    const requestsPerPage = 10;
+    const requestsPerPage = 8;
     const pageCount = Math.ceil(requests.length / requestsPerPage);
 
     // Pagination logic
