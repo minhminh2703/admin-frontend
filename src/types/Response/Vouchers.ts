@@ -9,6 +9,7 @@ export interface Voucher {
     updated_at: string; // ISO 8601 datetime string
 }
 
-export interface GetAllVouchers {
-    data: Voucher[];
+export interface GetAllVoucherResponse {
+    vouchers: Voucher[];
+    total_count: number;
 }

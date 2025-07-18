@@ -8,22 +8,21 @@ import {
     TableRow,
     Paper,
     Chip,
-    IconButton,
-    Pagination,
     Typography,
+    IconButton,
     Box,
     TextField,
     ChipProps,
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import CheckIcon from '@mui/icons-material/Check';
-import { Voucher } from '../../../types/Response/Vouchers';
+import { GetAllVoucherResponse, Voucher } from '../../../types/Response/Vouchers';
 import dayjs from 'dayjs';
 import { useTheme } from '../../../theme';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-// import { DateTimeField } from '@mui/x-date-pickers/DateTimeField';
 import { DateField, TimeField } from '@mui/x-date-pickers';
+import { voucherSortOption, voucherTableHeader } from '../../../types/voucher';
 
 const getStatus = (used: number, max: number, expired: string): { label: string; color: ChipProps['color'] } => {
     const now = new Date();
@@ -34,8 +33,10 @@ const getStatus = (used: number, max: number, expired: string): { label: string;
 };
 
 interface VoucherTableProps {
-    data?: Voucher[] | null;
+    data?: GetAllVoucherResponse | null;
     handleChangeVoucher: (voucher: Voucher) => void;
+    sortProps: voucherSortOption;
+    handleChangeSortOption: (sortBy: voucherSortOption['sortBy'], sort: voucherSortOption['sort']) => void;
 }
 
 interface RowData {
@@ -43,22 +44,16 @@ interface RowData {
     rowData: Voucher | null;
 }
 
-const VoucherTable: React.FC<VoucherTableProps> = ({ data, handleChangeVoucher }) => {
+const VoucherTable: React.FC<VoucherTableProps> = ({
+    data,
+    handleChangeVoucher,
+    handleChangeSortOption,
+    sortProps,
+}) => {
     const [editRow, setEditRow] = useState<RowData>({ isEdited: false, rowData: null });
-    const rowsPerPage = 5;
-    const [displayData, setDisplayData] = useState<Voucher[]>([]);
-    const [page, setPage] = useState<number>(1);
+
     const theme = useTheme();
     const editRowRef = useRef<HTMLTableRowElement | null>(null);
-
-    // useEffect for pagination
-    useEffect(() => {
-        if (data) {
-            const startIndex = (page - 1) * rowsPerPage;
-            const endIndex = page * rowsPerPage;
-            setDisplayData(data.slice(startIndex, endIndex));
-        }
-    }, [data, page]);
 
     // useEffect for edit row
     useEffect(() => {
@@ -140,6 +135,20 @@ const VoucherTable: React.FC<VoucherTableProps> = ({ data, handleChangeVoucher }
         },
     };
 
+    if (!data || !Array.isArray(data.vouchers)) {
+        return <Typography>No vouchers found</Typography>;
+    }
+
+    const handleSortClick = (sortBy: voucherSortOption['sortBy']) => {
+        let nextSort: voucherSortOption['sort'];
+        if (sortProps.sortBy !== sortBy) {
+            nextSort = 'ASC';
+        } else {
+            nextSort = sortProps.sort === '' ? 'ASC' : sortProps.sort === 'ASC' ? 'DESC' : '';
+        }
+        handleChangeSortOption(sortBy, nextSort);
+    };
+
     return (
         <Box sx={{ p: 2 }}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -147,41 +156,52 @@ const VoucherTable: React.FC<VoucherTableProps> = ({ data, handleChangeVoucher }
                     component={Paper}
                     sx={{
                         backgroundColor: 'inherit',
-                        borderRadius: 2,
+                        // borderRadius: 2,
                         width: '100%',
                         overflowX: 'auto',
                     }}
                 >
+                    {/* ======================================  */}
+                    {/* =                                    =  */}
+                    {/* =          Table Header              =  */}
+                    {/* =                                    =  */}
+                    {/* ======================================  */}
                     <Table size="small" sx={{ minWidth: 1000, width: '100%' }}>
                         <TableHead>
                             <TableRow>
                                 <TableCell sx={{ color: theme.fontColor.white, fontSize: '0.75rem' }}>Edit</TableCell>
-                                <TableCell sx={{ color: theme.fontColor.white, fontSize: '0.75rem' }}>ID</TableCell>
-                                <TableCell sx={{ color: theme.fontColor.white, fontSize: '0.75rem' }}>
-                                    Voucher Code
-                                </TableCell>
-                                <TableCell sx={{ color: theme.fontColor.white, fontSize: '0.75rem' }}>Token</TableCell>
-                                <TableCell sx={{ color: theme.fontColor.white, fontSize: '0.75rem' }}>
-                                    Max Usage
-                                </TableCell>
-                                <TableCell sx={{ color: theme.fontColor.white, fontSize: '0.75rem' }}>
-                                    Used Count
-                                </TableCell>
-                                <TableCell sx={{ color: theme.fontColor.white, fontSize: '0.75rem' }}>
-                                    Expired Time
-                                </TableCell>
-                                <TableCell sx={{ color: theme.fontColor.white, fontSize: '0.75rem' }}>
-                                    Created At
-                                </TableCell>
-                                <TableCell sx={{ color: theme.fontColor.white, fontSize: '0.75rem' }}>
-                                    Updated At
-                                </TableCell>
+                                {voucherTableHeader.map((header) => (
+                                    <TableCell
+                                        key={header.label}
+                                        onClick={() => handleSortClick(header.sortBy as voucherSortOption['sortBy'])}
+                                        sx={{
+                                            cursor: 'pointer',
+                                            color: theme.fontColor.white,
+                                            fontSize: '0.75rem',
+                                            fontWeight: sortProps['sortBy'] === header['sortBy'] ? 'bold' : 'normal',
+                                        }}
+                                    >
+                                        {header.label}
+                                        {sortProps['sortBy'] === header['sortBy'] &&
+                                            (sortProps['sort'] === 'ASC'
+                                                ? ' 🔼'
+                                                : sortProps['sort'] === 'DESC'
+                                                ? ' 🔽'
+                                                : '')}
+                                    </TableCell>
+                                ))}
                                 <TableCell sx={{ color: theme.fontColor.white, fontSize: '0.75rem' }}>Status</TableCell>
                             </TableRow>
                         </TableHead>
-                        {displayData && (
+
+                        {/* ======================================  */}
+                        {/* =                                    =  */}
+                        {/* =          Table Body                =  */}
+                        {/* =                                    =  */}
+                        {/* ======================================  */}
+                        {data && (
                             <TableBody>
-                                {displayData.map((row) => {
+                                {data.vouchers.map((row) => {
                                     const status = getStatus(row.used_count, row.max_usage, row.expired_time);
                                     return (
                                         <TableRow
@@ -404,36 +424,6 @@ const VoucherTable: React.FC<VoucherTableProps> = ({ data, handleChangeVoucher }
                     </Table>
                 </TableContainer>
             </LocalizationProvider>
-
-            <Box display="flex" justifyContent="space-between" alignItems="center" mt={2}>
-                <Typography sx={{ color: '#ccc' }}>Total: {data?.length ?? 0} voucher(s)</Typography>
-                {data && (
-                    <Pagination
-                        count={Math.ceil((data?.length ?? 0) / rowsPerPage)}
-                        page={page}
-                        onChange={(_, value) => setPage(value)}
-                        variant="outlined"
-                        sx={{
-                            '& .MuiPaginationItem-root': {
-                                color: 'white',
-                                borderColor: 'white',
-                            },
-                            '& .MuiPaginationItem-root:hover': {
-                                backgroundColor: 'white',
-                                borderColor: 'black',
-                                color: 'black',
-                            },
-                            '& .MuiPaginationItem-root.Mui-selected': {
-                                backgroundColor: 'white',
-                                color: 'black',
-                                '&:hover': {
-                                    backgroundColor: 'white',
-                                },
-                            },
-                        }}
-                    />
-                )}
-            </Box>
         </Box>
     );
 };

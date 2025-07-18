@@ -1,30 +1,100 @@
-import { Box, Typography, Button, MenuItem, TextField } from '@mui/material';
+import { Box, Typography, Button, MenuItem, TextField, Pagination } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTheme } from '../../theme';
 import DownloadIcon from '@mui/icons-material/Download';
 import VoucherTable from '../manage-vouchers/voucher-table';
-import { Voucher } from '../../types/Response/Vouchers';
+import { GetAllVoucherResponse, Voucher } from '../../types/Response/Vouchers';
 import { createVoucherAPI, editVoucherAPI, getAllVouchersAPI } from '../../api/voucher.api';
 import { CreateVoucherPopup } from './create-voucher-popup';
+import { voucherSearchCriteria, voucherSortOption } from '../../types/voucher';
+import JumpingDotsString from '../../components/jumping-dot-string';
+import { ExportFilePopup } from './export-file-popup';
 
 export const VoucherManagement: React.FC = () => {
     const theme = useTheme();
-    const [status, setStatus] = useState('Active');
-    const [query, setQuery] = useState('');
-    const [vouchers, setVouchers] = useState<Voucher[] | null>(null);
-    const [openCreateVoucherPopup, setOpenCreateVoucherPopup] = useState(false);
+    const [status, setStatus] = useState('');
+    const [voucherTable, setVoucherTable] = useState<GetAllVoucherResponse>({
+        vouchers: [],
+        total_count: 0,
+    });
 
+    const [openCreateVoucherPopup, setOpenCreateVoucherPopup] = useState<boolean>(false);
+    const [openExportFilePopup, setOpenExportFilePopup] = useState<boolean>(false);
+    const [sort, setSort] = useState<voucherSortOption>({
+        sort: '',
+        sortBy: '',
+    });
+    // these two use for local variable
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [inputSearchKey, setInputSearchKey] = useState<string>('');
+    const [inputSearchCriteria, setInputSearchCriteria] = useState<string>('');
+    // these two used for send request
+    const [searchCriteria, setSearchCriteria] = useState<string>('');
+    const [searchKey, setSearchKey] = useState<string>('');
+    const rowsPerPage = 5;
+    const [page, setPage] = useState<number>(1);
+
+    // popup for create voucher
     const handleOpenCreateVoucherPopup = () => setOpenCreateVoucherPopup(true);
     const handleCloseCreateVoucherPopup = () => setOpenCreateVoucherPopup(false);
+
+    // popup for export file
+    const handleOpenExportFile = () => setOpenExportFilePopup(true);
+    const handleCloseExportFile = () => setOpenExportFilePopup(false);
+
+    // function when clicking search button
+    const onSearchButtonClick = () => {
+        setSearchKey(inputSearchKey);
+        setSearchCriteria(inputSearchCriteria);
+        setPage(1);
+        fetchAllVoucher();
+    };
+
+    // change table page function
+    const onChangeTablePage = (page: number) => {
+        setPage(page);
+        setInputSearchCriteria(searchKey);
+        setInputSearchCriteria(searchCriteria);
+    };
+
+    // get place holder for each search criteria
+    const getPlaceholder = () => {
+        const selected = voucherSearchCriteria.find((item) => item.label === searchCriteria);
+        return selected?.placeHolder || 'Search by selected criteria';
+    };
+
+    // change sort option when clicking table header
+    const handleChangeSortOption = (sortBy: voucherSortOption['sortBy'], sort: voucherSortOption['sort']) => {
+        setSort({
+            sortBy: sortBy,
+            sort: sort,
+        });
+    };
+
+    // function for calling Get All Vouchers API
     const fetchAllVoucher = async () => {
         try {
-            const allVouchers = await getAllVouchersAPI();
-            setVouchers(allVouchers);
+            setIsLoading(true);
+            const offset = (page - 1) * rowsPerPage;
+            const allVouchers = await getAllVouchersAPI(
+                status,
+                sort['sort'],
+                sort['sortBy'],
+                searchKey,
+                searchCriteria,
+                offset,
+                rowsPerPage
+            );
+            setVoucherTable(allVouchers);
         } catch (error) {
             console.error('Failed to fetch vouchers:', error);
+        } finally {
+            setIsLoading(false);
         }
     };
+
+    // function for calling Create Voucher API
     const handleSumbitCreateVoucher = async (voucher: {
         code: string;
         token: number;
@@ -40,6 +110,7 @@ export const VoucherManagement: React.FC = () => {
         handleCloseCreateVoucherPopup();
     };
 
+    // function for calling Edit Voucher API
     const handleSubmitEditVoucher = async (voucher: Voucher) => {
         try {
             await editVoucherAPI(voucher);
@@ -52,12 +123,12 @@ export const VoucherManagement: React.FC = () => {
 
     useEffect(() => {
         fetchAllVoucher();
-    }, []);
+    }, [status, sort, page]);
 
     return (
         <Box
             sx={{
-                zoom: 0.95,
+                zoom: 0.87,
             }}
         >
             <Box
@@ -72,7 +143,7 @@ export const VoucherManagement: React.FC = () => {
                 <Link to="/dashboard" style={{ textDecoration: 'none' }}>
                     <Typography
                         sx={{
-                            color: theme.fontColor.gray,
+                            color: theme.fontColor.greyWhite,
                             cursor: 'pointer',
                             fontSize: '0.9rem',
                             '&:hover': {
@@ -131,15 +202,15 @@ export const VoucherManagement: React.FC = () => {
                     {/* Search box */}
                     <Box sx={{ marginRight: '1.5rem' }}>
                         <Typography sx={{ color: 'white', fontSize: '0.9rem', mb: 0.5 }}>
-                            What are you looking for ?
+                            What are you looking for?
                         </Typography>
                         <TextField
-                            placeholder="Search for users, admin or by status"
+                            placeholder={getPlaceholder()}
                             size="small"
-                            value={query}
-                            onChange={(e) => setQuery(e.target.value)}
+                            value={inputSearchKey}
+                            onChange={(e) => setInputSearchKey(e.target.value)}
                             sx={{
-                                minWidth: '23rem',
+                                minWidth: '15rem',
                                 '& .MuiOutlinedInput-root': {
                                     borderRadius: '8px',
                                     color: 'white',
@@ -149,6 +220,35 @@ export const VoucherManagement: React.FC = () => {
                                 input: { color: 'white' },
                             }}
                         />
+                    </Box>
+
+                    {/* Search criteria dropdown */}
+                    <Box sx={{ marginRight: '1.5rem' }}>
+                        <Typography sx={{ color: 'white', fontSize: '0.9rem', mb: 0.5 }}>Search Criteria</Typography>
+                        <TextField
+                            select
+                            size="small"
+                            value={inputSearchCriteria}
+                            onChange={(e) => setInputSearchCriteria(e.target.value)}
+                            sx={{
+                                minWidth: 160,
+                                '& .MuiOutlinedInput-root': {
+                                    borderRadius: '8px',
+                                    color: 'white',
+                                    fontSize: '0.9rem',
+                                    backgroundColor: '#1e293b',
+                                },
+                                '& .MuiSvgIcon-root': {
+                                    color: 'white',
+                                },
+                            }}
+                        >
+                            {voucherSearchCriteria.map((option) => (
+                                <MenuItem key={option.key} value={option.key}>
+                                    {option.label}
+                                </MenuItem>
+                            ))}
+                        </TextField>
                     </Box>
 
                     {/* Status dropdown */}
@@ -172,9 +272,10 @@ export const VoucherManagement: React.FC = () => {
                                 },
                             }}
                         >
-                            <MenuItem value="Active">Active</MenuItem>
-                            <MenuItem value="Expired">Expired</MenuItem>
-                            <MenuItem value="Used">Used</MenuItem>
+                            <MenuItem value="">None</MenuItem>
+                            <MenuItem value="ACTIVE">Active</MenuItem>
+                            <MenuItem value="EXPIRED">Expired</MenuItem>
+                            <MenuItem value="USED">Used</MenuItem>
                         </TextField>
                     </Box>
 
@@ -187,7 +288,7 @@ export const VoucherManagement: React.FC = () => {
                             fontSize: '0.9rem',
                             textTransform: 'none',
                         }}
-                        onClick={() => console.log('Searching...')}
+                        onClick={onSearchButtonClick}
                     >
                         Search
                     </Button>
@@ -209,7 +310,7 @@ export const VoucherManagement: React.FC = () => {
                             borderColor: '#3b82f6',
                         },
                     }}
-                    onClick={() => console.log('Exporting...')}
+                    onClick={handleOpenExportFile}
                 >
                     EXPORT
                 </Button>
@@ -228,16 +329,82 @@ export const VoucherManagement: React.FC = () => {
             >
                 ADD NEW VOUCHER
             </Button>
+
             {/* ======================================  */}
             {/* =                                    =  */}
             {/* =          Table Section             =  */}
             {/* =                                    =  */}
             {/* ======================================  */}
-            <VoucherTable data={vouchers} handleChangeVoucher={handleSubmitEditVoucher} />
+
+            <VoucherTable
+                data={voucherTable}
+                handleChangeVoucher={handleSubmitEditVoucher}
+                sortProps={sort}
+                handleChangeSortOption={handleChangeSortOption}
+            />
+
+            {/* ======================================  */}
+            {/* =                                    =  */}
+            {/* =          Pagination                =  */}
+            {/* =                                    =  */}
+            {/* ======================================  */}
+
+            <Box display="flex" justifyContent="space-between" alignItems="center" mt={2}>
+                <Typography sx={{ color: '#ccc' }}>Total: {voucherTable?.total_count ?? 0} voucher(s)</Typography>
+                {voucherTable && (
+                    <Pagination
+                        count={Math.ceil((voucherTable?.total_count ?? 0) / rowsPerPage)}
+                        page={page}
+                        onChange={(_, value) => onChangeTablePage(value)}
+                        variant="outlined"
+                        sx={{
+                            '& .MuiPaginationItem-root': {
+                                color: 'white',
+                                borderColor: 'white',
+                            },
+                            '& .MuiPaginationItem-root:hover': {
+                                backgroundColor: 'white',
+                                borderColor: 'black',
+                                color: 'black',
+                            },
+                            '& .MuiPaginationItem-root.Mui-selected': {
+                                backgroundColor: 'white',
+                                color: 'black',
+                                '&:hover': {
+                                    backgroundColor: 'white',
+                                },
+                            },
+                        }}
+                    />
+                )}
+            </Box>
+            <Box display="flex" justifyContent="center">
+                {isLoading && (
+                    <JumpingDotsString
+                        text="Loading"
+                        textColor={theme.fontColor.babyBlue}
+                        dotColor={theme.fontColor.babyBlue}
+                    />
+                )}
+            </Box>
+
             <CreateVoucherPopup
                 open={openCreateVoucherPopup}
                 onClose={handleCloseCreateVoucherPopup}
                 onSubmit={handleSumbitCreateVoucher}
+            />
+
+            <ExportFilePopup
+                open={openExportFilePopup}
+                onClose={handleCloseExportFile}
+                searchCriteria={searchCriteria}
+                searchKey={searchKey}
+                sort={sort['sort']}
+                sortBy={sort['sortBy']}
+                rowPerPage={rowsPerPage}
+                status={status}
+                from={(page - 1) * rowsPerPage}
+                limit={rowsPerPage}
             />
         </Box>
     );
