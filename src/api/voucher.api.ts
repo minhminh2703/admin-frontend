@@ -1,12 +1,36 @@
-import { Voucher } from '../types/Response/Vouchers';
+import { GetAllVoucherResponse, Voucher } from '../types/Response/Vouchers';
 import apiClient from './base.api';
 
-export const getAllVouchersAPI = async (): Promise<Voucher[]> => {
+export const getAllVouchersAPI = async (
+    status: string,
+    sort: string,
+    sortBy: string,
+    searchKey: string,
+    searchCriteria: string,
+    offset: number,
+    limit: number
+): Promise<GetAllVoucherResponse> => {
     try {
-        const response = await apiClient.get<Voucher[]>(`/voucher/get-all`);
+        const numericFields = ['TOKEN', 'MAX_USAGE', 'USED_COUNT'];
+        const isNumeric = numericFields.includes(searchCriteria);
+
+        const parsedSearchKey = isNumeric ? Number(searchKey) : searchKey;
+
+        const response = await apiClient.get<GetAllVoucherResponse>('/voucher/get-all', {
+            params: {
+                status,
+                sort,
+                sortBy: sortBy,
+                searchKey: parsedSearchKey,
+                searchCriteria,
+                from: offset,
+                to: limit,
+            },
+        });
+
         return response.data;
     } catch (error) {
-        throw new Error(`Failed to update user data: ${error}`);
+        throw new Error(`Failed to fetch vouchers: ${error}`);
     }
 };
 
