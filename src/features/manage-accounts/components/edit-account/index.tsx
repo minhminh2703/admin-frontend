@@ -66,8 +66,7 @@ const EditAccount: React.FC<EditAccountProps> = ({ userId, onBack }) => {
         const fetchUser = async () => {
             try {
                 if (userData?.id) {
-                    const response = await getUserAvatar(userData.id);
-                    const avatarUrl = response.replace(/\/\//g, '/');
+                    const avatarUrl = userData.avatarSrc.split('?X-Amz-Algorithm')[0];
                     console.log('AVATAR RESPONSE: ', avatarUrl);
                     setAvatar(avatarUrl);
                 }
@@ -95,12 +94,17 @@ const EditAccount: React.FC<EditAccountProps> = ({ userId, onBack }) => {
 
         try {
             const updatedData = {
+                first_name: userData.firstName,
+                last_name: userData.lastName,
+                username: userData.username,
+                email: userData.email,
                 status: userData.status,
                 premium: false,
                 role: userData.userRole
             }
-            await updateUser(String(userId), updatedData);
+            const updateUserResponse = await updateUser(String(userId), updatedData);
             setShowSuccessPopup(true);
+            console.log('Update response:', updateUserResponse);
 
             setTimeout(() => {
                 window.location.reload();
