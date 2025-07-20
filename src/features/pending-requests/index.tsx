@@ -1,80 +1,120 @@
 import React, { useState, useEffect } from "react";
-import PendingRequestsTable, { PendingRequest } from "./pending-requests-table";
-import { Typography, Box, Snackbar, Alert, AlertColor } from "@mui/material";
+import PendingRequestsTable from "./pending-requests-table";
+import { Typography, Box, Snackbar, Alert, AlertColor, CircularProgress } from "@mui/material";
+import { approvePendingRequest, cancelPendingRequest, getAllPendingRequests } from "../../api/pending-requests.api";
+import { PendingRequests } from "../../types/pending-requets";
 
-// Mock API call (same as before)
-const fetchPendingRequests = (): Promise<PendingRequest[]> => {
-    return new Promise(resolve => {
-        setTimeout(() => {
-            const moreRequests: PendingRequest[] = [
-                { id: 101, userId: 23, membershipPlan: "Premium", status: "PENDING" },
-                { id: 102, userId: 45, membershipPlan: "Basic", status: "PENDING" },
-                { id: 103, userId: 12, membershipPlan: "Enterprise", status: "PENDING" },
-                { id: 104, userId: 88, membershipPlan: "Basic", status: "PENDING" },
-                { id: 105, userId: 101, membershipPlan: "Premium", status: "PENDING" },
-                { id: 106, userId: 6, membershipPlan: "Premium", status: "PENDING" },
-                { id: 107, userId: 234, membershipPlan: "Basic", status: "PENDING" },
-                { id: 108, userId: 119, membershipPlan: "Enterprise", status: "PENDING" },
-                { id: 109, userId: 55, membershipPlan: "Premium", status: "PENDING" },
-                { id: 110, userId: 73, membershipPlan: "Basic", status: "PENDING" },
-                // --- Page 2 Data ---
-                { id: 111, userId: 91, membershipPlan: "Enterprise", status: "PENDING" },
-                { id: 112, userId: 142, membershipPlan: "Basic", status: "PENDING" },
-                { id: 113, userId: 3, membershipPlan: "Premium", status: "PENDING" },
-                { id: 114, userId: 205, membershipPlan: "Premium", status: "PENDING" },
-                { id: 115, userId: 8, membershipPlan: "Basic", status: "PENDING" },
-                { id: 116, userId: 401, membershipPlan: "Enterprise", status: "PENDING" },
-                { id: 117, userId: 31, membershipPlan: "Basic", status: "PENDING" },
-            ];
-            resolve(moreRequests);
-        }, 500);
-    });
-};
-
-const PendingRequests = () => {
-    const [requests, setRequests] = useState<PendingRequest[]>([]);
+const PendingRequestsPage = () => {
+    const [requests, setRequests] = useState<PendingRequests[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
 
     // --- 1. State for the Snackbar ---
     const [snackbar, setSnackbar] = useState<{
         open: boolean;
         message: string;
         severity: AlertColor; // 'success' | 'error' | 'info' | 'warning'
+        reloadOnClose?: boolean;
     } | null>(null);
 
     useEffect(() => {
-        fetchPendingRequests().then(data => setRequests(data));
+        // Define an async function to fetch data
+        const fetchRequests = async () => {
+            try {
+                setLoading(true); // Set loading to true before the API call
+                setError(null);   // Clear any previous errors
+
+                const data = await getAllPendingRequests();
+                console.log("Fetched requests:", data); // Log the fetched data
+                setRequests(data);
+            } catch (err) {
+                // If the API call throws an error, catch it
+                if (err instanceof Error) {
+                    setError(err.message);
+                } else {
+                    setError("An unexpected error occurred while fetching data.");
+                }
+            } finally {
+                // This will run after the try or catch block is finished
+                setLoading(false);
+            }
+        };
+
+        fetchRequests(); // Call the function
     }, []);
 
     // --- 2. Updated Action Handlers ---
-    const handleApproveRequest = (requestId: number) => {
+    const handleApproveRequest = async (requestId: string) => {
         console.log(`Approving request with ID: ${requestId}`);
-        // In a real app, you'd await an API call here.
-        setRequests(prevRequests => prevRequests.filter(req => req.id !== requestId));
-        
-        // Show success snackbar
-        setSnackbar({
-            open: true,
-            message: "Request approved successfully!",
-            severity: "success"
-        });
+        try {
+            await approvePendingRequest(requestId);
+            setSnackbar({
+                open: true,
+                message: "Request approved successfully!",
+                severity: "success"
+            });
+        } catch (error) {
+            console.error("Error approving request:", error);
+        }
     };
 
-    const handleRejectRequest = (requestId: number) => {
+    const handleRejectRequest = async (requestId: string) => {
         console.log(`Rejecting request with ID: ${requestId}`);
-        // In a real app, you'd await an API call here.
-        setRequests(prevRequests => prevRequests.filter(req => req.id !== requestId));
-        
-        // Show info/error snackbar
-        setSnackbar({
-            open: true,
-            message: "Request has been rejected.",
-            severity: "error" // Using 'error' for a more impactful red color
-        });
+        try {
+            await cancelPendingRequest(requestId);
+            setSnackbar({
+                open: true,
+                message: "Request has been rejected.",
+                severity: "error"
+            });
+        } catch (error) {
+            console.error("Error approving request:", error);
+        }
     };
 
     // --- 3. Handler to close the Snackbar ---
     const handleCloseSnackbar = () => {
         setSnackbar(null);
+        window.location.reload();
+    };
+
+    const renderContent = () => {
+        // 1. Show a loading spinner while fetching data
+        if (loading) {
+            return (
+                <Box display="flex" justifyContent="center" alignItems="center" sx={{ height: '50vh' }}>
+                    <CircularProgress sx={{ color: 'white' }} />
+                    <Typography sx={{ color: 'white', ml: 2 }}>Loading Requests...</Typography>
+                </Box>
+            );
+        }
+
+        // 2. Show an error message if the API call failed
+        if (error) {
+            return (
+                <Alert severity="error" sx={{ mt: 4, mx: 'auto', maxWidth: '600px', backgroundColor: '#5c3c3c', color: 'white' }}>
+                    {error}
+                </Alert>
+            );
+        }
+
+        // 3. Show a message if there are no requests to display
+        if (!requests.length) {
+            return (
+                <Typography align="center" sx={{ color: '#ccc', mt: 5, fontStyle: 'italic' }}>
+                    No pending requests found.
+                </Typography>
+            );
+        }
+
+        // 4. If everything is fine, show the table
+        return (
+            <PendingRequestsTable
+                requests={requests}
+                onApprove={handleApproveRequest}
+                onReject={handleRejectRequest}
+            />
+        );
     };
 
     return (
@@ -83,22 +123,17 @@ const PendingRequests = () => {
                 Pending Membership Requests
             </Typography>
 
-            <PendingRequestsTable
-                requests={requests}
-                onApprove={handleApproveRequest}
-                onReject={handleRejectRequest}
-            />
+            {/* Render the content based on the current state */}
+            {renderContent()}
 
-            {/* --- 4. Snackbar Component --- */}
-            {/* We only render the Snackbar if the snackbar state is not null */}
+            {/* The Snackbar for user feedback remains unchanged */}
             {snackbar && (
                 <Snackbar
                     open={snackbar.open}
-                    autoHideDuration={4000} // Auto-closes after 4 seconds
+                    autoHideDuration={4000}
                     onClose={handleCloseSnackbar}
                     anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
                 >
-                    {/* The Alert component provides the styling (color, icon) */}
                     <Alert
                         onClose={handleCloseSnackbar}
                         severity={snackbar.severity}
@@ -112,4 +147,4 @@ const PendingRequests = () => {
     );
 };
 
-export default PendingRequests;
+export default PendingRequestsPage;

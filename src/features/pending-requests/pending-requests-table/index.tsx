@@ -14,33 +14,26 @@ import {
     Button,
     Stack
 } from "@mui/material";
+import { PendingRequests } from "../../../types/pending-requets";
 
 // --- Type Definitions ---
 // Define the possible statuses for a request
-export type RequestStatus = "PENDING" | "APPROVED" | "REJECTED";
-
-// Define the shape of a single pending request object
-export interface PendingRequest {
-    id: number; // Unique ID for the request itself
-    userId: number;
-    membershipPlan: "Basic" | "Premium" | "Enterprise"; // Example plans
-    status: RequestStatus;
-}
+export type RequestStatus = "pending" | "approved" | "rejected";
 
 // Props for our new component
 interface PendingRequestsTableProps {
-    requests: PendingRequest[];
-    onApprove: (requestId: number) => void;
-    onReject: (requestId: number) => void;
+    requests: PendingRequests[];
+    onApprove: (requestId: string) => void;
+    onReject: (requestId: string) => void;
 }
 
 // --- Style Constants (reused and adapted from your original component) ---
 
 // Map statuses to colors for the Chip component
 const statusColors: Record<RequestStatus, string> = {
-    PENDING: "#ffc107", // Yellow
-    APPROVED: "#4caf50", // Green
-    REJECTED: "#f44336", // Red
+    pending: "#ffc107", // Yellow
+    approved: "#4caf50", // Green
+    rejected: "#f44336", // Red
 };
 
 const headerStyle = {
@@ -102,7 +95,10 @@ const PendingRequestsTable: React.FC<PendingRequestsTableProps> = ({ requests, o
                     <TableHead>
                         <TableRow>
                             <TableCell sx={headerStyle}>User ID</TableCell>
-                            <TableCell sx={headerStyle}>Membership Plan</TableCell>
+                            <TableCell sx={headerStyle}>Transaction ID</TableCell>
+                            <TableCell sx={headerStyle}>Created At</TableCell>
+                            <TableCell sx={headerStyle} align="right">Token Amount</TableCell>
+                            <TableCell sx={headerStyle} align="right">VND Amount</TableCell>
                             <TableCell sx={headerStyle}>Status</TableCell>
                             <TableCell sx={headerStyle} align="center">Actions</TableCell>
                         </TableRow>
@@ -110,11 +106,21 @@ const PendingRequestsTable: React.FC<PendingRequestsTableProps> = ({ requests, o
                     <TableBody>
                         {currentRequests.map((request) => (
                             <TableRow key={request.id}>
-                                <TableCell sx={cellStyle}>{request.userId}</TableCell>
-                                <TableCell sx={cellStyle}>{request.membershipPlan}</TableCell>
+                                <TableCell sx={cellStyle}>{request.user_id}</TableCell>
+                                <TableCell sx={cellStyle}>{request.transaction_id}</TableCell>
+                                <TableCell sx={cellStyle}>{request.created_at}</TableCell>
+                                <TableCell sx={{ ...cellStyle, textAlign: 'right' }}>
+                                    {request.token_amount.toLocaleString()}
+                                </TableCell>
+                                <TableCell sx={{ ...cellStyle, textAlign: 'right' }}>
+                                    {request.vnd_amount.toLocaleString('vi-VN', {
+                                        style: 'currency',
+                                        currency: 'VND',
+                                    })}
+                                </TableCell>
                                 <TableCell sx={cellStyle}>
                                     <Chip
-                                        label={request.status}
+                                        label={request.status.toUpperCase()}
                                         sx={{
                                             color: statusColors[request.status],
                                             borderColor: statusColors[request.status],
@@ -132,7 +138,7 @@ const PendingRequestsTable: React.FC<PendingRequestsTableProps> = ({ requests, o
                                             variant="contained"
                                             color="success"
                                             size="small"
-                                            onClick={() => onApprove(request.id)}
+                                            onClick={() => onApprove(request.transaction_id)}
                                             sx={{ fontFamily: 'Poppins, sans-serif', textTransform: 'none' }}
                                         >
                                             Approve
@@ -141,7 +147,7 @@ const PendingRequestsTable: React.FC<PendingRequestsTableProps> = ({ requests, o
                                             variant="contained"
                                             color="error"
                                             size="small"
-                                            onClick={() => onReject(request.id)}
+                                            onClick={() => onReject(request.transaction_id)}
                                             sx={{ fontFamily: 'Poppins, sans-serif', textTransform: 'none' }}
                                         >
                                             Reject
@@ -153,7 +159,7 @@ const PendingRequestsTable: React.FC<PendingRequestsTableProps> = ({ requests, o
                     </TableBody>
                     <TableFooter sx={{ '& .MuiTableCell-root': { borderBottom: "none" } }}>
                         <TableRow>
-                            <TableCell sx={footerStyle} colSpan={4}>
+                            <TableCell sx={footerStyle} colSpan={6}>
                                 Total: {requests.length} request(s) across all pages
                             </TableCell>
                         </TableRow>
