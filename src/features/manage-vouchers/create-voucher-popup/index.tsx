@@ -1,41 +1,64 @@
-import React, { useState } from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, Stack, darken, lighten, Box, Typography } from '@mui/material';
-import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import dayjs, { Dayjs } from 'dayjs';
-import { useTheme } from '../../../theme';
-import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
-import { CustomButton } from '../../../components/custom-button';
+import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber'
+import {
+    Box,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    Stack,
+    TextField,
+    Typography,
+} from '@mui/material'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
+import dayjs, { Dayjs } from 'dayjs'
+import React, { useState } from 'react'
+import { CustomButton } from '../../../components/custom-button'
+import { useTheme } from '../../../theme'
 interface CreateVoucherPopupProps {
-    open: boolean;
-    onClose: () => void;
-    onSubmit: (voucher: { code: string; token: number; max_usage: number; expired_time: string }) => void;
+    open: boolean
+    onClose: () => void
+    onSubmit: (voucher: {
+        code: string
+        token: number
+        max_usage: number
+        expired_time: string
+    }) => void
 }
 
-export const CreateVoucherPopup: React.FC<CreateVoucherPopupProps> = ({ open, onClose, onSubmit }) => {
-    const [code, setCode] = useState('');
-    const [token, setToken] = useState(0);
-    const [maxUsage, setMaxUsage] = useState(0);
-    const [expiredTime, setExpiredTime] = useState<Dayjs | null>(dayjs());
+export const CreateVoucherPopup: React.FC<CreateVoucherPopupProps> = ({
+    open,
+    onClose,
+    onSubmit,
+}) => {
+    const [code, setCode] = useState('')
+    const [token, setToken] = useState(0)
+    const [maxUsage, setMaxUsage] = useState(0)
+    const [expiredTime, setExpiredTime] = useState<Dayjs | null>(dayjs())
 
-    const theme = useTheme();
+    const theme = useTheme()
 
     const handleSubmit = () => {
-        if (!code || !expiredTime) return;
+        if (!code || !expiredTime) return
         onSubmit({
             code,
             token,
             max_usage: 5,
             expired_time: expiredTime.toISOString(),
-        });
-    };
+        })
+    }
 
     const dateTimePickerSx = {
         slotProps: {
             popper: {
                 sx: {
-                    '.MuiPaper-root': { border: 'none', borderRadius: 3, p: 1, backgroundColor: '#F7FFCD' },
+                    '.MuiPaper-root': {
+                        border: 'none',
+                        borderRadius: 3,
+                        p: 1,
+                        backgroundColor: '#F7FFCD',
+                    },
                     '& .MuiDialogActions-root .MuiButtonBase-root': {
                         fontFamily: 'Sora',
                         fontSize: '16px',
@@ -47,7 +70,7 @@ export const CreateVoucherPopup: React.FC<CreateVoucherPopupProps> = ({ open, on
                         '&:focus, &:active': {
                             outline: 'none !important',
                             boxShadow: 'none !important',
-                        }
+                        },
                     },
                     '& .MuiDateCalendar-root': {
                         fontFamily: 'Poppins',
@@ -86,7 +109,7 @@ export const CreateVoucherPopup: React.FC<CreateVoucherPopupProps> = ({ open, on
                         },
                         '&:hover': {
                             backgroundColor: '#B7E0FF',
-                        }
+                        },
                     },
                     '& .MuiPickersArrowSwitcher-button': {
                         '&:focus, &:active': {
@@ -145,9 +168,7 @@ export const CreateVoucherPopup: React.FC<CreateVoucherPopupProps> = ({ open, on
         PopperProps: {
             sx: { '&.MuiPickersPopper-root': { border: '4px solid red' } },
         },
-    };
-
-
+    }
 
     const textFieldInputSx = {
         sx: {
@@ -183,7 +204,7 @@ export const CreateVoucherPopup: React.FC<CreateVoucherPopupProps> = ({ open, on
                 },
             },
         },
-    };
+    }
 
     return (
         <Dialog
@@ -201,28 +222,38 @@ export const CreateVoucherPopup: React.FC<CreateVoucherPopupProps> = ({ open, on
                 },
             }}
         >
-            <DialogTitle sx={{
-                color: '#213A58',
-                fontFamily: 'Poppins, Sora, sans-serif',
-                fontSize: '1.2em',
-                fontWeight: 550,
-            }}>Create New Voucher</DialogTitle>
+            <DialogTitle
+                sx={{
+                    color: '#213A58',
+                    fontFamily: 'Poppins, Sora, sans-serif',
+                    fontSize: '1.2em',
+                    fontWeight: 550,
+                }}
+            >
+                Create New Voucher
+            </DialogTitle>
             <DialogContent>
                 <Stack spacing={2} mt={1}>
-                    <Box sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'flex-start',
-                        flexWrap: 'wrap',
-                        gap: 2,
-                    }}>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'flex-start',
+                            flexWrap: 'wrap',
+                            gap: 2,
+                        }}
+                    >
                         <Typography>
-                            <span style={{
-                                fontFamily: 'Poppins, Sora, sans-serif',
-                                fontSize: '0.8em',
-                                color: '#213A58',
-                                fontWeight: 400,
-                            }}>Voucher Code</span>
+                            <span
+                                style={{
+                                    fontFamily: 'Poppins, Sora, sans-serif',
+                                    fontSize: '0.8em',
+                                    color: '#213A58',
+                                    fontWeight: 400,
+                                }}
+                            >
+                                Voucher Code
+                            </span>
                         </Typography>
                         <Box
                             sx={{
@@ -230,88 +261,124 @@ export const CreateVoucherPopup: React.FC<CreateVoucherPopupProps> = ({ open, on
                                 flexDirection: 'row',
                                 gap: 2,
                                 width: '100%',
-                            }}>
-                            <ConfirmationNumberIcon sx={{
-                                color: '#213A58',
-                                fontSize: '2em',
-                            }} />
+                            }}
+                        >
+                            <ConfirmationNumberIcon
+                                sx={{
+                                    color: '#213A58',
+                                    fontSize: '2em',
+                                }}
+                            />
                             <TextField
                                 helperText="Your voucher code should be unique"
                                 defaultValue="VOUCHER123"
                                 fullWidth
-                                variant='standard'
+                                variant="standard"
                                 value={code}
                                 onChange={(e) => setCode(e.target.value)}
                                 {...textFieldInputSx}
                             />
                         </Box>
                     </Box>
-                    <Box sx={{
-                        display: 'flex',
-                        flexDirection: 'row',
-                        alignItems: 'flex-start',
-                        flexWrap: 'wrap',
-                        gap: 4,
-                    }}>
-                        <Box sx={{
+                    <Box
+                        sx={{
                             display: 'flex',
-                            flexDirection: 'column',
+                            flexDirection: 'row',
                             alignItems: 'flex-start',
                             flexWrap: 'wrap',
-                            width: '48%',
-                        }}>
-                            <Typography><span style={{
-                                fontFamily: 'Poppins, Sora, sans-serif',
-                                fontSize: '0.8em',
-                                color: '#213A58',
-                                fontWeight: 400,
-                            }}>Tokens</span></Typography>
+                            gap: 4,
+                        }}
+                    >
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'flex-start',
+                                flexWrap: 'wrap',
+                                width: '48%',
+                            }}
+                        >
+                            <Typography>
+                                <span
+                                    style={{
+                                        fontFamily: 'Poppins, Sora, sans-serif',
+                                        fontSize: '0.8em',
+                                        color: '#213A58',
+                                        fontWeight: 400,
+                                    }}
+                                >
+                                    Tokens
+                                </span>
+                            </Typography>
                             <TextField
                                 type="number"
                                 variant="standard"
                                 fullWidth
                                 value={token}
-                                onChange={(e) => setToken(parseInt(e.target.value))}
+                                onChange={(e) =>
+                                    setToken(parseInt(e.target.value))
+                                }
                                 {...textFieldInputSx}
                             />
                         </Box>
-                        <Box sx={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'flex-start',
-                            flexWrap: 'wrap',
-                            flexGrow: 1,
-                        }}>
-                            <Typography><span style={{
-                                fontFamily: 'Poppins, Sora, sans-serif',
-                                fontSize: '0.8em',
-                                color: '#213A58',
-                                fontWeight: 400,
-                            }}>Max Usage Tokens</span></Typography>
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'flex-start',
+                                flexWrap: 'wrap',
+                                flexGrow: 1,
+                            }}
+                        >
+                            <Typography>
+                                <span
+                                    style={{
+                                        fontFamily: 'Poppins, Sora, sans-serif',
+                                        fontSize: '0.8em',
+                                        color: '#213A58',
+                                        fontWeight: 400,
+                                    }}
+                                >
+                                    Max Usage Tokens
+                                </span>
+                            </Typography>
                             <TextField
                                 variant="standard"
                                 type="number"
                                 fullWidth
                                 value={maxUsage}
-                                onChange={(e) => setMaxUsage(parseInt(e.target.value))}
+                                onChange={(e) =>
+                                    setMaxUsage(parseInt(e.target.value))
+                                }
                                 {...textFieldInputSx}
                             />
                         </Box>
                     </Box>
 
                     <Box>
-                        <Typography><span style={{
-                            fontFamily: 'Poppins, Sora, sans-serif',
-                            fontSize: '0.8em',
-                            color: '#213A58',
-                            fontWeight: 400,
-                            marginTop:2,
-                        }}>Expired Time</span></Typography>
+                        <Typography>
+                            <span
+                                style={{
+                                    fontFamily: 'Poppins, Sora, sans-serif',
+                                    fontSize: '0.8em',
+                                    color: '#213A58',
+                                    fontWeight: 400,
+                                    marginTop: 2,
+                                }}
+                            >
+                                Expired Time
+                            </span>
+                        </Typography>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DateTimePicker
                                 value={expiredTime}
-                                onChange={(newValue) => setExpiredTime(newValue)}
-                                localeText={{ okButtonLabel: 'Confirm', cancelButtonLabel: 'Cancel' }}
+                                onChange={(newValue) =>
+                                    setExpiredTime(newValue)
+                                }
+                                localeText={{
+                                    okButtonLabel: 'Confirm',
+                                    cancelButtonLabel: 'Cancel',
+                                }}
                                 slotProps={{
                                     popper: dateTimePickerSx.slotProps.popper,
                                     textField: {
@@ -320,16 +387,21 @@ export const CreateVoucherPopup: React.FC<CreateVoucherPopupProps> = ({ open, on
                                         sx: {
                                             ...textFieldInputSx.sx,
                                             width: '48%',
-                                            '& .MuiInputAdornment-root .MuiIconButton-root': {
-                                                outline: 'none !important',
-                                                boxShadow: 'none !important',
-                                                '&:focus, &:focusVisible, &:active': {
+                                            '& .MuiInputAdornment-root .MuiIconButton-root':
+                                                {
                                                     outline: 'none !important',
-                                                    boxShadow: 'none !important',
+                                                    boxShadow:
+                                                        'none !important',
+                                                    '&:focus, &:focusVisible, &:active':
+                                                        {
+                                                            outline:
+                                                                'none !important',
+                                                            boxShadow:
+                                                                'none !important',
+                                                        },
                                                 },
-                                            },
-                                        }
-                                    }
+                                        },
+                                    },
                                 }}
                             />
                         </LocalizationProvider>
@@ -337,24 +409,21 @@ export const CreateVoucherPopup: React.FC<CreateVoucherPopupProps> = ({ open, on
                 </Stack>
             </DialogContent>
             <DialogActions>
-                <CustomButton 
+                <CustomButton
                     text="Cancel"
                     onClick={onClose}
                     sx={{
                         bgcolor: 'transparent',
                         border: 'none !important',
-                        borderShadow: 'none',   
+                        borderShadow: 'none',
                         color: '#213A58',
                         '&:hover': {
                             backgroundColor: '#B7E0FF',
                         },
                     }}
                 />
-                <CustomButton
-                    text="Create"
-                    onClick={handleSubmit}
-                />
+                <CustomButton text="Create" onClick={handleSubmit} />
             </DialogActions>
         </Dialog>
-    );
-};
+    )
+}

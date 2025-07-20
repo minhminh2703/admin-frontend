@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { Box } from '@mui/material';
-import { LocalizationProvider} from '@mui/x-date-pickers';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import CustomDateInput from './custom-date-input';
+import { useState } from "react";
+import { Box } from "@mui/material";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import CustomDateInput from "./custom-date-input";
 
 const DateRangePicker = () => {
     const [fromDate, setFromDate] = useState<Date | null>(null);
@@ -10,12 +10,19 @@ const DateRangePicker = () => {
 
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <Box sx={{ display: 'flex', flexDirection: 'row', gap: 2}}>
-                <CustomDateInput label="From" value={fromDate} onChange={setFromDate} />
-                <CustomDateInput label="To" value={toDate} onChange={setToDate} />
+            <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
+                <CustomDateInput
+                    label="From"
+                    value={fromDate}
+                    onChange={setFromDate}
+                />
+                <CustomDateInput
+                    label="To"
+                    value={toDate}
+                    onChange={setToDate}
+                />
             </Box>
         </LocalizationProvider>
-
     );
 };
 

@@ -1,53 +1,74 @@
-import React, { useEffect, useState } from 'react';
-import { Box, AppBar, Toolbar, Typography, TextField, IconButton, Avatar } from '@mui/material';
-import { Search } from '@mui/icons-material';
-import { useTheme } from '../../../theme';
-import { useAuth } from '../../../context/auth-context';
-import LogoutIcon from '@mui/icons-material/Logout';
-import { getUser, getUserAvatar } from '../../../api/user.api';
-import { useNavigate } from 'react-router-dom';
-import UserProfile from '../user-profile';
+import { Search } from '@mui/icons-material'
+import LogoutIcon from '@mui/icons-material/Logout'
+import {
+    AppBar,
+    Box,
+    IconButton,
+    SxProps,
+    TextField,
+    Theme,
+    Toolbar,
+} from '@mui/material'
+import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { getUser } from '../../../api/user.api'
+import { useAuth } from '../../../context/auth-context'
+import { useTheme } from '../../../theme'
+import UserProfile from '../user-profile'
 
-const HeaderBar: React.FC<{ sx?: any }> = ({ sx }) => {
-    const theme = useTheme();
-    const navigate = useNavigate();
-    const { userId, logout } = useAuth();
-    const [avatarUrl, setAvatarUrl] = useState('');
-    const [userData, setUserData] = useState({ firstName: '', lastName: '' });
+const HeaderBar: React.FC<{ sx?: SxProps<Theme> | undefined }> = ({ sx }) => {
+    const theme = useTheme()
+    const navigate = useNavigate()
+    const { userId, logout } = useAuth()
+    const [avatarUrl, setAvatarUrl] = useState('')
+    const [userData, setUserData] = useState({ firstName: '', lastName: '' })
 
     const handleLogout = () => {
-        logout();
-        navigate('/auth');
-    };
+        logout()
+        navigate('/auth')
+    }
 
     useEffect(() => {
         const fetchUserData = async () => {
-            if (!userId) return;
+            if (!userId) return
 
             try {
-                const userData = await getUser(userId);
+                const userData = await getUser(userId)
                 setUserData({
                     firstName: userData.user.first_name,
                     lastName: userData.user.last_name,
-                });
+                })
 
-                const avatarUrl = userData.user.avatar || '';
-                const avatarCorrectUrl = avatarUrl.split('?X-Amz-Algorithm')[0];
-                setAvatarUrl(avatarCorrectUrl);
+                const avatarUrl = userData.user.avatar || ''
+                const avatarCorrectUrl = avatarUrl.split('?X-Amz-Algorithm')[0]
+                setAvatarUrl(avatarCorrectUrl)
             } catch (error) {
-                console.error("Error fetching user data:", error);
+                console.error('Error fetching user data:', error)
             }
-        };
+        }
 
-        fetchUserData();
-        console.log('User id: ', userId);
-    }, [userId]);
+        fetchUserData()
+        console.log('User id: ', userId)
+    }, [userId])
 
     return (
         <AppBar sx={{ ...sx, boxShadow: 'none' }} position="static">
-            <Toolbar sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <Toolbar
+                sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                }}
+            >
                 <Box sx={{ flex: 1, maxWidth: '17em' }} />
-                <Box sx={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center" }}>
+                <Box
+                    sx={{
+                        flex: 1,
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }}
+                >
                     <TextField
                         variant="outlined"
                         placeholder="Search"
@@ -65,9 +86,10 @@ const HeaderBar: React.FC<{ sx?: any }> = ({ sx }) => {
                                 '&:hover .MuiOutlinedInput-notchedOutline': {
                                     borderColor: 'white',
                                 },
-                                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                                    borderColor: 'white',
-                                },
+                                '&.Mui-focused .MuiOutlinedInput-notchedOutline':
+                                    {
+                                        borderColor: 'white',
+                                    },
                             },
                             '& .MuiOutlinedInput-notchedOutline': {
                                 borderColor: 'white',
@@ -78,7 +100,8 @@ const HeaderBar: React.FC<{ sx?: any }> = ({ sx }) => {
                             input: {
                                 style: {
                                     color: 'white',
-                                    fontFamily: theme.typography.body2.fontFamily,
+                                    fontFamily:
+                                        theme.typography.body2.fontFamily,
                                     fontSize: '0.9em',
                                 },
                                 endAdornment: (
@@ -90,7 +113,8 @@ const HeaderBar: React.FC<{ sx?: any }> = ({ sx }) => {
                             inputLabel: {
                                 style: {
                                     color: 'white',
-                                    fontFamily: theme.typography.body2.fontFamily,
+                                    fontFamily:
+                                        theme.typography.body2.fontFamily,
                                     fontSize: '0.9em',
                                 },
                             },
@@ -112,15 +136,23 @@ const HeaderBar: React.FC<{ sx?: any }> = ({ sx }) => {
                         firstName={userData.firstName}
                         lastName={userData.lastName}
                         avatarUrl={avatarUrl}
-                        userId={userId? userId : ''}
+                        userId={userId ? userId : ''}
                     />
-                    <IconButton onClick={handleLogout} sx={{ color: 'white', marginRight: '1rem', gap: 1, cursor: 'pointer' }}>
+                    <IconButton
+                        onClick={handleLogout}
+                        sx={{
+                            color: 'white',
+                            marginRight: '1rem',
+                            gap: 1,
+                            cursor: 'pointer',
+                        }}
+                    >
                         <LogoutIcon />
                     </IconButton>
                 </Box>
             </Toolbar>
         </AppBar>
-    );
-};
+    )
+}
 
-export default HeaderBar;
+export default HeaderBar

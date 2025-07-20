@@ -1,13 +1,19 @@
-import React from "react";
-import { Typography, FormControl, Select, MenuItem, SelectChangeEvent, Box } from "@mui/material";
-import { useTheme } from "../../../../../theme";
+import {
+    Box,
+    FormControl,
+    MenuItem,
+    Select,
+    SelectChangeEvent,
+    Typography,
+} from '@mui/material'
+import React from 'react'
 
 interface LabeledFormControlProps {
-    label: string;
-    name: string;
-    value: string;
-    options: string[];
-    onChange: (e: SelectChangeEvent<string>) => void;
+    label: string
+    name: string
+    value: string
+    options: string[]
+    onChange: (e: SelectChangeEvent<string>) => void
 }
 
 const LabeledFormControl: React.FC<LabeledFormControlProps> = ({
@@ -15,24 +21,26 @@ const LabeledFormControl: React.FC<LabeledFormControlProps> = ({
     name,
     value,
     options,
-    onChange
+    onChange,
 }) => {
-    const theme = useTheme();
-
     return (
-        <Box sx={{
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-            gap: 0.5,
-        }}>
-            <Typography sx={{
-                minWidth: 120,
-                fontWeight: 500,
-                fontFamily: 'Poppins, Sora',
-                color: 'white',
-                fontSize: '0.875rem',
-            }}>
+        <Box
+            sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: 0.5,
+            }}
+        >
+            <Typography
+                sx={{
+                    minWidth: 120,
+                    fontWeight: 500,
+                    fontFamily: 'Poppins, Sora',
+                    color: 'white',
+                    fontSize: '0.875rem',
+                }}
+            >
                 {label}
             </Typography>
             <FormControl fullWidth>
@@ -75,9 +83,15 @@ const LabeledFormControl: React.FC<LabeledFormControlProps> = ({
                         color: 'white',
                         fontWeight: 500,
                         fontFamily: 'Sora, Poppins, sans-serif',
-                        '& .MuiOutlinedInput-notchedOutline': { border: 'none' },
-                        '&:hover .MuiOutlinedInput-notchedOutline': { border: 'none' },
-                        '&.Mui-focused .MuiOutlinedInput-notchedOutline': { border: 'none' },
+                        '& .MuiOutlinedInput-notchedOutline': {
+                            border: 'none',
+                        },
+                        '&:hover .MuiOutlinedInput-notchedOutline': {
+                            border: 'none',
+                        },
+                        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                            border: 'none',
+                        },
                         '& .MuiSelect-select': {
                             color: 'white',
                             p: '8px 14px',
@@ -94,7 +108,7 @@ const LabeledFormControl: React.FC<LabeledFormControlProps> = ({
                 </Select>
             </FormControl>
         </Box>
-    );
-};
+    )
+}
 
-export default LabeledFormControl;
+export default LabeledFormControl
