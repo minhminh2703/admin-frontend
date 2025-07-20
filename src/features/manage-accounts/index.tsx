@@ -1,24 +1,22 @@
-import { ChangeEvent, useEffect, useState } from 'react';
 import {
     Box,
-    Typography,
-    TextField,
     FormControl,
-    Select,
     MenuItem,
+    Select,
     SelectChangeEvent,
-    Button,
-} from "@mui/material";
-import { useTheme } from '../../theme';
-import { User } from '../../types/user';
-import ManageAccountsTable from './components/manage-accounts-table';
-import { getAllUser } from '../../api/user.api';
-import EditAccount from './components/edit-account';
-import { CustomButton } from '../../components/custom-button';
-
+    TextField,
+    Typography,
+} from '@mui/material'
+import { ChangeEvent, useEffect, useState } from 'react'
+import { getAllUser } from '../../api/user.api'
+import { CustomButton } from '../../components/custom-button'
+import { useTheme } from '../../theme'
+import { User } from '../../types/user'
+import EditAccount from './components/edit-account'
+import ManageAccountsTable from './components/manage-accounts-table'
 
 function capitalizeFirstLetter(string: string) {
-    return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+    return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase()
 }
 
 const FilterSelect = ({
@@ -29,21 +27,23 @@ const FilterSelect = ({
     options,
     theme,
 }: {
-    label: string;
-    name: string;
-    value: string;
-    onChange: (event: SelectChangeEvent<string>) => void;
-    options: { value: string; label: string }[];
-    theme: any;
+    label: string
+    name: string
+    value: string
+    onChange: (event: SelectChangeEvent<string>) => void
+    options: { value: string; label: string }[]
+    theme: any
 }) => (
     <FormControl sx={{ flex: 1 }}>
-        <Typography sx={{
-            mb: 1,
-            fontFamily: 'Poppins, Sora, sans-serif',
-            fontWeight: '400',
-            fontSize: '0.8em',
-            color: theme.fontColor.greyWhite
-        }}>
+        <Typography
+            sx={{
+                mb: 1,
+                fontFamily: 'Poppins, Sora, sans-serif',
+                fontWeight: '400',
+                fontSize: '0.8em',
+                color: theme.fontColor.greyWhite,
+            }}
+        >
             {label}
         </Typography>
         <Select
@@ -87,7 +87,9 @@ const FilterSelect = ({
                 fontFamily: 'Sora, Poppins, sans-serif',
                 '& .MuiOutlinedInput-notchedOutline': { border: 'none' },
                 '&:hover .MuiOutlinedInput-notchedOutline': { border: 'none' },
-                '&.Mui-focused .MuiOutlinedInput-notchedOutline': { border: 'none' },
+                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                    border: 'none',
+                },
                 '& .MuiSelect-select': {
                     color: theme.fontColor.greyWhite,
                     p: '8px 14px',
@@ -103,99 +105,116 @@ const FilterSelect = ({
             ))}
         </Select>
     </FormControl>
-);
+)
 
 const ManageAccount = () => {
-    const theme = useTheme();
-    const [users, setUsers] = useState<User[]>([]);
-    const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
+    const theme = useTheme()
+    const [users, setUsers] = useState<User[]>([])
+    const [selectedUserId, setSelectedUserId] = useState<number | null>(null)
     const [tempFilters, setTempFilters] = useState({
         search: '',
         role: 'All',
-        status: 'All'
-    });
+        status: 'All',
+    })
     const [filters, setFilters] = useState({
         search: '',
         role: 'All',
-        status: 'All'
-    });
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
+        status: 'All',
+    })
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState('')
 
     useEffect(() => {
         const fetchUsers = async () => {
-            setLoading(true);
+            setLoading(true)
             try {
-                const response = await getAllUser();
+                const response = await getAllUser()
                 console.log(response)
-                setUsers(response.map(user => ({
-                    ...user,
-                    status: user.status.toUpperCase(),
-                    role: capitalizeFirstLetter(user.role)
-                })));
-                console.log("ALL USERS", response);
+                setUsers(
+                    response.map((user) => ({
+                        ...user,
+                        status: user.status.toUpperCase(),
+                        role: capitalizeFirstLetter(user.role),
+                    })),
+                )
+                console.log('ALL USERS', response)
             } catch (error) {
-                setError('Failed to fetch users');
-                console.error(error);
+                setError('Failed to fetch users')
+                console.error(error)
             }
-            setLoading(false);
-        };
+            setLoading(false)
+        }
 
-        fetchUsers();
-    }, []);
+        fetchUsers()
+    }, [])
 
-    const handleTempFilterChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent<string>) => {
-        const { name, value } = event.target;
-        setTempFilters(prev => ({
+    const handleTempFilterChange = (
+        event:
+            | ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+            | SelectChangeEvent<string>,
+    ) => {
+        const { name, value } = event.target
+        setTempFilters((prev) => ({
             ...prev,
-            [name]: value
-        }));
-    };
+            [name]: value,
+        }))
+    }
 
     const applyFilters = () => {
-        setFilters(tempFilters);
-    };
+        setFilters(tempFilters)
+    }
 
-    const filteredData = users.filter(user => {
-        const search = filters.search.toLowerCase();
+    const filteredData = users.filter((user) => {
+        const search = filters.search.toLowerCase()
         const searchMatch =
             user.username.toLowerCase().includes(search) ||
             user.role.toLowerCase().includes(search) ||
-            user.status.toLowerCase().includes(search);
+            user.status.toLowerCase().includes(search)
 
-        const roleMatch = filters.role === 'All' || user.role === filters.role;
-        const statusMatch = filters.status === 'All' || user.status === filters.status.toUpperCase();
+        const roleMatch = filters.role === 'All' || user.role === filters.role
+        const statusMatch =
+            filters.status === 'All' ||
+            user.status === filters.status.toUpperCase()
 
-        return searchMatch && roleMatch && statusMatch;
-    });
+        return searchMatch && roleMatch && statusMatch
+    })
 
     if (selectedUserId !== null) {
-        return <EditAccount userId={selectedUserId} onBack={() => setSelectedUserId(null)} />;
+        return (
+            <EditAccount
+                userId={selectedUserId}
+                onBack={() => setSelectedUserId(null)}
+            />
+        )
     }
 
-    if (loading) return <Box>Loading...</Box>;
-    if (error) return <Box>Error: {error}</Box>;
+    if (loading) return <Box>Loading...</Box>
+    if (error) return <Box>Error: {error}</Box>
 
     return (
         <Box sx={{ backgroundColor: 'transparent', border: 'none' }}>
-            <Box sx={{
-                marginBottom: 2,
-                display: 'flex',
-                justifyContent: 'start',
-                alignItems: 'flex-end',
-                gap: 2,
-                flexWrap: 'wrap',
-                px: 3,
-                py: 1,
-            }}>
+            <Box
+                sx={{
+                    marginBottom: 2,
+                    display: 'flex',
+                    justifyContent: 'start',
+                    alignItems: 'flex-end',
+                    gap: 2,
+                    flexWrap: 'wrap',
+                    px: 3,
+                    py: 1,
+                }}
+            >
                 <Box width={{ xs: '100%', sm: '100%', md: '50%' }}>
-                    <Typography sx={{
-                        mb: 1,
-                        fontFamily: 'Poppins, Sora, sans-serif',
-                        fontWeight: '400',
-                        fontSize: '0.8em',
-                        color: theme.fontColor.greyWhite,
-                    }}>
+                    <Typography
+                        sx={{
+                            mb: 1,
+                            fontFamily: 'Poppins, Sora, sans-serif',
+                            fontWeight: '400',
+                            fontSize: '0.8em',
+                            color: theme.fontColor.greyWhite,
+                        }}
+                    >
                         What are you looking for?
                     </Typography>
                     <TextField
@@ -209,10 +228,10 @@ const ManageAccount = () => {
                                 sx: {
                                     color: '#fff',
                                     '&::placeholder': {
-                                        color: theme.fontColor.greyWhite
-                                    }
-                                }
-                            }
+                                        color: theme.fontColor.greyWhite,
+                                    },
+                                },
+                            },
                         }}
                         sx={{
                             height: '39px',
@@ -268,9 +287,12 @@ const ManageAccount = () => {
                     onClick={applyFilters}
                 />
             </Box>
-            <ManageAccountsTable users={filteredData} onEdit={(id: number) => setSelectedUserId(id)} />
+            <ManageAccountsTable
+                users={filteredData}
+                onEdit={(id: number) => setSelectedUserId(id)}
+            />
         </Box>
-    );
-};
+    )
+}
 
-export default ManageAccount;
+export default ManageAccount

@@ -1,46 +1,45 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Box, Typography, TextField, Button, Avatar, FormControl, MenuItem, Select } from "@mui/material";
-import Grid from "@mui/material/Grid2";
-import { useTheme } from "../../../../theme";
-import { getUser, getUserAvatar, updateUser } from "../../../../api/user.api";
-import SuccessPopup from "../success-popup/index";
-import { LabeledInput } from "./labeled-input";
-import LabeledFormControl from "./labeled-form-control";
-import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
-import dayjs from "dayjs";
-import { CustomButton } from "../../../../components/custom-button";
+import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace'
+import { Avatar, Box, Typography } from '@mui/material'
+import Grid from '@mui/material/Grid2'
+import dayjs from 'dayjs'
+import React, { useEffect, useState } from 'react'
+import { getUser, updateUser } from '../../../../api/user.api'
+import { CustomButton } from '../../../../components/custom-button'
+import { useTheme } from '../../../../theme'
+import SuccessPopup from '../success-popup/index'
+import LabeledFormControl from './labeled-form-control'
+import { LabeledInput } from './labeled-input'
 
 interface UserDetails {
-    id: string,
-    firstName: string;
-    lastName: string;
-    username: string;
-    email: string;
-    status: string,
-    createdDate: string;
-    userRole: string;
-    premium: boolean;
-    avatarSrc: string;
+    id: string
+    firstName: string
+    lastName: string
+    username: string
+    email: string
+    status: string
+    createdDate: string
+    userRole: string
+    premium: boolean
+    avatarSrc: string
 }
 
 interface EditAccountProps {
-    userId: number;
-    onBack: () => void;
+    userId: number
+    onBack: () => void
 }
 
 const EditAccount: React.FC<EditAccountProps> = ({ userId, onBack }) => {
-    const [userData, setUserData] = useState<UserDetails | null>(null);;
-    const [showSuccessPopup, setShowSuccessPopup] = useState(false); // Manage snackbar state
-    const [loading, setLoading] = useState(true);
-    const theme = useTheme();
-    const [avatar, setAvatar] = useState<string>("image.png");
-
+    const [userData, setUserData] = useState<UserDetails | null>(null)
+    const [showSuccessPopup, setShowSuccessPopup] = useState(false) // Manage snackbar state
+    const [loading, setLoading] = useState(true)
+    const theme = useTheme()
+    const [avatar, setAvatar] = useState<string>('image.png')
 
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                const response = await getUser(String(userId));
-                console.log('RESPONSE: ', response);
+                const response = await getUser(String(userId))
+                console.log('RESPONSE: ', response)
                 setUserData({
                     id: String(response.user.id),
                     firstName: response.user.first_name,
@@ -52,44 +51,47 @@ const EditAccount: React.FC<EditAccountProps> = ({ userId, onBack }) => {
                     userRole: response.user.role.toUpperCase(),
                     premium: response.user.premium,
                     avatarSrc: response.user.avatar || '',
-                });
-                setLoading(false);
+                })
+                setLoading(false)
             } catch (error) {
-                console.error("Error loading user:", error);
+                console.error('Error loading user:', error)
             }
-        };
+        }
 
-        fetchUser();
-    }, [userId]);
+        fetchUser()
+    }, [userId])
 
     useEffect(() => {
         const fetchUser = async () => {
             try {
                 if (userData?.id) {
-                    const avatarUrl = userData.avatarSrc.split('?X-Amz-Algorithm')[0];
-                    console.log('AVATAR RESPONSE: ', avatarUrl);
-                    setAvatar(avatarUrl);
+                    const avatarUrl =
+                        userData.avatarSrc.split('?X-Amz-Algorithm')[0]
+                    console.log('AVATAR RESPONSE: ', avatarUrl)
+                    setAvatar(avatarUrl)
                 }
             } catch (error) {
-                console.error("Error loading user avatar:", error);
+                console.error('Error loading user avatar:', error)
             }
-        };
+        }
 
-        fetchUser();
-    }, [userData]);
+        fetchUser()
+    }, [userData])
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.target;
+    const handleChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    ) => {
+        const { name, value } = e.target
         setUserData((prev) => {
-            if (!prev) return prev; // prevent update if null
-            return { ...prev, [name]: value };
-        });
-    };
+            if (!prev) return prev // prevent update if null
+            return { ...prev, [name]: value }
+        })
+    }
 
     const handleSave = async () => {
         if (!userId || !userData) {
-            console.error("User ID is null. Cannot update user data.");
-            return;
+            console.error('User ID is null. Cannot update user data.')
+            return
         }
 
         try {
@@ -100,25 +102,28 @@ const EditAccount: React.FC<EditAccountProps> = ({ userId, onBack }) => {
                 email: userData.email,
                 status: userData.status,
                 premium: false,
-                role: userData.userRole
+                role: userData.userRole,
             }
-            const updateUserResponse = await updateUser(String(userId), updatedData);
-            setShowSuccessPopup(true);
-            console.log('Update response:', updateUserResponse);
+            const updateUserResponse = await updateUser(
+                String(userId),
+                updatedData,
+            )
+            setShowSuccessPopup(true)
+            console.log('Update response:', updateUserResponse)
 
             setTimeout(() => {
-                window.location.reload();
-            }, 3000);
+                window.location.reload()
+            }, 3000)
         } catch (error) {
-            console.error('Failed to update user data:', error);
+            console.error('Failed to update user data:', error)
         }
-    };
+    }
 
-    if (loading || !userData) return <Box>Loading...</Box>;
+    if (loading || !userData) return <Box>Loading...</Box>
 
     return (
         <>
-            <Box >
+            <Box>
                 <Typography
                     onClick={onBack}
                     sx={{
@@ -135,23 +140,35 @@ const EditAccount: React.FC<EditAccountProps> = ({ userId, onBack }) => {
                         },
                     }}
                 >
-                    <KeyboardBackspaceIcon sx={{ fontSize: '1.2em', marginRight: '0.5rem', cursor: 'pointer' }} />
+                    <KeyboardBackspaceIcon
+                        sx={{
+                            fontSize: '1.2em',
+                            marginRight: '0.5rem',
+                            cursor: 'pointer',
+                        }}
+                    />
                     Back to Account List
                 </Typography>
-                <Typography sx={{
-                    fontFamily: theme.typography.body2.fontFamily,
-                    fontSize: '1.5em',
-                    fontWeight: '600',
-                    color: '#B6FFA1',
-                    textAlign: 'left',
-                    mb: '1em',
-                }}>
+                <Typography
+                    sx={{
+                        fontFamily: theme.typography.body2.fontFamily,
+                        fontSize: '1.5em',
+                        fontWeight: '600',
+                        color: '#B6FFA1',
+                        textAlign: 'left',
+                        mb: '1em',
+                    }}
+                >
                     Account Details
                 </Typography>
 
                 <Grid container spacing={3} sx={{ mt: 5 }}>
                     <Grid size={{ xs: 12, md: 3 }}>
-                        <Box display="flex" flexDirection="column" alignItems="center">
+                        <Box
+                            display="flex"
+                            flexDirection="column"
+                            alignItems="center"
+                        >
                             <Avatar
                                 src={avatar || 'image.png'}
                                 alt="Avatar"
@@ -201,7 +218,9 @@ const EditAccount: React.FC<EditAccountProps> = ({ userId, onBack }) => {
                                 <LabeledInput
                                     label="Created date"
                                     name="createdDate"
-                                    value={dayjs(userData.createdDate).format('DD MMM YYYY HH:mm')}
+                                    value={dayjs(userData.createdDate).format(
+                                        'DD MMM YYYY HH:mm',
+                                    )}
                                     readOnly
                                 />
                             </Grid>
@@ -221,7 +240,10 @@ const EditAccount: React.FC<EditAccountProps> = ({ userId, onBack }) => {
                                     value={userData.userRole}
                                     onChange={(e) =>
                                         handleChange({
-                                            target: { name: 'userRole', value: e.target.value },
+                                            target: {
+                                                name: 'userRole',
+                                                value: e.target.value,
+                                            },
                                         } as any)
                                     }
                                     options={['ADMIN', 'USER', 'MANAGER']}
@@ -236,7 +258,10 @@ const EditAccount: React.FC<EditAccountProps> = ({ userId, onBack }) => {
                                     value={userData.status.toUpperCase()}
                                     onChange={(e) =>
                                         handleChange({
-                                            target: { name: 'status', value: e.target.value },
+                                            target: {
+                                                name: 'status',
+                                                value: e.target.value,
+                                            },
                                         } as any)
                                     }
                                     options={['ACTIVE', 'DELETED', 'SUSPENDED']}
@@ -246,21 +271,12 @@ const EditAccount: React.FC<EditAccountProps> = ({ userId, onBack }) => {
                     </Grid>
                 </Grid>
 
-
-
                 {/* Save Button */}
-                <Box
-                    display="flex"
-                    justifyContent="flex-end"
-                >
-                    <Box
-                        display="flex"
-                        justifyContent="flex-end"
-                        mt={4}
-                    >
+                <Box display="flex" justifyContent="flex-end">
+                    <Box display="flex" justifyContent="flex-end" mt={4}>
                         <CustomButton
                             text="Save changes"
-                            height='100%'
+                            height="100%"
                             onClick={handleSave}
                         />
                     </Box>
@@ -272,7 +288,7 @@ const EditAccount: React.FC<EditAccountProps> = ({ userId, onBack }) => {
                 message="User details updated successfully!"
             />
         </>
-    );
-};
+    )
+}
 
-export default EditAccount;
+export default EditAccount
