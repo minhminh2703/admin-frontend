@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, Stack } from '@mui/material';
-import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import dayjs, { Dayjs } from 'dayjs';
-import { useTheme } from '../../../theme';
+import React, { useState } from "react";
+import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, Stack } from "@mui/material";
+import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs, { Dayjs } from "dayjs";
+import { useTheme } from "../../../theme";
 
 interface CreateVoucherPopupProps {
     open: boolean;
@@ -13,7 +13,7 @@ interface CreateVoucherPopupProps {
 }
 
 export const CreateVoucherPopup: React.FC<CreateVoucherPopupProps> = ({ open, onClose, onSubmit }) => {
-    const [code, setCode] = useState('');
+    const [code, setCode] = useState("");
     const [token, setToken] = useState(0);
     const [maxUsage, setMaxUsage] = useState(0);
     const [expiredTime, setExpiredTime] = useState<Dayjs | null>(dayjs());
@@ -34,32 +34,32 @@ export const CreateVoucherPopup: React.FC<CreateVoucherPopupProps> = ({ open, on
         slotProps: {
             popper: {
                 sx: {
-                    '.MuiPaper-root': { border: '1px solid blue', borderRadius: '10px' },
+                    ".MuiPaper-root": { border: "1px solid blue", borderRadius: "10px" },
                 },
             },
             textField: {
                 fullWidth: true,
                 sx: {
-                    '& .MuiInputLabel-root': {
+                    "& .MuiInputLabel-root": {
                         color: theme.fontColor.white,
                     },
-                    '& fieldset': {
+                    "& fieldset": {
                         borderColor: theme.fontColor.white,
                     },
-                    '& .MuiIconButton-root': {
+                    "& .MuiIconButton-root": {
                         color: theme.fontColor.white,
                     },
                 },
                 InputProps: {
                     disableUnderline: true,
                     sx: {
-                        color: '#FFFF',
+                        color: "#FFFF",
                     },
                 },
             },
         },
         PopperProps: {
-            sx: { '&.MuiPickersPopper-root': { border: '4px solid red' } },
+            sx: { "&.MuiPickersPopper-root": { border: "4px solid red" } },
         },
     };
 
@@ -67,20 +67,20 @@ export const CreateVoucherPopup: React.FC<CreateVoucherPopupProps> = ({ open, on
         sx: {
             // use for text field component
             // label color
-            '& .MuiInputLabel-root': {
-                color: '#FFFF',
+            "& .MuiInputLabel-root": {
+                color: "#FFFF",
             },
             // border color
-            '& .MuiOutlinedInput-root': {
-                color: '#FFFF',
-                '& fieldset': {
-                    borderColor: '#FFFF',
+            "& .MuiOutlinedInput-root": {
+                color: "#FFFF",
+                "& fieldset": {
+                    borderColor: "#FFFF",
                 },
-                '&:hover fieldset': {
-                    borderColor: '#0041C2',
+                "&:hover fieldset": {
+                    borderColor: "#0041C2",
                 },
-                '&.Mui-focused fieldset': {
-                    borderColor: 'primary',
+                "&.Mui-focused fieldset": {
+                    borderColor: "primary",
                 },
             },
         },
@@ -93,13 +93,13 @@ export const CreateVoucherPopup: React.FC<CreateVoucherPopupProps> = ({ open, on
             fullWidth
             maxWidth="sm"
             sx={{
-                '& .MuiPaper-root': {
+                "& .MuiPaper-root": {
                     background: `linear-gradient(180deg, ${theme.background.dark} 0%, ${theme.background.lightDark} 100%)`,
-                    color: '#ffff',
+                    color: "#ffff",
                 },
             }}
         >
-            <DialogTitle sx={{ color: '#ffff' }}>Create New Voucher</DialogTitle>
+            <DialogTitle sx={{ color: "#ffff" }}>Create New Voucher</DialogTitle>
             <DialogContent>
                 <Stack spacing={2} mt={1}>
                     <TextField

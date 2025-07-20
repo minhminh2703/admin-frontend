@@ -34,9 +34,9 @@ export function D3LineChart({
 
     // Default margin values with overrides from props
     const marginTop = margin.top ?? 20;
-    const marginRight = margin.right ?? 20;
+    const marginRight = margin.right ?? 0;
     const marginBottom = margin.bottom ?? 100;
-    const marginLeft = margin.left ?? 40;
+    const marginLeft = margin.left ?? 0;
 
     // Memoize expensive computations
     const maxValue = useMemo(() => Math.max(...data.map(d => d.value)), [data]);
@@ -121,9 +121,17 @@ export function D3LineChart({
 
         const yAxis = g.append<SVGGElement>('g')
             .call(axisLeft(yScale)
-                .tickSize(0)
+                .tickSize(-innerW)
+                .tickSizeOuter(0)
                 .tickPadding(12));
 
+        yAxis.selectAll('.tick line')
+            .attr('stroke', '#F1EFEC')
+            .attr('stroke-width', 1)
+            .attr('opacity', 0.2)
+            .attr('stroke-dasharray', '4,4')
+            .attr('shape-rendering', 'crispEdges');
+    
         xAxis.selectAll('text')
             .attr('transform', d => (typeof d === 'string' && d.includes(':') ? 'rotate(-90)' : null))
             .attr('text-anchor', d => ((d as string).includes(':') ? 'end' : 'middle'))
@@ -149,8 +157,6 @@ export function D3LineChart({
             .attr('stroke', '#ff7300')
             .attr('stroke-width', 2)
             .attr('d', lineGenerator);
-
-        // Setup tooltip
 
         // Hover circle
         const hoverCircle = g.append('circle')

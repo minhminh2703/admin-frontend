@@ -1,19 +1,19 @@
-import { Box, Typography, Button, MenuItem, TextField, Pagination } from '@mui/material';
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { useTheme } from '../../theme';
-import DownloadIcon from '@mui/icons-material/Download';
-import VoucherTable from '../manage-vouchers/voucher-table';
-import { GetAllVoucherResponse, Voucher } from '../../types/Response/Vouchers';
-import { createVoucherAPI, editVoucherAPI, getAllVouchersAPI } from '../../api/voucher.api';
-import { CreateVoucherPopup } from './create-voucher-popup';
-import { voucherSearchCriteria, voucherSortOption } from '../../types/voucher';
-import JumpingDotsString from '../../components/jumping-dot-string';
-import { ExportFilePopup } from './export-file-popup';
+import { Box, Typography, Button, MenuItem, TextField, Pagination } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { useTheme } from "../../theme";
+import DownloadIcon from "@mui/icons-material/Download";
+import VoucherTable from "../manage-vouchers/voucher-table";
+import { GetAllVoucherResponse, Voucher } from "../../types/Response/Vouchers";
+import { createVoucherAPI, editVoucherAPI, getAllVouchersAPI } from "../../api/voucher.api";
+import { CreateVoucherPopup } from "./create-voucher-popup";
+import { voucherSearchCriteria, voucherSortOption } from "../../types/voucher";
+import JumpingDotsString from "../../components/jumping-dot-string";
+import { ExportFilePopup } from "./export-file-popup";
 
 export const VoucherManagement: React.FC = () => {
     const theme = useTheme();
-    const [status, setStatus] = useState('');
+    const [status, setStatus] = useState("");
     const [voucherTable, setVoucherTable] = useState<GetAllVoucherResponse>({
         vouchers: [],
         total_count: 0,
@@ -22,16 +22,16 @@ export const VoucherManagement: React.FC = () => {
     const [openCreateVoucherPopup, setOpenCreateVoucherPopup] = useState<boolean>(false);
     const [openExportFilePopup, setOpenExportFilePopup] = useState<boolean>(false);
     const [sort, setSort] = useState<voucherSortOption>({
-        sort: '',
-        sortBy: '',
+        sort: "",
+        sortBy: "",
     });
     // these two use for local variable
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [inputSearchKey, setInputSearchKey] = useState<string>('');
-    const [inputSearchCriteria, setInputSearchCriteria] = useState<string>('');
+    const [inputSearchKey, setInputSearchKey] = useState<string>("");
+    const [inputSearchCriteria, setInputSearchCriteria] = useState<string>("");
     // these two used for send request
-    const [searchCriteria, setSearchCriteria] = useState<string>('');
-    const [searchKey, setSearchKey] = useState<string>('');
+    const [searchCriteria, setSearchCriteria] = useState<string>("");
+    const [searchKey, setSearchKey] = useState<string>("");
     const rowsPerPage = 5;
     const [page, setPage] = useState<number>(1);
 
@@ -61,11 +61,11 @@ export const VoucherManagement: React.FC = () => {
     // get place holder for each search criteria
     const getPlaceholder = () => {
         const selected = voucherSearchCriteria.find((item) => item.label === searchCriteria);
-        return selected?.placeHolder || 'Search by selected criteria';
+        return selected?.placeHolder || "Search by selected criteria";
     };
 
     // change sort option when clicking table header
-    const handleChangeSortOption = (sortBy: voucherSortOption['sortBy'], sort: voucherSortOption['sort']) => {
+    const handleChangeSortOption = (sortBy: voucherSortOption["sortBy"], sort: voucherSortOption["sort"]) => {
         setSort({
             sortBy: sortBy,
             sort: sort,
@@ -79,8 +79,8 @@ export const VoucherManagement: React.FC = () => {
             const offset = (page - 1) * rowsPerPage;
             const allVouchers = await getAllVouchersAPI(
                 status,
-                sort['sort'],
-                sort['sortBy'],
+                sort["sort"],
+                sort["sortBy"],
                 searchKey,
                 searchCriteria,
                 offset,
@@ -88,7 +88,7 @@ export const VoucherManagement: React.FC = () => {
             );
             setVoucherTable(allVouchers);
         } catch (error) {
-            console.error('Failed to fetch vouchers:', error);
+            console.error("Failed to fetch vouchers:", error);
         } finally {
             setIsLoading(false);
         }
@@ -105,7 +105,7 @@ export const VoucherManagement: React.FC = () => {
             await createVoucherAPI(voucher);
             fetchAllVoucher();
         } catch (error) {
-            console.error('Failed to create vouchers:', error);
+            console.error("Failed to create vouchers:", error);
         }
         handleCloseCreateVoucherPopup();
     };
@@ -116,7 +116,7 @@ export const VoucherManagement: React.FC = () => {
             await editVoucherAPI(voucher);
             fetchAllVoucher();
         } catch (error) {
-            console.error('Failed to create vouchers:', error);
+            console.error("Failed to create vouchers:", error);
         }
         handleCloseCreateVoucherPopup();
     };
@@ -133,21 +133,21 @@ export const VoucherManagement: React.FC = () => {
         >
             <Box
                 sx={{
-                    marginTop: '0.2rem',
-                    marginBottom: '0.2rem',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.3rem',
+                    marginTop: "0.2rem",
+                    marginBottom: "0.2rem",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.3rem",
                 }}
             >
-                <Link to="/dashboard" style={{ textDecoration: 'none' }}>
+                <Link to="/dashboard" style={{ textDecoration: "none" }}>
                     <Typography
                         sx={{
                             color: theme.fontColor.greyWhite,
-                            cursor: 'pointer',
-                            fontSize: '0.9rem',
-                            '&:hover': {
-                                textDecoration: 'underline',
+                            cursor: "pointer",
+                            fontSize: "0.9rem",
+                            "&:hover": {
+                                textDecoration: "underline",
                                 color: theme.palette.primary.main,
                             },
                         }}
@@ -156,14 +156,14 @@ export const VoucherManagement: React.FC = () => {
                     </Typography>
                 </Link>
                 <Typography>/</Typography>
-                <Link to="/manage_vouchers" style={{ textDecoration: 'none' }}>
+                <Link to="/manage_vouchers" style={{ textDecoration: "none" }}>
                     <Typography
                         sx={{
                             color: theme.fontColor.white,
-                            cursor: 'pointer',
-                            fontSize: '0.9rem',
-                            '&:hover': {
-                                textDecoration: 'underline',
+                            cursor: "pointer",
+                            fontSize: "0.9rem",
+                            "&:hover": {
+                                textDecoration: "underline",
                                 color: theme.palette.primary.main,
                             },
                         }}
@@ -188,20 +188,20 @@ export const VoucherManagement: React.FC = () => {
 
             <Box
                 sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    flexWrap: 'wrap',
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    flexWrap: "wrap",
                     gap: 2,
                     borderRadius: 2,
-                    marginTop: '1.5rem',
+                    marginTop: "1.5rem",
                 }}
             >
                 {/* Left section */}
-                <Box sx={{ display: 'flex', alignItems: 'flex-end', flexWrap: 'wrap', gap: 2, marginBottom: '1rem' }}>
+                <Box sx={{ display: "flex", alignItems: "flex-end", flexWrap: "wrap", gap: 2, marginBottom: "1rem" }}>
                     {/* Search box */}
-                    <Box sx={{ marginRight: '1.5rem' }}>
-                        <Typography sx={{ color: 'white', fontSize: '0.9rem', mb: 0.5 }}>
+                    <Box sx={{ marginRight: "1.5rem" }}>
+                        <Typography sx={{ color: "white", fontSize: "0.9rem", mb: 0.5 }}>
                             What are you looking for?
                         </Typography>
                         <TextField
@@ -210,21 +210,21 @@ export const VoucherManagement: React.FC = () => {
                             value={inputSearchKey}
                             onChange={(e) => setInputSearchKey(e.target.value)}
                             sx={{
-                                minWidth: '15rem',
-                                '& .MuiOutlinedInput-root': {
-                                    borderRadius: '8px',
-                                    color: 'white',
-                                    fontSize: '0.9rem',
-                                    backgroundColor: '#1e293b',
+                                minWidth: "15rem",
+                                "& .MuiOutlinedInput-root": {
+                                    borderRadius: "8px",
+                                    color: "white",
+                                    fontSize: "0.9rem",
+                                    backgroundColor: "#1e293b",
                                 },
-                                input: { color: 'white' },
+                                input: { color: "white" },
                             }}
                         />
                     </Box>
 
                     {/* Search criteria dropdown */}
-                    <Box sx={{ marginRight: '1.5rem' }}>
-                        <Typography sx={{ color: 'white', fontSize: '0.9rem', mb: 0.5 }}>Search Criteria</Typography>
+                    <Box sx={{ marginRight: "1.5rem" }}>
+                        <Typography sx={{ color: "white", fontSize: "0.9rem", mb: 0.5 }}>Search Criteria</Typography>
                         <TextField
                             select
                             size="small"
@@ -232,14 +232,14 @@ export const VoucherManagement: React.FC = () => {
                             onChange={(e) => setInputSearchCriteria(e.target.value)}
                             sx={{
                                 minWidth: 160,
-                                '& .MuiOutlinedInput-root': {
-                                    borderRadius: '8px',
-                                    color: 'white',
-                                    fontSize: '0.9rem',
-                                    backgroundColor: '#1e293b',
+                                "& .MuiOutlinedInput-root": {
+                                    borderRadius: "8px",
+                                    color: "white",
+                                    fontSize: "0.9rem",
+                                    backgroundColor: "#1e293b",
                                 },
-                                '& .MuiSvgIcon-root': {
-                                    color: 'white',
+                                "& .MuiSvgIcon-root": {
+                                    color: "white",
                                 },
                             }}
                         >
@@ -252,8 +252,8 @@ export const VoucherManagement: React.FC = () => {
                     </Box>
 
                     {/* Status dropdown */}
-                    <Box sx={{ marginRight: '1.5rem' }}>
-                        <Typography sx={{ color: 'white', fontSize: '0.9rem', mb: 0.5 }}>Status</Typography>
+                    <Box sx={{ marginRight: "1.5rem" }}>
+                        <Typography sx={{ color: "white", fontSize: "0.9rem", mb: 0.5 }}>Status</Typography>
                         <TextField
                             select
                             size="small"
@@ -261,14 +261,14 @@ export const VoucherManagement: React.FC = () => {
                             onChange={(e) => setStatus(e.target.value)}
                             sx={{
                                 minWidth: 120,
-                                '& .MuiOutlinedInput-root': {
-                                    borderRadius: '8px',
-                                    color: 'white',
-                                    fontSize: '0.9rem',
-                                    backgroundColor: '#1e293b',
+                                "& .MuiOutlinedInput-root": {
+                                    borderRadius: "8px",
+                                    color: "white",
+                                    fontSize: "0.9rem",
+                                    backgroundColor: "#1e293b",
                                 },
-                                '& .MuiSvgIcon-root': {
-                                    color: 'white',
+                                "& .MuiSvgIcon-root": {
+                                    color: "white",
                                 },
                             }}
                         >
@@ -284,9 +284,9 @@ export const VoucherManagement: React.FC = () => {
                         variant="contained"
                         sx={{
                             height: 40,
-                            borderRadius: '8px',
-                            fontSize: '0.9rem',
-                            textTransform: 'none',
+                            borderRadius: "8px",
+                            fontSize: "0.9rem",
+                            textTransform: "none",
                         }}
                         onClick={onSearchButtonClick}
                     >
@@ -294,36 +294,36 @@ export const VoucherManagement: React.FC = () => {
                     </Button>
                 </Box>
 
-                {/* Right section: Export */}
+                {/* Right section: Export
                 <Button
                     variant="outlined"
                     startIcon={<DownloadIcon />}
                     sx={{
-                        color: 'white',
-                        borderColor: '#3b82f6',
-                        fontSize: '0.9rem',
-                        borderRadius: '8px',
-                        textTransform: 'none',
-                        marginRight: '50px',
-                        '&:hover': {
-                            backgroundColor: '#1e40af',
-                            borderColor: '#3b82f6',
+                        color: "white",
+                        borderColor: "#3b82f6",
+                        fontSize: "0.9rem",
+                        borderRadius: "8px",
+                        textTransform: "none",
+                        marginRight: "50px",
+                        "&:hover": {
+                            backgroundColor: "#1e40af",
+                            borderColor: "#3b82f6",
                         },
                     }}
                     onClick={handleOpenExportFile}
                 >
                     EXPORT
-                </Button>
+                </Button> */}
             </Box>
             <Button
                 variant="contained"
                 sx={{
                     height: 35,
-                    borderRadius: '8px',
-                    textTransform: 'none',
-                    fontSize: '0.9rem',
+                    borderRadius: "8px",
+                    textTransform: "none",
+                    fontSize: "0.9rem",
                     backgroundColor: theme.background.darkBlue,
-                    marginBottom: '1rem',
+                    marginBottom: "1rem",
                 }}
                 onClick={() => handleOpenCreateVoucherPopup()}
             >
@@ -350,7 +350,7 @@ export const VoucherManagement: React.FC = () => {
             {/* ======================================  */}
 
             <Box display="flex" justifyContent="space-between" alignItems="center" mt={2}>
-                <Typography sx={{ color: '#ccc' }}>Total: {voucherTable?.total_count ?? 0} voucher(s)</Typography>
+                <Typography sx={{ color: "#ccc" }}>Total: {voucherTable?.total_count ?? 0} voucher(s)</Typography>
                 {voucherTable && (
                     <Pagination
                         count={Math.ceil((voucherTable?.total_count ?? 0) / rowsPerPage)}
@@ -358,20 +358,20 @@ export const VoucherManagement: React.FC = () => {
                         onChange={(_, value) => onChangeTablePage(value)}
                         variant="outlined"
                         sx={{
-                            '& .MuiPaginationItem-root': {
-                                color: 'white',
-                                borderColor: 'white',
+                            "& .MuiPaginationItem-root": {
+                                color: "white",
+                                borderColor: "white",
                             },
-                            '& .MuiPaginationItem-root:hover': {
-                                backgroundColor: 'white',
-                                borderColor: 'black',
-                                color: 'black',
+                            "& .MuiPaginationItem-root:hover": {
+                                backgroundColor: "white",
+                                borderColor: "black",
+                                color: "black",
                             },
-                            '& .MuiPaginationItem-root.Mui-selected': {
-                                backgroundColor: 'white',
-                                color: 'black',
-                                '&:hover': {
-                                    backgroundColor: 'white',
+                            "& .MuiPaginationItem-root.Mui-selected": {
+                                backgroundColor: "white",
+                                color: "black",
+                                "&:hover": {
+                                    backgroundColor: "white",
                                 },
                             },
                         }}
@@ -394,18 +394,18 @@ export const VoucherManagement: React.FC = () => {
                 onSubmit={handleSumbitCreateVoucher}
             />
 
-            <ExportFilePopup
+            {/*<ExportFilePopup
                 open={openExportFilePopup}
                 onClose={handleCloseExportFile}
                 searchCriteria={searchCriteria}
                 searchKey={searchKey}
-                sort={sort['sort']}
-                sortBy={sort['sortBy']}
+                sort={sort["sort"]}
+                sortBy={sort["sortBy"]}
                 rowPerPage={rowsPerPage}
                 status={status}
                 from={(page - 1) * rowsPerPage}
                 limit={rowsPerPage}
-            />
+            /> */}
         </Box>
     );
 };

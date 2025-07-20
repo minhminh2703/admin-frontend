@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from "react";
 import {
     Table,
     TableBody,
@@ -13,30 +13,30 @@ import {
     Box,
     TextField,
     ChipProps,
-} from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
-import CheckIcon from '@mui/icons-material/Check';
-import { GetAllVoucherResponse, Voucher } from '../../../types/Response/Vouchers';
-import dayjs from 'dayjs';
-import { useTheme } from '../../../theme';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DateField, TimeField } from '@mui/x-date-pickers';
-import { voucherSortOption, voucherTableHeader } from '../../../types/voucher';
+} from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit";
+import CheckIcon from "@mui/icons-material/Check";
+import { GetAllVoucherResponse, Voucher } from "../../../types/Response/Vouchers";
+import dayjs from "dayjs";
+import { useTheme } from "../../../theme";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DateField, TimeField } from "@mui/x-date-pickers";
+import { voucherSortOption, voucherTableHeader } from "../../../types/voucher";
 
-const getStatus = (used: number, max: number, expired: string): { label: string; color: ChipProps['color'] } => {
+const getStatus = (used: number, max: number, expired: string): { label: string; color: ChipProps["color"] } => {
     const now = new Date();
     const exp = new Date(expired);
-    if (used >= max) return { label: 'USED', color: 'warning' };
-    if (exp < now) return { label: 'EXPIRED', color: 'error' };
-    return { label: 'ACTIVE', color: 'success' };
+    if (used >= max) return { label: "USED", color: "warning" };
+    if (exp < now) return { label: "EXPIRED", color: "error" };
+    return { label: "ACTIVE", color: "success" };
 };
 
 interface VoucherTableProps {
     data?: GetAllVoucherResponse | null;
     handleChangeVoucher: (voucher: Voucher) => void;
     sortProps: voucherSortOption;
-    handleChangeSortOption: (sortBy: voucherSortOption['sortBy'], sort: voucherSortOption['sort']) => void;
+    handleChangeSortOption: (sortBy: voucherSortOption["sortBy"], sort: voucherSortOption["sort"]) => void;
 }
 
 interface RowData {
@@ -67,9 +67,9 @@ const VoucherTable: React.FC<VoucherTableProps> = ({
             }
         };
 
-        document.addEventListener('mousedown', handleClickOutside);
+        document.addEventListener("mousedown", handleClickOutside);
         return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
+            document.removeEventListener("mousedown", handleClickOutside);
         };
     }, [editRow]);
 
@@ -86,7 +86,7 @@ const VoucherTable: React.FC<VoucherTableProps> = ({
         let value: string | number = e.target.value;
 
         // Ép kiểu đúng cho từng field
-        if (['token', 'max_usage', 'used_count'].includes(field)) {
+        if (["token", "max_usage", "used_count"].includes(field)) {
             const parsed = parseInt(value, 10);
             value = isNaN(parsed) ? 0 : parsed;
         }
@@ -112,25 +112,25 @@ const VoucherTable: React.FC<VoucherTableProps> = ({
 
     const textFieldInputSx = {
         color: theme.fontColor.white,
-        fontFamily: 'inherit',
-        fontSize: 'inherit',
-        fontWeight: 'inherit',
-        lineHeight: 'inherit',
-        padding: '0px',
+        fontFamily: "inherit",
+        fontSize: "inherit",
+        fontWeight: "inherit",
+        lineHeight: "inherit",
+        padding: "0px",
     };
     const textFieldSx = {
-        '& .MuiOutlinedInput-root': {
+        "& .MuiOutlinedInput-root": {
             padding: 0,
 
-            '& .MuiOutlinedInput-notchedOutline': {
-                border: 'none',
+            "& .MuiOutlinedInput-notchedOutline": {
+                border: "none",
             },
 
-            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                border: '1px solid #1976d2',
+            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                border: "1px solid #1976d2",
             },
         },
-        '& .MuiOutlinedInput-input': {
+        "& .MuiOutlinedInput-input": {
             padding: 0,
         },
     };
@@ -139,12 +139,12 @@ const VoucherTable: React.FC<VoucherTableProps> = ({
         return <Typography>No vouchers found</Typography>;
     }
 
-    const handleSortClick = (sortBy: voucherSortOption['sortBy']) => {
-        let nextSort: voucherSortOption['sort'];
+    const handleSortClick = (sortBy: voucherSortOption["sortBy"]) => {
+        let nextSort: voucherSortOption["sort"];
         if (sortProps.sortBy !== sortBy) {
-            nextSort = 'ASC';
+            nextSort = "ASC";
         } else {
-            nextSort = sortProps.sort === '' ? 'ASC' : sortProps.sort === 'ASC' ? 'DESC' : '';
+            nextSort = sortProps.sort === "" ? "ASC" : sortProps.sort === "ASC" ? "DESC" : "";
         }
         handleChangeSortOption(sortBy, nextSort);
     };
@@ -155,10 +155,10 @@ const VoucherTable: React.FC<VoucherTableProps> = ({
                 <TableContainer
                     component={Paper}
                     sx={{
-                        backgroundColor: 'inherit',
+                        backgroundColor: "inherit",
                         // borderRadius: 2,
-                        width: '100%',
-                        overflowX: 'auto',
+                        width: "100%",
+                        overflowX: "auto",
                     }}
                 >
                     {/* ======================================  */}
@@ -166,31 +166,31 @@ const VoucherTable: React.FC<VoucherTableProps> = ({
                     {/* =          Table Header              =  */}
                     {/* =                                    =  */}
                     {/* ======================================  */}
-                    <Table size="small" sx={{ minWidth: 1000, width: '100%' }}>
+                    <Table size="small" sx={{ minWidth: 1000, width: "100%" }}>
                         <TableHead>
                             <TableRow>
-                                <TableCell sx={{ color: theme.fontColor.white, fontSize: '0.75rem' }}>Edit</TableCell>
+                                <TableCell sx={{ color: theme.fontColor.white, fontSize: "0.75rem" }}>Edit</TableCell>
                                 {voucherTableHeader.map((header) => (
                                     <TableCell
                                         key={header.label}
-                                        onClick={() => handleSortClick(header.sortBy as voucherSortOption['sortBy'])}
+                                        onClick={() => handleSortClick(header.sortBy as voucherSortOption["sortBy"])}
                                         sx={{
-                                            cursor: 'pointer',
+                                            cursor: "pointer",
                                             color: theme.fontColor.white,
-                                            fontSize: '0.75rem',
-                                            fontWeight: sortProps['sortBy'] === header['sortBy'] ? 'bold' : 'normal',
+                                            fontSize: "0.75rem",
+                                            fontWeight: sortProps["sortBy"] === header["sortBy"] ? "bold" : "normal",
                                         }}
                                     >
                                         {header.label}
-                                        {sortProps['sortBy'] === header['sortBy'] &&
-                                            (sortProps['sort'] === 'ASC'
-                                                ? ' 🔼'
-                                                : sortProps['sort'] === 'DESC'
-                                                ? ' 🔽'
-                                                : '')}
+                                        {sortProps["sortBy"] === header["sortBy"] &&
+                                            (sortProps["sort"] === "ASC"
+                                                ? " 🔼"
+                                                : sortProps["sort"] === "DESC"
+                                                ? " 🔽"
+                                                : "")}
                                     </TableCell>
                                 ))}
-                                <TableCell sx={{ color: theme.fontColor.white, fontSize: '0.75rem' }}>Status</TableCell>
+                                <TableCell sx={{ color: theme.fontColor.white, fontSize: "0.75rem" }}>Status</TableCell>
                             </TableRow>
                         </TableHead>
 
@@ -213,23 +213,23 @@ const VoucherTable: React.FC<VoucherTableProps> = ({
                                                     {editRow.isEdited && editRow.rowData?.id === row.id ? (
                                                         <CheckIcon
                                                             data-checkicon="true"
-                                                            sx={{ color: theme.fontColor.white, fontSize: '1rem' }}
+                                                            sx={{ color: theme.fontColor.white, fontSize: "1rem" }}
                                                         />
                                                     ) : (
                                                         <EditIcon
-                                                            sx={{ color: theme.fontColor.white, fontSize: '1rem' }}
+                                                            sx={{ color: theme.fontColor.white, fontSize: "1rem" }}
                                                         />
                                                     )}
                                                 </IconButton>
                                             </TableCell>
-                                            <TableCell sx={{ color: theme.fontColor.white, fontSize: '0.75rem' }}>
+                                            <TableCell sx={{ color: theme.fontColor.white, fontSize: "0.75rem" }}>
                                                 {row.id}
                                             </TableCell>
-                                            <TableCell sx={{ color: theme.fontColor.white, fontSize: '0.75rem' }}>
+                                            <TableCell sx={{ color: theme.fontColor.white, fontSize: "0.75rem" }}>
                                                 {editRow.isEdited && editRow.rowData?.id === row.id ? (
                                                     <TextField
                                                         value={editRow.rowData?.code}
-                                                        onChange={(e) => handleInputChange(e, 'code')}
+                                                        onChange={(e) => handleInputChange(e, "code")}
                                                         variant="outlined"
                                                         size="small"
                                                         fullWidth
@@ -244,11 +244,11 @@ const VoucherTable: React.FC<VoucherTableProps> = ({
                                                     row.code
                                                 )}
                                             </TableCell>
-                                            <TableCell sx={{ color: theme.fontColor.white, fontSize: '0.75rem' }}>
+                                            <TableCell sx={{ color: theme.fontColor.white, fontSize: "0.75rem" }}>
                                                 {editRow.isEdited && editRow.rowData?.id === row.id ? (
                                                     <TextField
                                                         value={editRow.rowData?.token}
-                                                        onChange={(e) => handleInputChange(e, 'token')}
+                                                        onChange={(e) => handleInputChange(e, "token")}
                                                         variant="outlined"
                                                         size="small"
                                                         fullWidth
@@ -263,11 +263,11 @@ const VoucherTable: React.FC<VoucherTableProps> = ({
                                                     row.token
                                                 )}
                                             </TableCell>
-                                            <TableCell sx={{ color: theme.fontColor.white, fontSize: '0.75rem' }}>
+                                            <TableCell sx={{ color: theme.fontColor.white, fontSize: "0.75rem" }}>
                                                 {editRow.isEdited && editRow.rowData?.id === row.id ? (
                                                     <TextField
                                                         value={editRow.rowData?.max_usage}
-                                                        onChange={(e) => handleInputChange(e, 'max_usage')}
+                                                        onChange={(e) => handleInputChange(e, "max_usage")}
                                                         variant="outlined"
                                                         size="small"
                                                         fullWidth
@@ -282,11 +282,11 @@ const VoucherTable: React.FC<VoucherTableProps> = ({
                                                     row.max_usage
                                                 )}
                                             </TableCell>
-                                            <TableCell sx={{ color: theme.fontColor.white, fontSize: '0.75rem' }}>
+                                            <TableCell sx={{ color: theme.fontColor.white, fontSize: "0.75rem" }}>
                                                 {editRow.isEdited && editRow.rowData?.id === row.id ? (
                                                     <TextField
                                                         value={editRow.rowData?.used_count}
-                                                        onChange={(e) => handleInputChange(e, 'used_count')}
+                                                        onChange={(e) => handleInputChange(e, "used_count")}
                                                         variant="outlined"
                                                         size="small"
                                                         fullWidth
@@ -304,15 +304,15 @@ const VoucherTable: React.FC<VoucherTableProps> = ({
                                             <TableCell
                                                 sx={{
                                                     color: theme.fontColor.white,
-                                                    fontSize: '0.75rem',
-                                                    whiteSpace: 'nowrap',
+                                                    fontSize: "0.75rem",
+                                                    whiteSpace: "nowrap",
                                                     p: 0.5,
                                                     width: 120,
-                                                    overflow: 'hidden',
+                                                    overflow: "hidden",
                                                 }}
                                             >
                                                 {editRow.isEdited && editRow.rowData?.id === row.id ? (
-                                                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.1 }}>
+                                                    <Box sx={{ display: "flex", flexDirection: "column", gap: 0.1 }}>
                                                         <DateField
                                                             value={dayjs(editRow.rowData.expired_time)}
                                                             sx={{ margin: 0 }}
@@ -323,27 +323,27 @@ const VoucherTable: React.FC<VoucherTableProps> = ({
                                                                         .year(newDate.year())
                                                                         .month(newDate.month())
                                                                         .date(newDate.date());
-                                                                    handleDateChange(merged.toDate(), 'expired_time');
+                                                                    handleDateChange(merged.toDate(), "expired_time");
                                                                 }
                                                             }}
                                                             slotProps={{
                                                                 textField: {
-                                                                    size: 'small',
-                                                                    variant: 'standard',
+                                                                    size: "small",
+                                                                    variant: "standard",
                                                                     fullWidth: true,
-                                                                    sx: { maxWidth: 120, fontSize: '0.75rem' },
+                                                                    sx: { maxWidth: 120, fontSize: "0.75rem" },
                                                                     InputProps: {
                                                                         disableUnderline: true,
                                                                         sx: {
                                                                             color: theme.fontColor.white,
-                                                                            fontSize: '0.75rem',
+                                                                            fontSize: "0.75rem",
                                                                             p: 0,
                                                                         },
                                                                     },
                                                                     inputProps: {
                                                                         sx: {
                                                                             color: theme.fontColor.white,
-                                                                            fontSize: '0.75rem',
+                                                                            fontSize: "0.75rem",
                                                                             p: 0,
                                                                         },
                                                                     },
@@ -360,27 +360,27 @@ const VoucherTable: React.FC<VoucherTableProps> = ({
                                                                         .hour(newTime.hour())
                                                                         .minute(newTime.minute())
                                                                         .second(newTime.second());
-                                                                    handleDateChange(merged.toDate(), 'expired_time');
+                                                                    handleDateChange(merged.toDate(), "expired_time");
                                                                 }
                                                             }}
                                                             slotProps={{
                                                                 textField: {
-                                                                    size: 'small',
-                                                                    variant: 'standard',
+                                                                    size: "small",
+                                                                    variant: "standard",
                                                                     fullWidth: true,
-                                                                    sx: { maxWidth: 120, fontSize: '0.75rem' },
+                                                                    sx: { maxWidth: 120, fontSize: "0.75rem" },
                                                                     InputProps: {
                                                                         disableUnderline: true,
                                                                         sx: {
                                                                             color: theme.fontColor.white,
-                                                                            fontSize: '0.75rem',
+                                                                            fontSize: "0.75rem",
                                                                             p: 0,
                                                                         },
                                                                     },
                                                                     inputProps: {
                                                                         sx: {
                                                                             color: theme.fontColor.white,
-                                                                            fontSize: '0.75rem',
+                                                                            fontSize: "0.75rem",
                                                                             p: 0,
                                                                         },
                                                                     },
@@ -390,22 +390,22 @@ const VoucherTable: React.FC<VoucherTableProps> = ({
                                                     </Box>
                                                 ) : (
                                                     <>
-                                                        {dayjs(row.expired_time).format('DD/MM/YYYY')}
+                                                        {dayjs(row.expired_time).format("DD/MM/YYYY")}
                                                         <br />
-                                                        {dayjs(row.expired_time).format('HH:mm:ss')}
+                                                        {dayjs(row.expired_time).format("HH:mm:ss")}
                                                     </>
                                                 )}
                                             </TableCell>
 
-                                            <TableCell sx={{ color: theme.fontColor.white, fontSize: '0.75rem' }}>
-                                                {dayjs(row.created_at).format('DD/MM/YYYY')}
+                                            <TableCell sx={{ color: theme.fontColor.white, fontSize: "0.75rem" }}>
+                                                {dayjs(row.created_at).format("DD/MM/YYYY")}
                                                 <br />
-                                                {dayjs(row.created_at).format('HH:mm:ss')}
+                                                {dayjs(row.created_at).format("HH:mm:ss")}
                                             </TableCell>
-                                            <TableCell sx={{ color: theme.fontColor.white, fontSize: '0.75rem' }}>
-                                                {dayjs(row.updated_at).format('DD/MM/YYYY')}
+                                            <TableCell sx={{ color: theme.fontColor.white, fontSize: "0.75rem" }}>
+                                                {dayjs(row.updated_at).format("DD/MM/YYYY")}
                                                 <br />
-                                                {dayjs(row.updated_at).format('HH:mm:ss')}
+                                                {dayjs(row.updated_at).format("HH:mm:ss")}
                                             </TableCell>
                                             <TableCell>
                                                 <Chip
@@ -413,7 +413,7 @@ const VoucherTable: React.FC<VoucherTableProps> = ({
                                                     color={status.color}
                                                     variant="outlined"
                                                     size="small"
-                                                    sx={{ fontSize: '0.7rem', height: '22px' }}
+                                                    sx={{ fontSize: "0.7rem", height: "22px" }}
                                                 />
                                             </TableCell>
                                         </TableRow>

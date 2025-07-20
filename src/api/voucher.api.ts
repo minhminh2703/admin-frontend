@@ -1,5 +1,5 @@
-import { GetAllVoucherResponse, Voucher } from '../types/Response/Vouchers';
-import apiClient from './base.api';
+import { GetAllVoucherResponse, Voucher } from "../types/Response/Vouchers";
+import apiClient from "./base.api";
 
 export const getAllVouchersAPI = async (
     status: string,
@@ -11,12 +11,12 @@ export const getAllVouchersAPI = async (
     limit: number
 ): Promise<GetAllVoucherResponse> => {
     try {
-        const numericFields = ['TOKEN', 'MAX_USAGE', 'USED_COUNT'];
+        const numericFields = ["TOKEN", "MAX_USAGE", "USED_COUNT"];
         const isNumeric = numericFields.includes(searchCriteria);
 
         const parsedSearchKey = isNumeric ? Number(searchKey) : searchKey;
 
-        const response = await apiClient.get<GetAllVoucherResponse>('/voucher/get-all', {
+        const response = await apiClient.get<GetAllVoucherResponse>("/voucher/get-all", {
             params: {
                 status,
                 sort,
@@ -49,7 +49,7 @@ export const createVoucherAPI = async (voucher: {
         });
         return response.data;
     } catch (error) {
-        console.error('Failed to create voucher:', error);
+        console.error("Failed to create voucher:", error);
         throw error;
     }
 };
@@ -65,7 +65,7 @@ export const editVoucherAPI = async (voucher: Voucher) => {
         });
         return response.data;
     } catch (error) {
-        console.error('Failed to create voucher:', error);
+        console.error("Failed to create voucher:", error);
         throw error;
     }
 };

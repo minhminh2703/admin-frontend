@@ -23,10 +23,6 @@ export interface ListUser {
 }
 
 export interface UserUpdateData {
-    first_name: string;
-    last_name: string;
-    username: string;
-    email: string;
     premium: boolean;
     status: string;
     role: string;
@@ -34,4 +30,8 @@ export interface UserUpdateData {
 
 export interface AvatarResponse {
     avatar_download_url: string;
+}
+
+export interface GetPresignedURL {
+    upload_url: string
 }

@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import { flattenStats, getMetrics } from '../../../../utils/transform-stats';
-import MetricToggle from '../index';
+import MetricToggle from '../metric-toggle/index';
 import { StatsResponse } from '../../../../types/stats';
 import { Box } from '@mui/material';
-import { metricColorMap } from '../index';
+import { metricColorMap } from '../metric-toggle/index';
 import { smartCap } from '../../../../utils/string';
 
 interface Props {
@@ -155,7 +155,7 @@ const LollipopChart: React.FC<Props> = ({ data, width = 520, height = 240 }) => 
             justifyContent: 'center',
         }}>
             <MetricToggle metrics={metrics} current={metric} onChange={setMetric} />
-            <Box sx={{ flex: 1, width: '100%', height: '100%' }}>
+            <Box sx={{ flex: 1, width: '100%', height: '100%', alignItems: 'center', display: 'flex', justifyContent: 'center' }}>
                 <svg ref={svgRef} width={width} height={height} />
             </Box>
         </Box>

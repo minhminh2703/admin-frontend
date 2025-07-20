@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
     Dialog,
     DialogTitle,
@@ -10,12 +10,12 @@ import {
     FormControl,
     InputLabel,
     Select,
-} from '@mui/material';
-import { useTheme } from '../../../theme';
-import { voucherSortOption } from '../../../types/voucher';
-import { Voucher } from '../../../types/Response/Vouchers';
-import { getAllVouchersAPI } from '../../../api/voucher.api';
-import * as XLSX from 'xlsx';
+} from "@mui/material";
+import { useTheme } from "../../../theme";
+import { voucherSortOption } from "../../../types/voucher";
+import { Voucher } from "../../../types/Response/Vouchers";
+import { getAllVouchersAPI } from "../../../api/voucher.api";
+import * as XLSX from "xlsx";
 
 interface ExportPopupProps {
     open: boolean;
@@ -42,62 +42,62 @@ export const ExportFilePopup: React.FC<ExportPopupProps> = ({
     status,
     rowPerPage,
 }) => {
-    const [fileName, setFileName] = useState('');
-    const [fileType, setFileType] = useState('xlsx');
-    const [exportOption, setExportOption] = useState('current');
+    const [fileName, setFileName] = useState("");
+    const [fileType, setFileType] = useState("xlsx");
+    const [exportOption, setExportOption] = useState("current");
     const [totalPages, setTotalPages] = useState<number | undefined>();
     const [startPage, setStartPage] = useState<number | undefined>();
 
-    const isExportAll = exportOption === 'all';
+    const isExportAll = exportOption === "all";
     const theme = useTheme();
 
     const textFieldInputSx = {
         sx: {
             // use for text field component
             // label color
-            '& .MuiInputLabel-root': {
-                color: '#FFFF',
+            "& .MuiInputLabel-root": {
+                color: "#FFFF",
             },
             // border color
-            '& .MuiOutlinedInput-root': {
-                color: '#FFFF',
-                '& fieldset': {
-                    borderColor: '#FFFF',
+            "& .MuiOutlinedInput-root": {
+                color: "#FFFF",
+                "& fieldset": {
+                    borderColor: "#FFFF",
                 },
-                '&:hover fieldset': {
-                    borderColor: '#0041C2',
+                "&:hover fieldset": {
+                    borderColor: "#0041C2",
                 },
-                '&.Mui-focused fieldset': {
-                    borderColor: 'primary',
+                "&.Mui-focused fieldset": {
+                    borderColor: "primary",
                 },
             },
         },
     };
 
     const selectInputSx = {
-        '& .MuiInputLabel-root': {
-            color: '#FFFF',
+        "& .MuiInputLabel-root": {
+            color: "#FFFF",
         },
-        '& .MuiOutlinedInput-root': {
-            color: '#FFFF',
-            '& fieldset': {
-                borderColor: '#FFFF',
+        "& .MuiOutlinedInput-root": {
+            color: "#FFFF",
+            "& fieldset": {
+                borderColor: "#FFFF",
             },
-            '&:hover fieldset': {
-                borderColor: '#0041C2',
+            "&:hover fieldset": {
+                borderColor: "#0041C2",
             },
-            '&.Mui-focused fieldset': {
+            "&.Mui-focused fieldset": {
                 borderColor: theme.palette.primary.main,
             },
         },
-        '& .MuiSelect-icon': {
-            color: '#FFFF',
+        "& .MuiSelect-icon": {
+            color: "#FFFF",
         },
     };
 
     const getDefaultFileName = () => {
         const now = new Date();
-        const pad = (n: number) => n.toString().padStart(2, '0');
+        const pad = (n: number) => n.toString().padStart(2, "0");
         const ss = pad(now.getSeconds());
         const MM = pad(now.getMinutes());
         const HH = pad(now.getHours());
@@ -109,46 +109,46 @@ export const ExportFilePopup: React.FC<ExportPopupProps> = ({
         return `Voucher-${timestamp}-FromPage(${fromPage})-TotalRecords(${limit})`;
     };
 
-    function exportVouchers(vouchers: Voucher[], fileName: string, fileType: 'csv' | 'xlsx'): void {
+    function exportVouchers(vouchers: Voucher[], fileName: string, fileType: "csv" | "xlsx"): void {
         // Helper: chuyển Voucher[] thành CSV text
         const toCSV = (data: Voucher[]): string => {
             const header = [
-                'id',
-                'code',
-                'token',
-                'max_usage',
-                'used_count',
-                'expired_time',
-                'created_at',
-                'updated_at',
+                "id",
+                "code",
+                "token",
+                "max_usage",
+                "used_count",
+                "expired_time",
+                "created_at",
+                "updated_at",
             ];
             const rows = data.map((v) =>
                 [v.id, v.code, v.token, v.max_usage, v.used_count, v.expired_time, v.created_at, v.updated_at]
                     .map((cell) => `"${String(cell).replace(/"/g, '""')}"`)
-                    .join(',')
+                    .join(",")
             );
-            return [header.join(','), ...rows].join('\r\n');
+            return [header.join(","), ...rows].join("\r\n");
         };
 
         // Tạo blob theo loại file
         let blob: Blob;
-        if (fileType === 'csv') {
+        if (fileType === "csv") {
             const csv = toCSV(vouchers);
-            blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
         } else {
             // Excel: dùng SheetJS
             const ws = XLSX.utils.json_to_sheet(vouchers);
             const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, 'Vouchers');
-            const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+            XLSX.utils.book_append_sheet(wb, ws, "Vouchers");
+            const wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
             blob = new Blob([wbout], {
-                type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             });
         }
 
         // Tạo link ẩn để download
         const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
+        const a = document.createElement("a");
         a.href = url;
         a.download = `${fileName}.${fileType}`;
         document.body.appendChild(a);
@@ -178,13 +178,13 @@ export const ExportFilePopup: React.FC<ExportPopupProps> = ({
             rowPerPage,
         };
 
-        console.log('Exporting with params:', exportParams);
+        console.log("Exporting with params:", exportParams);
 
         try {
             const allVouchers = await getAllVouchersAPI(
                 status,
-                sort['sort'],
-                sort['sortBy'],
+                sort["sort"],
+                sort["sortBy"],
                 searchKey,
                 searchCriteria,
                 from,
@@ -192,15 +192,15 @@ export const ExportFilePopup: React.FC<ExportPopupProps> = ({
             );
             const blob = await allVouchers.vouchers.blob();
             const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
+            const a = document.createElement("a");
             a.href = url;
             a.download = `${finalFileName}.${fileType}`;
             a.click();
             window.URL.revokeObjectURL(url);
             onClose();
         } catch (error) {
-            console.error('Export error:', error);
-            alert('Export failed. Please try again.');
+            console.error("Export error:", error);
+            alert("Export failed. Please try again.");
         }
     };
 
@@ -211,9 +211,9 @@ export const ExportFilePopup: React.FC<ExportPopupProps> = ({
             maxWidth="sm"
             fullWidth
             sx={{
-                '& .MuiPaper-root': {
+                "& .MuiPaper-root": {
                     background: `linear-gradient(180deg, ${theme.background.dark} 0%, ${theme.background.lightDark} 100%)`,
-                    color: '#ffff',
+                    color: "#ffff",
                 },
             }}
         >
@@ -256,7 +256,7 @@ export const ExportFilePopup: React.FC<ExportPopupProps> = ({
                             type="number"
                             fullWidth
                             margin="normal"
-                            value={totalPages || ''}
+                            value={totalPages || ""}
                             onChange={(e) => setTotalPages(Number(e.target.value))}
                             {...textFieldInputSx}
                         />
@@ -265,7 +265,7 @@ export const ExportFilePopup: React.FC<ExportPopupProps> = ({
                             type="number"
                             fullWidth
                             margin="normal"
-                            value={startPage || ''}
+                            value={startPage || ""}
                             onChange={(e) => setStartPage(Number(e.target.value))}
                             {...textFieldInputSx}
                         />
