@@ -7,6 +7,7 @@ import {
     DashboardOutlined,
     DashboardCustomizeOutlined,
     AddCardOutlined,
+    ReceiptLong,
 } from '@mui/icons-material';
 import MLVTLogo from '../../../assets/mlvt_logo.png';
 import { useTheme } from '../../../theme';
@@ -38,6 +39,11 @@ const navLinks: NavLink[] = [
         icon: <AddCardOutlined sx={{ fontSize: '1.8em' }} />,
         link: '/manage_vouchers',
     },
+    {
+        name: 'Pending Requests',
+        icon: <ReceiptLong sx={{ fontSize: '1.8em' }} />,
+        link: '/pending_requests',
+    }
     // {
     //     name: 'Configuration',
     //     icon: <DashboardCustomizeOutlined sx={{ fontSize: '1.8em' }} />,
