@@ -1,5 +1,4 @@
-import { createGlobalStyle } from 'styled-components';
-import { useTheme } from './ThemeProvider'; // Import useTheme
+import { createGlobalStyle } from 'styled-components'
 
 export const GlobalStyle = createGlobalStyle`
   body {
@@ -17,4 +16,4 @@ export const GlobalStyle = createGlobalStyle`
     color: ${({ theme }) => theme.fontColor.yellow};
     text-decoration: none;
   }
-`;
+`

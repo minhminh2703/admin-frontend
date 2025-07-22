@@ -1,78 +1,84 @@
-import React, { useState } from "react";
+import EditIcon from '@mui/icons-material/Edit'
 import {
     Box,
+    Chip,
+    IconButton,
+    Pagination,
+    Paper,
     Table,
     TableBody,
     TableCell,
     TableContainer,
+    TableFooter,
     TableHead,
     TableRow,
-    Paper,
-    IconButton,
-    Chip,
-    Pagination,
-    TableFooter,
-} from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
-import { ListUser } from "../../../../types/user";
-import dayjs from "dayjs";
+} from '@mui/material'
+import dayjs from 'dayjs'
+import React, { useState } from 'react'
+import { ListUser } from '../../../../types/user'
 
-export type AccountStatus = "ACTIVE" | "DELETED" | "SUSPENDED";
+export type AccountStatus = 'ACTIVE' | 'DELETED' | 'SUSPENDED'
 
 const brightColors: Record<AccountStatus, string> = {
-    ACTIVE: "#4caf50",
-    DELETED: "#f44336",
-    SUSPENDED: "#ffc107"
-};
+    ACTIVE: '#4caf50',
+    DELETED: '#f44336',
+    SUSPENDED: '#ffc107',
+}
 
 const headerStyle = {
     color: '#ECDFCC',
-    borderBottom: "none",
+    borderBottom: 'none',
     fontWeight: 600,
     padding: '20px 30px 6px 30px',
     fontSize: '0.9rem',
     fontFamily: 'Poppins, sans-serif',
-};
+}
 
 const cellStyle = {
     color: 'white',
-    borderBottom: "none",
+    borderBottom: 'none',
     padding: '6px 30px',
     fontSize: '0.8em',
     fontFamily: 'Poppins, sans-serif',
     align: 'left',
-};
+}
 
 const footerStyle = {
     color: '#F0EB8D',
-    padding: '20px 24px 20px 24px', 
+    padding: '20px 24px 20px 24px',
     fontSize: '0.875rem',
     textAlign: 'left',
     fontWeight: 500,
     colSpan: 6,
     fontFamily: 'Poppins, sans-serif',
-};
-
-interface ManageAccountsTableProps extends ListUser {
-    onEdit: (userId: number) => void;
 }
 
-const ManageAccountsTable: React.FC<ManageAccountsTableProps> = ({ users, onEdit }) => {
-    const [currentPage, setCurrentPage] = useState(1);
-    const accountsPerPage = 10;
-    const pageCount = Math.ceil(users.length / accountsPerPage);
+interface ManageAccountsTableProps extends ListUser {
+    onEdit: (userId: number) => void
+}
+
+const ManageAccountsTable: React.FC<ManageAccountsTableProps> = ({
+    users,
+    onEdit,
+}) => {
+    const [currentPage, setCurrentPage] = useState(1)
+    const accountsPerPage = 10
+    const pageCount = Math.ceil(users.length / accountsPerPage)
 
     // Get current accounts to display
-    const indexOfLastAccount = currentPage * accountsPerPage;
-    const indexOfFirstAccount = indexOfLastAccount - accountsPerPage;
-    const currentAccounts = users.slice(indexOfFirstAccount, indexOfLastAccount);
+    const indexOfLastAccount = currentPage * accountsPerPage
+    const indexOfFirstAccount = indexOfLastAccount - accountsPerPage
+    const currentAccounts = users.slice(indexOfFirstAccount, indexOfLastAccount)
 
-    const handlePageChange = (event: React.ChangeEvent<unknown>, page: number) => {
-        setCurrentPage(page);
-    };
+    const handlePageChange = (
+        _: React.ChangeEvent<unknown>,
+        page: number,
+    ) => {
+        setCurrentPage(page)
+    }
 
     return (
-        <Box p={3} sx={{ backgroundColor: "transparent", border: "none" }}>
+        <Box p={3} sx={{ backgroundColor: 'transparent', border: 'none' }}>
             <TableContainer
                 component={Paper}
                 sx={{
@@ -97,39 +103,57 @@ const ManageAccountsTable: React.FC<ManageAccountsTableProps> = ({ users, onEdit
                     </TableHead>
                     <TableBody>
                         {currentAccounts.map((user, index) => {
-                            const isDeleted = user.status === "DELETED";
+                            const isDeleted = user.status === 'DELETED'
                             return (
                                 <TableRow key={index}>
                                     <TableCell sx={cellStyle}>
-                                        <IconButton 
-                                            sx={{ 
+                                        <IconButton
+                                            sx={{
                                                 color: 'white',
                                                 '&.Mui-disabled': {
                                                     color: 'white',
-                                                    opacity: 0.4,  
+                                                    opacity: 0.4,
                                                 },
-                                            }} 
+                                            }}
                                             onClick={() => onEdit(user.id)}
                                             disabled={isDeleted}
                                         >
                                             <EditIcon />
                                         </IconButton>
                                     </TableCell>
-                                    <TableCell sx={cellStyle}>{user.id}</TableCell>
-                                    <TableCell sx={cellStyle}>{user.username}</TableCell>
-                                    <TableCell sx={cellStyle}>{user.first_name + " " + user.last_name}</TableCell>
-                                    <TableCell sx={cellStyle}>{dayjs(user.created_at).format('DD MMM YYYY HH:mm')}</TableCell>
-                                    <TableCell sx={cellStyle}>{user.role}</TableCell>
+                                    <TableCell sx={cellStyle}>
+                                        {user.id}
+                                    </TableCell>
+                                    <TableCell sx={cellStyle}>
+                                        {user.username}
+                                    </TableCell>
+                                    <TableCell sx={cellStyle}>
+                                        {user.first_name + ' ' + user.last_name}
+                                    </TableCell>
+                                    <TableCell sx={cellStyle}>
+                                        {dayjs(user.created_at).format(
+                                            'DD MMM YYYY HH:mm',
+                                        )}
+                                    </TableCell>
+                                    <TableCell sx={cellStyle}>
+                                        {user.role}
+                                    </TableCell>
                                     <TableCell sx={cellStyle}>
                                         <Chip
                                             label={user.status}
                                             sx={{
-                                                color: brightColors[user.status as AccountStatus],
-                                                borderColor: brightColors[user.status as AccountStatus],
+                                                color: brightColors[
+                                                    user.status as AccountStatus
+                                                ],
+                                                borderColor:
+                                                    brightColors[
+                                                        user.status as AccountStatus
+                                                    ],
                                                 borderWidth: '1.5px',
                                                 fontWeight: 700,
                                                 minWidth: '80px',
-                                                fontFamily: 'Poppins, sans-serif',
+                                                fontFamily:
+                                                    'Poppins, sans-serif',
                                             }}
                                             variant="outlined"
                                         />
@@ -138,18 +162,29 @@ const ManageAccountsTable: React.FC<ManageAccountsTableProps> = ({ users, onEdit
                             )
                         })}
                     </TableBody>
-                    <TableFooter sx={{
-                        '& .MuiTableCell-root': {
-                            borderBottom: "none",
-                        }
-                    }}>
+                    <TableFooter
+                        sx={{
+                            '& .MuiTableCell-root': {
+                                borderBottom: 'none',
+                            },
+                        }}
+                    >
                         <TableRow>
-                            <TableCell sx={footerStyle} colSpan={7}>Total: {users.length} account(s) across all pages</TableCell>
+                            <TableCell sx={footerStyle} colSpan={7}>
+                                Total: {users.length} account(s) across all
+                                pages
+                            </TableCell>
                         </TableRow>
                     </TableFooter>
                 </Table>
             </TableContainer>
-            <Box display="flex" justifyContent="flex-end" alignItems="center" p={2} sx={{ borderBottom: "none" }}>
+            <Box
+                display="flex"
+                justifyContent="flex-end"
+                alignItems="center"
+                p={2}
+                sx={{ borderBottom: 'none' }}
+            >
                 <Pagination
                     count={pageCount}
                     page={currentPage}
@@ -169,16 +204,16 @@ const ManageAccountsTable: React.FC<ManageAccountsTableProps> = ({ users, onEdit
                             color: 'black',
                             '&:hover': {
                                 backgroundColor: 'white',
-                            }
+                            },
                         },
                         '& .MuiPaginationItem-previousNext': {
                             color: 'white',
-                        }
+                        },
                     }}
                 />
             </Box>
         </Box>
-    );
-};
+    )
+}
 
-export default ManageAccountsTable;
+export default ManageAccountsTable

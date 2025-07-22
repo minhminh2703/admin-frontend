@@ -1,66 +1,66 @@
-import { createTheme, PaletteOptions } from '@mui/material/styles';
+import { createTheme } from '@mui/material/styles'
 
 interface StatusTheme {
-    fontColor: string;
-    backgroundColor: string;
+    fontColor: string
+    backgroundColor: string
 }
 
 declare module '@mui/material/styles' {
     interface Theme {
         status: {
-            complete: StatusTheme;
-            inProgress: StatusTheme;
-            failed: StatusTheme;
-            raw: StatusTheme;
-        };
+            complete: StatusTheme
+            inProgress: StatusTheme
+            failed: StatusTheme
+            raw: StatusTheme
+        }
         background: {
-            main: string;
-            dark: string;
-            lightDark: string;
-            sidebarDark: string;
-            sidebarDarkLight: string;
-            darkBlue: string;
-            white: string;
-            lightPink: string;
-            lightPurple: string;
-            searchBar: string;
-        };
+            main: string
+            dark: string
+            lightDark: string
+            sidebarDark: string
+            sidebarDarkLight: string
+            darkBlue: string
+            white: string
+            lightPink: string
+            lightPurple: string
+            searchBar: string
+        }
         fontColor: {
-            black: string;
-            gray: string;
-            yellow: string;
-            white: string;
-            greyWhite: string;
+            black: string
+            gray: string
+            yellow: string
+            white: string
+            greyWhite: string
             babyBlue: string;
-        };
+        }
     }
     interface ThemeOptions {
         status: {
-            complete: StatusTheme;
-            inProgress: StatusTheme;
-            failed: StatusTheme;
-            raw: StatusTheme;
-        };
+            complete: StatusTheme
+            inProgress: StatusTheme
+            failed: StatusTheme
+            raw: StatusTheme
+        }
         background: {
-            main: string;
-            white: string;
-            dark: string;
-            lightDark: string;
-            sidebarDark: string;
-            darkBlue: string;
-            sidebarDarkLight: string;
-            lightPink: string;
-            lightPurple: string;
-            searchBar: string;
-        };
+            main: string
+            white: string
+            dark: string
+            lightDark: string
+            sidebarDark: string
+            darkBlue: string
+            sidebarDarkLight: string
+            lightPink: string
+            lightPurple: string
+            searchBar: string
+        }
         fontColor: {
-            black: string;
-            gray: string;
-            yellow: string;
-            white: string;
-            greyWhite: string;
+            black: string
+            gray: string
+            yellow: string
+            white: string
+            greyWhite: string
             babyBlue: string;
-        };
+        }
     }
 }
 
@@ -125,6 +125,6 @@ const theme = createTheme({
             },
         },
     },
-});
+})
 
-export default theme;
+export default theme

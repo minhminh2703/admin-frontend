@@ -175,16 +175,6 @@ export function D3LineChart({
             .style('opacity', 0)
             .style('pointer-events', 'none');
 
-        const tooltipBg = tooltip.append('rect')
-            .attr('width', tooltipWidth)
-            .attr('height', tooltipHeight)
-            .attr('rx', 15)
-            .attr('ry', 15)
-            .attr('x', 0)
-            .attr('y', 0)
-            .attr('transform', `translate(-${tooltipWidth / 2},-${tooltipHeight})`)
-            .attr('fill', 'url(#tooltipBgGrad)')
-
         // // Tooltip text
         function appendTooltipText(text: string, x: number, y: number) {
             return tooltip.append('text')

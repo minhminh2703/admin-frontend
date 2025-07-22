@@ -40,8 +40,8 @@ interface VoucherTableProps {
 }
 
 interface RowData {
-    isEdited: boolean;
-    rowData: Voucher | null;
+    isEdited: boolean
+    rowData: Voucher | null
 }
 
 const VoucherTable: React.FC<VoucherTableProps> = ({
@@ -58,14 +58,20 @@ const VoucherTable: React.FC<VoucherTableProps> = ({
     // useEffect for edit row
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
-            const isClickOnCheckIcon = (event.target as HTMLElement).closest('[data-checkicon="true"]');
+            const isClickOnCheckIcon = (event.target as HTMLElement).closest(
+                '[data-checkicon="true"]',
+            )
             // check if the click is outside of the edited row
-            if (editRow.isEdited && editRowRef.current && !editRowRef.current.contains(event.target as Node)) {
-                setEditRow({ isEdited: false, rowData: null });
+            if (
+                editRow.isEdited &&
+                editRowRef.current &&
+                !editRowRef.current.contains(event.target as Node)
+            ) {
+                setEditRow({ isEdited: false, rowData: null })
             } else if (isClickOnCheckIcon && editRow.rowData) {
-                handleChangeVoucher(editRow.rowData);
+                handleChangeVoucher(editRow.rowData)
             }
-        };
+        }
 
         document.addEventListener("mousedown", handleClickOutside);
         return () => {
@@ -77,13 +83,16 @@ const VoucherTable: React.FC<VoucherTableProps> = ({
         setEditRow({
             isEdited: !editRow.isEdited,
             rowData: row,
-        });
-    };
+        })
+    }
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, field: keyof Voucher) => {
-        if (!editRow.rowData) return;
+    const handleInputChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+        field: keyof Voucher,
+    ) => {
+        if (!editRow.rowData) return
 
-        let value: string | number = e.target.value;
+        let value: string | number = e.target.value
 
         // Ép kiểu đúng cho từng field
         if (["token", "max_usage", "used_count"].includes(field)) {
@@ -97,8 +106,8 @@ const VoucherTable: React.FC<VoucherTableProps> = ({
                 ...prev.rowData!,
                 [field]: value,
             },
-        }));
-    };
+        }))
+    }
 
     const handleDateChange = (date: Date, field: keyof Voucher) => {
         setEditRow({
@@ -107,8 +116,8 @@ const VoucherTable: React.FC<VoucherTableProps> = ({
                 ...editRow.rowData!,
                 [field]: date.toISOString(),
             },
-        });
-    };
+        })
+    }
 
     const textFieldInputSx = {
         color: theme.fontColor.white,
@@ -206,7 +215,12 @@ const VoucherTable: React.FC<VoucherTableProps> = ({
                                     return (
                                         <TableRow
                                             key={row.id}
-                                            ref={editRow.isEdited && editRow.rowData?.id === row.id ? editRowRef : null}
+                                            ref={
+                                                editRow.isEdited &&
+                                                editRow.rowData?.id === row.id
+                                                    ? editRowRef
+                                                    : null
+                                            }
                                         >
                                             <TableCell>
                                                 <IconButton size="small" onClick={() => handleEditClick(row)}>
@@ -314,9 +328,14 @@ const VoucherTable: React.FC<VoucherTableProps> = ({
                                                 {editRow.isEdited && editRow.rowData?.id === row.id ? (
                                                     <Box sx={{ display: "flex", flexDirection: "column", gap: 0.1 }}>
                                                         <DateField
-                                                            value={dayjs(editRow.rowData.expired_time)}
+                                                            value={dayjs(
+                                                                editRow.rowData
+                                                                    .expired_time,
+                                                            )}
                                                             sx={{ margin: 0 }}
-                                                            onChange={(newDate) => {
+                                                            onChange={(
+                                                                newDate,
+                                                            ) => {
                                                                 if (newDate) {
                                                                     const old = dayjs(editRow.rowData?.expired_time);
                                                                     const merged = old
@@ -351,9 +370,14 @@ const VoucherTable: React.FC<VoucherTableProps> = ({
                                                             }}
                                                         />
                                                         <TimeField
-                                                            value={dayjs(editRow.rowData.expired_time)}
+                                                            value={dayjs(
+                                                                editRow.rowData
+                                                                    .expired_time,
+                                                            )}
                                                             sx={{ margin: 0 }}
-                                                            onChange={(newTime) => {
+                                                            onChange={(
+                                                                newTime,
+                                                            ) => {
                                                                 if (newTime) {
                                                                     const old = dayjs(editRow.rowData?.expired_time);
                                                                     const merged = old
@@ -417,7 +441,7 @@ const VoucherTable: React.FC<VoucherTableProps> = ({
                                                 />
                                             </TableCell>
                                         </TableRow>
-                                    );
+                                    )
                                 })}
                             </TableBody>
                         )}
@@ -425,7 +449,7 @@ const VoucherTable: React.FC<VoucherTableProps> = ({
                 </TableContainer>
             </LocalizationProvider>
         </Box>
-    );
-};
+    )
+}
 
-export default VoucherTable;
+export default VoucherTable

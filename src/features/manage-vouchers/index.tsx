@@ -2,14 +2,14 @@ import { Box, Typography, Button, MenuItem, TextField, Pagination } from "@mui/m
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useTheme } from "../../theme";
-import DownloadIcon from "@mui/icons-material/Download";
+// import DownloadIcon from "@mui/icons-material/Download";
 import VoucherTable from "../manage-vouchers/voucher-table";
 import { GetAllVoucherResponse, Voucher } from "../../types/Response/Vouchers";
 import { createVoucherAPI, editVoucherAPI, getAllVouchersAPI } from "../../api/voucher.api";
 import { CreateVoucherPopup } from "./create-voucher-popup";
 import { voucherSearchCriteria, voucherSortOption } from "../../types/voucher";
 import JumpingDotsString from "../../components/jumping-dot-string";
-import { ExportFilePopup } from "./export-file-popup";
+// import { ExportFilePopup } from "./export-file-popup";
 
 export const VoucherManagement: React.FC = () => {
     const theme = useTheme();
@@ -20,7 +20,7 @@ export const VoucherManagement: React.FC = () => {
     });
 
     const [openCreateVoucherPopup, setOpenCreateVoucherPopup] = useState<boolean>(false);
-    const [openExportFilePopup, setOpenExportFilePopup] = useState<boolean>(false);
+    // const [openExportFilePopup, setOpenExportFilePopup] = useState<boolean>(false);
     const [sort, setSort] = useState<voucherSortOption>({
         sort: "",
         sortBy: "",
@@ -40,8 +40,8 @@ export const VoucherManagement: React.FC = () => {
     const handleCloseCreateVoucherPopup = () => setOpenCreateVoucherPopup(false);
 
     // popup for export file
-    const handleOpenExportFile = () => setOpenExportFilePopup(true);
-    const handleCloseExportFile = () => setOpenExportFilePopup(false);
+    // const handleOpenExportFile = () => setOpenExportFilePopup(true);
+    // const handleCloseExportFile = () => setOpenExportFilePopup(false);
 
     // function when clicking search button
     const onSearchButtonClick = () => {
@@ -96,25 +96,25 @@ export const VoucherManagement: React.FC = () => {
 
     // function for calling Create Voucher API
     const handleSumbitCreateVoucher = async (voucher: {
-        code: string;
-        token: number;
-        max_usage: number;
-        expired_time: string;
+        code: string
+        token: number
+        max_usage: number
+        expired_time: string
     }) => {
         try {
-            await createVoucherAPI(voucher);
-            fetchAllVoucher();
+            await createVoucherAPI(voucher)
+            fetchAllVoucher()
         } catch (error) {
             console.error("Failed to create vouchers:", error);
         }
-        handleCloseCreateVoucherPopup();
-    };
+        handleCloseCreateVoucherPopup()
+    }
 
     // function for calling Edit Voucher API
     const handleSubmitEditVoucher = async (voucher: Voucher) => {
         try {
-            await editVoucherAPI(voucher);
-            fetchAllVoucher();
+            await editVoucherAPI(voucher)
+            fetchAllVoucher()
         } catch (error) {
             console.error("Failed to create vouchers:", error);
         }
@@ -407,5 +407,5 @@ export const VoucherManagement: React.FC = () => {
                 limit={rowsPerPage}
             /> */}
         </Box>
-    );
-};
+    )
+}

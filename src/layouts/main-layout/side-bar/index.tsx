@@ -1,20 +1,19 @@
-import React from 'react';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import { Box, Typography, Link as MuiLink } from '@mui/material';
 import {
-    Person,
-    InsertChartOutlined,
-    DashboardOutlined,
-    DashboardCustomizeOutlined,
     AddCardOutlined,
-} from '@mui/icons-material';
-import MLVTLogo from '../../../assets/mlvt_logo.png';
-import { useTheme } from '../../../theme';
+    DashboardOutlined,
+    Person,
+    ReceiptLong,
+} from '@mui/icons-material'
+import { Box, Link as MuiLink, Typography } from '@mui/material'
+import React from 'react'
+import { Link as RouterLink, useNavigate } from 'react-router-dom'
+import MLVTLogo from '../../../assets/mlvt_logo.png'
+import { useTheme } from '../../../theme'
 
 interface NavLink {
-    name: string;
-    icon: React.ReactElement;
-    link: string;
+    name: string
+    icon: React.ReactElement
+    link: string
 }
 
 const navLinks: NavLink[] = [
@@ -38,28 +37,33 @@ const navLinks: NavLink[] = [
         icon: <AddCardOutlined sx={{ fontSize: '1.8em' }} />,
         link: '/manage_vouchers',
     },
+    {
+        name: 'Pending Requests',
+        icon: <ReceiptLong sx={{ fontSize: '1.8em' }} />,
+        link: '/pending_requests',
+    },
     // {
     //     name: 'Configuration',
     //     icon: <DashboardCustomizeOutlined sx={{ fontSize: '1.8em' }} />,
     //     link: '/feature_configuration',
     // },
-];
+]
 
 const Sidebar: React.FC = () => {
-    const theme = useTheme();
-    const navigate = useNavigate();
-    const location = window.location;
+    const theme = useTheme()
+    const navigate = useNavigate()
+    const location = window.location
 
     return (
         <Box
             sx={{
                 background: `linear-gradient(180deg, ${theme.background.sidebarDark} 0%, ${theme.background.sidebarDarkLight} 90%)`,
                 padding: 0,
-                display: { xs: "none", lg: "flex" },
+                display: { xs: 'none', lg: 'flex' },
                 height: '100vh',
-                flexDirection: "column",
-                alignItems: "center",
-                minWidth: "18em"
+                flexDirection: 'column',
+                alignItems: 'center',
+                minWidth: '18em',
             }}
         >
             <Box
@@ -114,7 +118,10 @@ const Sidebar: React.FC = () => {
                                     backgroundColor: '#2c3e50',
                                 },
                                 '& svg': {
-                                    color: location.pathname === item.link ? '#F5D061' : 'white',
+                                    color:
+                                        location.pathname === item.link
+                                            ? '#F5D061'
+                                            : 'white',
                                     transition: 'color 0.3s ease-in-out',
                                 },
                             }}
@@ -126,8 +133,12 @@ const Sidebar: React.FC = () => {
                                     fontWeight: '500',
                                     fontSize: '0.9em',
                                     transition: 'color 0.3s ease-in-out',
-                                    fontFamily: theme.typography.body2.fontFamily,
-                                    color: location.pathname === item.link ? '#F5D061' : 'white',
+                                    fontFamily:
+                                        theme.typography.body2.fontFamily,
+                                    color:
+                                        location.pathname === item.link
+                                            ? '#F5D061'
+                                            : 'white',
                                 }}
                             >
                                 {item.name}
@@ -137,7 +148,7 @@ const Sidebar: React.FC = () => {
                 </Box>
             </Box>
         </Box>
-    );
-};
+    )
+}
 
-export default Sidebar;
+export default Sidebar

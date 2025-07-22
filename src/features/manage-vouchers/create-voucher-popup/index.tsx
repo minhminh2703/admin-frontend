@@ -7,9 +7,14 @@ import dayjs, { Dayjs } from "dayjs";
 import { useTheme } from "../../../theme";
 
 interface CreateVoucherPopupProps {
-    open: boolean;
-    onClose: () => void;
-    onSubmit: (voucher: { code: string; token: number; max_usage: number; expired_time: string }) => void;
+    open: boolean
+    onClose: () => void
+    onSubmit: (voucher: {
+        code: string
+        token: number
+        max_usage: number
+        expired_time: string
+    }) => void
 }
 
 export const CreateVoucherPopup: React.FC<CreateVoucherPopupProps> = ({ open, onClose, onSubmit }) => {
@@ -18,17 +23,17 @@ export const CreateVoucherPopup: React.FC<CreateVoucherPopupProps> = ({ open, on
     const [maxUsage, setMaxUsage] = useState(0);
     const [expiredTime, setExpiredTime] = useState<Dayjs | null>(dayjs());
 
-    const theme = useTheme();
+    const theme = useTheme()
 
     const handleSubmit = () => {
-        if (!code || !expiredTime) return;
+        if (!code || !expiredTime) return
         onSubmit({
             code,
             token,
             max_usage: 5,
             expired_time: expiredTime.toISOString(),
-        });
-    };
+        })
+    }
 
     const dateTimePickerSx = {
         slotProps: {
@@ -84,7 +89,7 @@ export const CreateVoucherPopup: React.FC<CreateVoucherPopupProps> = ({ open, on
                 },
             },
         },
-    };
+    }
 
     return (
         <Dialog
@@ -144,5 +149,5 @@ export const CreateVoucherPopup: React.FC<CreateVoucherPopupProps> = ({ open, on
                 </Button>
             </DialogActions>
         </Dialog>
-    );
-};
+    )
+}
