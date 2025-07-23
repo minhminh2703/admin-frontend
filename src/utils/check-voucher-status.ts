@@ -1,4 +1,4 @@
-import { Voucher } from "../types/voucher";
+import { Voucher } from "../types/Response/Vouchers";
 
 export const checkVoucherStatus = (voucher: Voucher): string => {
     const currentDate = new Date();

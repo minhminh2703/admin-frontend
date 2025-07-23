@@ -31,6 +31,7 @@ declare module '@mui/material/styles' {
             yellow: string
             white: string
             greyWhite: string
+            babyBlue: string;
         }
     }
     interface ThemeOptions {
@@ -58,6 +59,7 @@ declare module '@mui/material/styles' {
             yellow: string
             white: string
             greyWhite: string
+            babyBlue: string;
         }
     }
 }
@@ -99,6 +101,7 @@ const theme = createTheme({
         yellow: '#FFB200',
         white: '#FFFFFF',
         greyWhite: 'rgba(255, 255, 255, 0.6)',
+        babyBlue: '#7EC8E3',
     },
     typography: {
         h1: {
