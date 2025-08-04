@@ -1,6 +1,7 @@
 import {
     AddCardOutlined,
     DashboardOutlined,
+    DashboardCustomizeOutlined,
     Person,
     ReceiptLong,
 } from '@mui/icons-material'
@@ -42,11 +43,11 @@ const navLinks: NavLink[] = [
         icon: <ReceiptLong sx={{ fontSize: '1.8em' }} />,
         link: '/pending_requests',
     },
-    // {
-    //     name: 'Configuration',
-    //     icon: <DashboardCustomizeOutlined sx={{ fontSize: '1.8em' }} />,
-    //     link: '/feature_configuration',
-    // },
+    {
+        name: 'Configuration',
+        icon: <DashboardCustomizeOutlined sx={{ fontSize: '1.8em' }} />,
+        link: '/manage_configuration',
+    },
 ]
 
 const Sidebar: React.FC = () => {
