@@ -368,7 +368,7 @@ const EditAdminAccount: React.FC<EditAccountProps> = ({ userId }) => {
                                                 name: 'userRole',
                                                 value: e.target.value,
                                             },
-                                        } as any)
+                                        } as React.ChangeEvent<HTMLInputElement>)
                                     }
                                     options={['ADMIN', 'USER', 'MANAGER']}
                                 />
@@ -384,9 +384,14 @@ const EditAdminAccount: React.FC<EditAccountProps> = ({ userId }) => {
                                                 name: 'status',
                                                 value: e.target.value,
                                             },
-                                        } as any)
+                                        } as React.ChangeEvent<HTMLInputElement>)
                                     }
-                                    options={['ACTIVE', 'DELETED', 'SUSPENDED']}
+                                    options={[
+                                        'ACTIVE',
+                                        'DELETED',
+                                        'PENDING',
+                                        'SUSPENDED',
+                                    ]}
                                 />
                             </Grid>
                         </Grid>

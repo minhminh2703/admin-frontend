@@ -32,7 +32,7 @@ const FilterSelect = ({
     value: string
     onChange: (event: SelectChangeEvent<string>) => void
     options: { value: string; label: string }[]
-    theme: any
+    theme: import('@mui/material/styles').Theme
 }) => (
     <FormControl sx={{ flex: 1 }}>
         <Typography
@@ -277,6 +277,7 @@ const ManageAccount = () => {
                         { value: 'All', label: 'All' },
                         { value: 'ACTIVE', label: 'Active' },
                         { value: 'DELETED', label: 'Deleted' },
+                        { value: 'PENDING', label: 'Pending' },
                         { value: 'SUSPENDED', label: 'Suspended' },
                     ]}
                     theme={theme}

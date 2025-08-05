@@ -17,11 +17,12 @@ import dayjs from 'dayjs'
 import React, { useState } from 'react'
 import { ListUser } from '../../../../types/user'
 
-export type AccountStatus = 'ACTIVE' | 'DELETED' | 'SUSPENDED'
+export type AccountStatus = 'ACTIVE' | 'DELETED' | 'PENDING' | 'SUSPENDED'
 
 const brightColors: Record<AccountStatus, string> = {
     ACTIVE: '#4caf50',
     DELETED: '#f44336',
+    PENDING: '#ff9800',
     SUSPENDED: '#ffc107',
 }
 

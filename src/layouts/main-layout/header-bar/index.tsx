@@ -1,23 +1,12 @@
-import { Search } from '@mui/icons-material'
 import LogoutIcon from '@mui/icons-material/Logout'
-import {
-    AppBar,
-    Box,
-    IconButton,
-    SxProps,
-    TextField,
-    Theme,
-    Toolbar,
-} from '@mui/material'
+import { AppBar, Box, IconButton, SxProps, Theme, Toolbar } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getUser } from '../../../api/user.api'
 import { useAuth } from '../../../context/auth-context'
-import { useTheme } from '../../../theme'
 import UserProfile from '../user-profile'
 
 const HeaderBar: React.FC<{ sx?: SxProps<Theme> | undefined }> = ({ sx }) => {
-    const theme = useTheme()
     const navigate = useNavigate()
     const { userId, logout } = useAuth()
     const [avatarUrl, setAvatarUrl] = useState('')
@@ -61,7 +50,7 @@ const HeaderBar: React.FC<{ sx?: SxProps<Theme> | undefined }> = ({ sx }) => {
                 }}
             >
                 <Box sx={{ flex: 1, maxWidth: '17em' }} />
-                <Box
+                {/* <Box
                     sx={{
                         flex: 1,
                         display: 'flex',
@@ -120,7 +109,7 @@ const HeaderBar: React.FC<{ sx?: SxProps<Theme> | undefined }> = ({ sx }) => {
                             },
                         }}
                     />
-                </Box>
+                </Box> */}
 
                 <Box
                     sx={{
