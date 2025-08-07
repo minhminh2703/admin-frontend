@@ -19,7 +19,7 @@ function capitalizeFirstLetter(string: string) {
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase()
 }
 
-const FilterSelect = ({
+export const FilterSelect = ({
     label,
     name,
     value,
@@ -222,7 +222,7 @@ const ManageAccount = () => {
                         value={tempFilters.search}
                         onChange={handleTempFilterChange}
                         fullWidth
-                        placeholder="Search for users, admins or by status"
+                        placeholder="Search by username"
                         slotProps={{
                             input: {
                                 sx: {

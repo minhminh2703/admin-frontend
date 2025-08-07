@@ -40,7 +40,7 @@ const MainLayout: React.FC = () => {
                         }}
                     />
 
-                    <Box sx={{ padding: '3em' }}>
+                    <Box sx={{ paddingX: '3em', paddingY: '1.5em' }}>
                         <Outlet />
                     </Box>
                 </Box>

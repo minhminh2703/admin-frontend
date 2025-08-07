@@ -29,6 +29,7 @@ export default function WebTraffic() {
     const [filter, setFilter] = useState<'By Day' | 'By Week' | 'By Year'>(
         'By Day',
     )
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [reportData, setReportData] = useState<any>(null)
     const [loading, setLoading] = useState(false)
     const theme = useTheme()

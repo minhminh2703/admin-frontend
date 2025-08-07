@@ -102,7 +102,13 @@ const PendingRequestsPage = () => {
                     sx={{ height: '50vh' }}
                 >
                     <CircularProgress sx={{ color: 'white' }} />
-                    <Typography sx={{ color: 'white', ml: 2 }}>
+                    <Typography
+                        sx={{
+                            color: 'white',
+                            ml: 2,
+                            fontFamily: 'Poppins, sans-serif',
+                        }}
+                    >
                         Loading Requests...
                     </Typography>
                 </Box>
@@ -158,6 +164,7 @@ const PendingRequestsPage = () => {
                     color: 'white',
                     mb: 3,
                     fontFamily: 'Poppins, sans-serif',
+                    fontWeight: 550,
                 }}
             >
                 Pending Membership Requests
